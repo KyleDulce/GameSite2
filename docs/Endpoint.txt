@@ -1,0 +1,13 @@
+Frontend
+/pages    			-> redirect to /pages/home
+/pages/home			-> home
+/pages/rooms		-> room selector
+/pages/createroom	-> room creator
+/pages/game			-> game player
+
+Backend
+
+"" - > redirect to /pages/home
+/api 				-> root for all apis		
+/socket				-> root for all sockets
+
