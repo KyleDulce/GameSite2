@@ -11,3 +11,6 @@ Backend
 /api 				-> root for all apis		
 /socket				-> root for all sockets
 
+/socket/app         -> endpoint to send server data using Socket
+/socket/topic       -> endpoint to recieve data from server using Socket
+/socket/websocket   -> endpoint for sockJS fallback on use of other transports
