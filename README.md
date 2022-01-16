@@ -17,4 +17,4 @@ Games will be added soon.
 - Spring Boot
 
 ## Usage
-Usage instructions will be added soon after the structure of the project is made
+Usage instructions will be added soon after the structure of the project is made.
