@@ -60,8 +60,8 @@ public class User {
     }
 
     public class UserMessage {
-        String uuid;
-        String name;
-        boolean isGuest;
+        public String uuid;
+        public String name;
+        public boolean isGuest;
     }
 }

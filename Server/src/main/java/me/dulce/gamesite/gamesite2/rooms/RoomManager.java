@@ -79,4 +79,13 @@ public class RoomManager {
         room.userJoin(host);
         return uuid;
     }
+
+    public UUID getRoomThatContainsUser(User user) {
+        for(Room room : activeRooms.values()) {
+            if(room.getAllJoinedUsers().contains(user) || room.getAllSpectatingUsers().contains(user)) {
+                return room.getRoomUid();
+            }
+        }
+        return null;
+    }
 }

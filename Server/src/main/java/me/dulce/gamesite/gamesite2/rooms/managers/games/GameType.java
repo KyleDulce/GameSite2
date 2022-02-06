@@ -13,9 +13,11 @@ public enum GameType {
         
     ;
     private static final Logger LOGGER = LoggerFactory.getLogger(GameType.class);
+    private int id;
     private String name;
     private Class<? extends Room> attatchedClass;
-    private GameType(String name, Class<? extends Room> attatchedClass) {
+    private GameType(int id, String name, Class<? extends Room> attatchedClass) {
+        this.id = id;
         this.name = name;
         this.attatchedClass = attatchedClass;
     }
@@ -39,6 +41,16 @@ public enum GameType {
         GameType[] values = GameType.class.getEnumConstants();
         for(GameType gameType : values) {
             if(gameType.name.equalsIgnoreCase(name)) {
+                return gameType;
+            }
+        }
+        return null;
+    }
+
+    public static GameType getGameTypeFromId(int id) {
+        GameType[] values = GameType.class.getEnumConstants();
+        for(GameType gameType : values) {
+            if(gameType.id == id) {
                 return gameType;
             }
         }
