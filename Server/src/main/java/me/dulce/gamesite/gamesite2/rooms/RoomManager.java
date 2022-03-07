@@ -88,4 +88,8 @@ public class RoomManager {
         }
         return null;
     }
+
+    public Room getRoomFromUUID(UUID uuid) {
+        return activeRooms.get(uuid);
+    }
 }

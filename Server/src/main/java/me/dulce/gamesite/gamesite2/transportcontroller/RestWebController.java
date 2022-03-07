@@ -28,7 +28,6 @@ import me.dulce.gamesite.gamesite2.user.User;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 
-
 @RestController
 public class RestWebController {
 
@@ -95,10 +94,13 @@ public class RestWebController {
 			response.success = false;
 			return ResponseEntity.badRequest().body(response);
 		}
-		
-		UUID userUid = UUID.fromString(roomJoinRequest.user.uuid);
-		UUID roomUid = UUID.fromString(roomJoinRequest.roomId);
-		if(userUid == null || roomUid == null) {
+
+		UUID userUid;
+		UUID roomUid;
+		try {
+			userUid = UUID.fromString(roomJoinRequest.user.uuid);
+			roomUid = UUID.fromString(roomJoinRequest.roomId);
+		} catch (IllegalArgumentException e) {
 			response.success = false;
 			return ResponseEntity.badRequest().body(response);
 		}
@@ -142,7 +144,24 @@ public class RestWebController {
 			return ResponseEntity.badRequest().body(response);
 		}
 
-		User user = User.getUserFromMessage(roomCreateRequest.user);
+		UUID userUid;
+		try {
+			userUid = UUID.fromString(roomCreateRequest.user.uuid);
+		} catch (IllegalArgumentException e) {
+			response.success = false;
+			return ResponseEntity.badRequest().body(response);
+		}
+
+		User user;
+		if(User.cachedUsers.containsKey(userUid)) {
+			user = User.cachedUsers.get(userUid);
+			//have user leave their room before joining
+			UUID roomid = roomManager.getRoomThatContainsUser(user);
+			roomManager.processUserLeaveRoomRequest(user, roomid);
+		} else {
+			user = User.getUserFromMessage(roomCreateRequest.user);
+		}
+
 		GameType gameType = GameType.getGameTypeFromId(roomCreateRequest.gameType);
 		if(user == null || gameType == null) {
 			response.success = false;
@@ -151,8 +170,11 @@ public class RestWebController {
 
 		UUID roomid = roomManager.createRoom(gameType, user, roomCreateRequest.maxLobbySize);
 		response.success = roomid != null;
-		response.roomId = roomid.toString();
+		if(response.success) {
+			response.roomId = roomid.toString();
+		} else {
+			response.roomId = null;
+		}
 		return ResponseEntity.ok(response);
 	}
-	
 }

@@ -10,7 +10,8 @@ import me.dulce.gamesite.gamesite2.rooms.managers.Room;
 import me.dulce.gamesite.gamesite2.user.User;
 
 public enum GameType {
-        
+    NULL_GAME_TYPE(-1, "NULL", null),
+    TEST(-2, "Test", TestGame.class)
     ;
     private static final Logger LOGGER = LoggerFactory.getLogger(GameType.class);
     private int id;

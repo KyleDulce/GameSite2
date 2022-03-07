@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import me.dulce.gamesite.gamesite2.rooms.managers.games.GameType;
 import me.dulce.gamesite.gamesite2.user.User;
 
 public abstract class Room {
@@ -22,7 +23,7 @@ public abstract class Room {
     protected boolean inProgress = false;
     protected long timeStarted = -1;
 
-    public abstract String getGameType();
+    public abstract GameType getGameType();
 
     public Room(UUID roomid, int maxUserCount, User host) {
         this.roomid = roomid;
@@ -38,6 +39,7 @@ public abstract class Room {
     public boolean userJoin(User user) {
         if(usersJoinedList.size() < maxUsers && !inProgress && !usersJoinedList.contains(user)) {
             usersJoinedList.add(user);
+            User.cachedUsers.put(user.getuuid(), user);
             return true;
         }
         return false;
@@ -46,6 +48,7 @@ public abstract class Room {
     public boolean specatorJoin(User user) {
         if(!spectatorsJoinedList.contains(user)) {
             spectatorsJoinedList.add(user);
+            User.cachedUsers.put(user.getuuid(), user);
             return true;
         }
         return false;
@@ -57,6 +60,7 @@ public abstract class Room {
         } else if(spectatorsJoinedList.contains(user)) {
             spectatorsJoinedList.remove(user);
         }
+        User.cachedUsers.remove(user.getuuid());
     }
 
     public UUID getRoomUid() { return roomid; }
@@ -73,7 +77,7 @@ public abstract class Room {
         result.lobbySize = usersJoinedList.size();
         result.maxLobbySize = maxUsers;
         result.spectatorsAmount = spectatorsJoinedList.size();
-        result.gameType = getGameType();
+        result.gameType = getGameType().toString();
         result.hostName = host.getName();
         result.inProgress = inProgress;
         result.gameStartTime = timeStarted;
