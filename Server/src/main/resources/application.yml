@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: GameSite
+
+server:
+  port: 8080
+  compression:
+    enabled: true
+  error:
+    path: "/pages/PageNotFound"
