@@ -17,7 +17,7 @@ public enum GameType {
     private int id;
     private String name;
     private Class<? extends Room> attatchedClass;
-    private GameType(int id, String name, Class<? extends Room> attatchedClass) {
+    GameType(int id, String name, Class<? extends Room> attatchedClass) {
         this.id = id;
         this.name = name;
         this.attatchedClass = attatchedClass;
@@ -36,6 +36,10 @@ public enum GameType {
             LOGGER.error("Failed to create Room Instance of type {}, Exception: {}", name, e.getMessage());
             return null;
         }
+    }
+
+    public int getId() {
+        return id;
     }
 
     public static GameType getGameTypeFromString(String name) {

@@ -42,8 +42,10 @@ public class RestWebController {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE").allowedHeaders("*")
-						.allowedOrigins("*");
+				registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE")
+						.allowedHeaders("*")
+						.allowCredentials(true)
+						.allowedOrigins("http://localhost:8080", "null");
 			}
 		};
 	}

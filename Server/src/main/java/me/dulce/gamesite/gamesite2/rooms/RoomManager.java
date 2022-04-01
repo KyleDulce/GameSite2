@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.UUID;
 
+import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -89,7 +90,18 @@ public class RoomManager {
         return null;
     }
 
+    public boolean isUserInRoom(User user, Room room) {
+        return room.getAllJoinedUsers().contains(user) || room.getAllSpectatingUsers().contains(user);
+    }
+
+    public boolean handleIncomingRoomData(User user, GameData data) {
+        return activeRooms.get(data.roomId()).handleGameDataReceived(user, data);
+    }
+
     public Room getRoomFromUUID(UUID uuid) {
         return activeRooms.get(uuid);
+    }
+    public boolean doesRoomExist(UUID uuid) {
+        return activeRooms.containsKey(uuid);
     }
 }

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<button onclick="button()">click me</button>
+</body>
+</html>
+
+<script>
+     var sock = new SockJS('http://localhost:8080/socket/game');
+     sock.onopen = function() {
+         console.log('open');
+     };
+
+     sock.onmessage = function(e) {
+         console.log('message', e.data);
+     };
+
+     sock.onclose = function() {
+         console.log('close');
+     };
+
+     function button() {
+        sock.send('test');
+     }
+</script>

@@ -32,6 +32,7 @@ public class User {
     private UUID uuid;
     private String name;
     private boolean isGuest;
+    private String sessionId = null;
 
     public UUID getuuid() {
         return uuid;
@@ -43,6 +44,14 @@ public class User {
 
     public boolean getGuestState() {
         return isGuest;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     @Override

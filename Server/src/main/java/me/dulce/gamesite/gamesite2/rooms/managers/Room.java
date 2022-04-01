@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +25,7 @@ public abstract class Room {
     protected long timeStarted = -1;
 
     public abstract GameType getGameType();
+    public abstract boolean handleGameDataReceived(User user, GameData response);
 
     public Room(UUID roomid, int maxUserCount, User host) {
         this.roomid = roomid;
