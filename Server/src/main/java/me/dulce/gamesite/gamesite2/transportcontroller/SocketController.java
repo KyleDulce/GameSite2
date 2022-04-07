@@ -3,9 +3,6 @@ package me.dulce.gamesite.gamesite2.transportcontroller;
 import me.dulce.gamesite.gamesite2.rooms.RoomManager;
 import me.dulce.gamesite.gamesite2.rooms.managers.Room;
 import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameDataMessage;
-import me.dulce.gamesite.gamesite2.transportcontroller.messaging.GameDataResponse;
-import me.dulce.gamesite.gamesite2.transportcontroller.messaging.GameDataResponseRaw;
 import me.dulce.gamesite.gamesite2.transportcontroller.messaging.GameDataUpdate;
 import me.dulce.gamesite.gamesite2.transportcontroller.messaging.InvalidSocketMessage;
 import me.dulce.gamesite.gamesite2.user.User;
@@ -13,8 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -38,6 +33,12 @@ public class SocketController {
 
     @Autowired
     private RoomManager roomManager;
+
+    @MessageMapping("/test")
+    public void test(@Payload GameDataUpdate payload, @Header("simpSessionId") String sessionId) {
+        LOGGER.info("RECEIVED " + sessionId);
+        sendMessageToUser(sessionId, SocketDestinations.TEST, "Hello World");
+    }
 
     @MessageMapping("/game")
     public void game(@Payload GameDataUpdate payload, @Header("simpSessionId") String sessionId) {
@@ -102,7 +103,8 @@ public class SocketController {
     }
 
     public enum SocketDestinations {
-        GAMEDATA("/gamePlayer");
+        GAMEDATA("/gamePlayer"),
+        TEST("/test");
 
         private String endpoint;
         SocketDestinations(String endpoint) {
