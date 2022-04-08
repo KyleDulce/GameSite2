@@ -7,11 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
@@ -25,8 +21,6 @@ import me.dulce.gamesite.gamesite2.transportcontroller.messaging.RoomJoinRequest
 import me.dulce.gamesite.gamesite2.transportcontroller.messaging.RoomJoinResponse;
 import me.dulce.gamesite.gamesite2.transportcontroller.messaging.RoomLeaveRequest;
 import me.dulce.gamesite.gamesite2.user.User;
-
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
 public class RestWebController {
@@ -45,7 +39,7 @@ public class RestWebController {
 				registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE")
 						.allowedHeaders("*")
 						.allowCredentials(true)
-						.allowedOrigins("http://localhost:8080", "null");
+						.allowedOrigins("http://localhost:8080", "http://localhost:4200", "null");
 			}
 		};
 	}
