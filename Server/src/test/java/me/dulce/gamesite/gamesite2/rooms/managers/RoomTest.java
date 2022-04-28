@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.UUID;
 
+import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -21,6 +22,11 @@ public class RoomTest {
             @Override
             public GameType getGameType() {
                 return null;
+            }
+
+            @Override
+            public boolean handleGameDataReceived(User user, GameData response) {
+                return false;
             }
         };
     }
@@ -82,6 +88,11 @@ public class RoomTest {
             }
             @Override
             public GameType getGameType() { return null; }
+
+            @Override
+            public boolean handleGameDataReceived(User user, GameData response) {
+                return false;
+            }
         }
 
         Room room = new RoomChild();
@@ -160,6 +171,11 @@ public class RoomTest {
             @Override
             public GameType getGameType() {
                 return GameType.NULL_GAME_TYPE;
+            }
+
+            @Override
+            public boolean handleGameDataReceived(User user, GameData response) {
+                return false;
             }
         };
         String expectedUuid = room.getRoomUid().toString();
