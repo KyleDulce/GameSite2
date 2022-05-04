@@ -2,6 +2,7 @@ package me.dulce.gamesite.gamesite2.transportcontroller;
 
 import java.util.UUID;
 
+import me.dulce.gamesite.gamesite2.configuration.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +27,12 @@ import me.dulce.gamesite.gamesite2.user.User;
 public class RestWebController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RestWebController.class);
-    public static final String FRONTEND_ENDPOINT_GROUP = "pages";
 
 	@Autowired
 	private RoomManager roomManager;
+
+	@Autowired
+	private AppConfig config;
 
     @Bean
 	public WebMvcConfigurer corsConfigurer() {
@@ -39,14 +42,14 @@ public class RestWebController {
 				registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE")
 						.allowedHeaders("*")
 						.allowCredentials(true)
-						.allowedOrigins("http://localhost:8080", "http://localhost:4200", "null");
+						.allowedOrigins(config.getAllowedOriginsAsArray());
 			}
 		};
 	}
 
     @RequestMapping("/")
     public RedirectView index() {
-        return new RedirectView("/" + FRONTEND_ENDPOINT_GROUP);
+        return new RedirectView("/" + config.getFrontendPrefixEndpoint());
     }
 
 	//any page in /pages returns static resource
@@ -67,7 +70,7 @@ public class RestWebController {
 			return mav;
 		} else {
 			ModelAndView mav = new ModelAndView();
-			mav.setViewName("/pages");
+			mav.setViewName(String.format("/%s", config.getFrontendPrefixEndpoint()));
 			return mav;	
 		}
 	}
