@@ -1,5 +1,6 @@
 package me.dulce.gamesite.gamesite2.transportcontroller;
 
+import me.dulce.gamesite.gamesite2.configuration.AppConfig;
 import me.dulce.gamesite.gamesite2.rooms.RoomManager;
 import me.dulce.gamesite.gamesite2.rooms.managers.Room;
 import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
@@ -26,13 +27,16 @@ import java.util.UUID;
 public class SocketController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SocketController.class);
-    private static final String BROADCAST_DESTINATION = "/socket/topic/game";
+    private static final String BROADCAST_DESTINATION = "topic/game";
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
     @Autowired
     private RoomManager roomManager;
+
+    @Autowired
+    private AppConfig config;
 
     @MessageMapping("/test")
     public void test(@Payload GameDataUpdate payload, @Header("simpSessionId") String sessionId) {
@@ -77,7 +81,9 @@ public class SocketController {
     }
 
     public void broadcastMessageToRoom(Room room, Object payload) {
-        simpMessagingTemplate.convertAndSend(BROADCAST_DESTINATION + room.getRoomUid().toString(), payload);
+        simpMessagingTemplate.convertAndSend(
+                String.format("/%s/%s", config.getSocketEndpoint(), BROADCAST_DESTINATION) +
+                        room.getRoomUid().toString(), payload);
     }
 
     public void sendMessageToUser(User user, SocketDestinations destination, Object payload) {
