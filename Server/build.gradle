@@ -13,8 +13,12 @@ repositories {
 }
 
 dependencies {
+
+	implementation group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.12.215'
+
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'io.github.normandesjr:prefix-dynamodb-mapper:0.1.1'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -31,6 +35,8 @@ dependencies {
 	implementation 'org.webjars:jquery:3.6.0'
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2.2'
 }
+
+apply plugin: "io.spring.dependency-management"
 
 test {
 	useJUnitPlatform()

@@ -6,3 +6,8 @@ endpoints:
   frontendPrefix: pages
   socket: socket
   stomp: stomp
+
+
+database:
+  leaderboardName: test
+  gameHist: test

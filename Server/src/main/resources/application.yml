@@ -15,3 +15,7 @@ endpoints:
   frontendPrefix: pages
   socket: socket
   stomp: stomp
+
+database:
+  leaderboardName: leaderboard_qa
+  gameHist: game_hist_qa
