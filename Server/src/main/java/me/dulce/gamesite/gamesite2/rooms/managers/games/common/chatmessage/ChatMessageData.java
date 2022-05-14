@@ -33,7 +33,9 @@ public class ChatMessageData extends GameData {
 
     @Override
     protected Object onGetParse() throws Exception {
-
+        ChatMessage result = new ChatMessage();
+        result.message = messageText;
+        result.senderName = senderName;
         return null;
     }
 

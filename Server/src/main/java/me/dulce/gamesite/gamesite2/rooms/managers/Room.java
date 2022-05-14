@@ -7,7 +7,6 @@ import java.util.UUID;
 import me.dulce.gamesite.gamesite2.rooms.managers.games.common.chatmessage.ChatMessageData;
 import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
 import me.dulce.gamesite.gamesite2.transportcontroller.SocketController;
-import me.dulce.gamesite.gamesite2.transportcontroller.messaging.GameChatMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
