@@ -69,7 +69,7 @@ public class SocketController {
            return;
        }
 
-        boolean success = roomManager.handleIncomingRoomData(user, data);
+        boolean success = roomManager.handleIncomingRoomData(user, data, this);
         if(!success) {
             sendInvalidSocketMessageToUser(sessionId, SocketDestinations.GAMEDATA, 200, "Handler rejected Update.");
             return;

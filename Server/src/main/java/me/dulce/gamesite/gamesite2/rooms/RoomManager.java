@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.UUID;
 
 import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
+import me.dulce.gamesite.gamesite2.transportcontroller.SocketController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -94,8 +95,8 @@ public class RoomManager {
         return room.getAllJoinedUsers().contains(user) || room.getAllSpectatingUsers().contains(user);
     }
 
-    public boolean handleIncomingRoomData(User user, GameData data) {
-        return activeRooms.get(data.roomId()).handleGameDataReceived(user, data);
+    public boolean handleIncomingRoomData(User user, GameData data, SocketController controller) {
+        return activeRooms.get(data.roomId()).handleGameDataReceived(user, data, controller);
     }
 
     public Room getRoomFromUUID(UUID uuid) {

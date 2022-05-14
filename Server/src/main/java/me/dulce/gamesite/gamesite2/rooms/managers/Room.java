@@ -4,7 +4,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import me.dulce.gamesite.gamesite2.rooms.managers.games.common.chatmessage.ChatMessageData;
 import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
+import me.dulce.gamesite.gamesite2.transportcontroller.SocketController;
+import me.dulce.gamesite.gamesite2.transportcontroller.messaging.GameChatMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,11 +73,25 @@ public abstract class Room {
      * A separate protected method, processGameDataForGame is called to handle game specific GameData processing.
      * @param user The user sending the gameData
      * @param response The GameData from the user
+     * @param controller The SocketController for broadcasting messages where needed
      * @return A boolean indicating if the response was successful
      */
-    public final boolean handleGameDataReceived(User user, GameData response){
+    public final boolean handleGameDataReceived(User user, GameData response, SocketController controller){
+
+        if(response instanceof ChatMessageData){
+            return processChatMessage((ChatMessageData) response, controller)
+                    && processGameDataForGame(user, response);
+        }
 
         return processGameDataForGame(user, response);
+
+    }
+
+    private boolean processChatMessage(ChatMessageData chatMessage, SocketController controller){
+
+        controller.broadcastMessageToRoom(this, chatMessage.parseObjectToDataMessage().data);
+
+        return true;
 
     }
 
