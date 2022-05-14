@@ -25,7 +25,7 @@ public abstract class Room {
     protected long timeStarted = -1;
 
     public abstract GameType getGameType();
-    public abstract boolean handleGameDataReceived(User user, GameData response);
+    protected abstract boolean processGameDataForGame(User user, GameData response);
 
     public Room(UUID roomid, int maxUserCount, User host) {
         this.roomid = roomid;
@@ -63,6 +63,19 @@ public abstract class Room {
             spectatorsJoinedList.remove(user);
         }
         User.cachedUsers.remove(user.getuuid());
+    }
+
+    /**
+     * This method is for common logic among games for handling GameData such as broadcasting chat messages.
+     * A separate protected method, processGameDataForGame is called to handle game specific GameData processing.
+     * @param user The user sending the gameData
+     * @param response The GameData from the user
+     * @return A boolean indicating if the response was successful
+     */
+    public final boolean handleGameDataReceived(User user, GameData response){
+
+        return processGameDataForGame(user, response);
+
     }
 
     public UUID getRoomUid() { return roomid; }

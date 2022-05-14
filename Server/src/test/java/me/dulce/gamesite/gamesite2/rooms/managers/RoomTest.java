@@ -25,9 +25,7 @@ public class RoomTest {
             }
 
             @Override
-            public boolean handleGameDataReceived(User user, GameData response) {
-                return false;
-            }
+            protected boolean processGameDataForGame(User user, GameData response) { return false; }
         };
     }
 
@@ -90,9 +88,7 @@ public class RoomTest {
             public GameType getGameType() { return null; }
 
             @Override
-            public boolean handleGameDataReceived(User user, GameData response) {
-                return false;
-            }
+            protected boolean processGameDataForGame(User user, GameData response) { return false; }
         }
 
         Room room = new RoomChild();
@@ -174,9 +170,7 @@ public class RoomTest {
             }
 
             @Override
-            public boolean handleGameDataReceived(User user, GameData response) {
-                return false;
-            }
+            protected boolean processGameDataForGame(User user, GameData response) { return false; }
         };
         String expectedUuid = room.getRoomUid().toString();
         int expectedLobbySize = room.getAllJoinedUsers().size();

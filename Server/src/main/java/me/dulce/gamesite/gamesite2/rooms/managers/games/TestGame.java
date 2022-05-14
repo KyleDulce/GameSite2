@@ -17,5 +17,7 @@ public class TestGame extends Room {
     }
 
     @Override
-    public boolean handleGameDataReceived(User user, GameData response) {return true;}
+    protected boolean processGameDataForGame(User user, GameData response) {
+        return true;
+    }
 }
