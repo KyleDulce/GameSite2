@@ -1,2 +1,10 @@
+.idea/
 .idea/*
+**/.idea/*
+.vscode/
 .vscode/*
+**/.vscode/*
+.DS_Store
+**/.DS_Store
+**.iml
+**/**.iml
