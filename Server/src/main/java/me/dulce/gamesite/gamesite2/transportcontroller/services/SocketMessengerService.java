@@ -12,9 +12,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class SocketMessengerService {
 
-    @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
-    private static final String BROADCAST_DESTINATION = "/socket/topic/game";
+    public static final String BROADCAST_DESTINATION = "/socket/topic/game";
+
+    @Autowired
+    public SocketMessengerService(SimpMessagingTemplate simpMessagingTemplate){
+
+        this.simpMessagingTemplate = simpMessagingTemplate;
+
+    }
 
     public void broadcastMessageToRoom(Room room, Object payload) {
         simpMessagingTemplate.convertAndSend(BROADCAST_DESTINATION + room.getRoomUid().toString(), payload);
