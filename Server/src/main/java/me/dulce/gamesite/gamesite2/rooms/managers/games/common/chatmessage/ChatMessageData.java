@@ -13,6 +13,12 @@ public class ChatMessageData extends GameData {
     public String messageText;
     public String senderName;
 
+    public ChatMessageData(UUID roomId, String messageText, String senderName) {
+        this.roomId = roomId;
+        this.messageText = messageText;
+        this.senderName = senderName;
+    }
+
     @Override
     public UUID roomId() {
         return roomId;
@@ -36,7 +42,7 @@ public class ChatMessageData extends GameData {
         ChatMessage result = new ChatMessage();
         result.message = messageText;
         result.senderName = senderName;
-        return null;
+        return result;
     }
 
     private static class ChatMessage{

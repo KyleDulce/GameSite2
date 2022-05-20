@@ -3,10 +3,14 @@ package me.dulce.gamesite.gamesite2.rooms.managers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
 
 import java.util.UUID;
 
+import me.dulce.gamesite.gamesite2.rooms.managers.games.TestGame;
+import me.dulce.gamesite.gamesite2.rooms.managers.games.common.chatmessage.ChatMessageData;
 import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
+import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -194,4 +198,21 @@ public class RoomTest {
         assertEquals(expectedProgressState, actual.inProgress);
         assertEquals(expectedGameStartTime, actual.gameStartTime);
     }
+
+    @Test
+    public void handleGameDataReceived_MessageIsBroadcasted(){
+
+        //assign
+        SocketMessengerService messengerService = mock(SocketMessengerService.class);
+        Room testRoom = new TestGame(UUID.randomUUID(), 2, null, messengerService);
+        ChatMessageData sampleData = new ChatMessageData(testRoom.getRoomUid(), "This is a message", "Bobbert");
+
+        //actual
+        testRoom.handleGameDataReceived(null, sampleData);
+
+        //assert
+        verify(messengerService, times(1)).broadcastMessageToRoom(testRoom, sampleData.parseObjectToDataMessage().data);
+
+    }
+
 }
