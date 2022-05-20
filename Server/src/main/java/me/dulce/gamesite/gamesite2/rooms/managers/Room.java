@@ -7,6 +7,7 @@ import java.util.UUID;
 import me.dulce.gamesite.gamesite2.rooms.managers.games.common.chatmessage.ChatMessageData;
 import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
 import me.dulce.gamesite.gamesite2.transportcontroller.SocketController;
+import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,14 +26,16 @@ public abstract class Room {
     private int maxUsers;
     protected boolean inProgress = false;
     protected long timeStarted = -1;
+    protected SocketMessengerService messengerService;
 
     public abstract GameType getGameType();
     protected abstract boolean processGameDataForGame(User user, GameData response);
 
-    public Room(UUID roomid, int maxUserCount, User host) {
+    public Room(UUID roomid, int maxUserCount, User host, SocketMessengerService messengerService) {
         this.roomid = roomid;
         this.host = host;
         this.maxUsers = maxUserCount;
+        this.messengerService = messengerService;
 
         usersJoinedList = new LinkedList<>();
         spectatorsJoinedList = new LinkedList<>();
@@ -72,13 +75,12 @@ public abstract class Room {
      * A separate protected method, processGameDataForGame is called to handle game specific GameData processing.
      * @param user The user sending the gameData
      * @param response The GameData from the user
-     * @param controller The SocketController for broadcasting messages where needed
      * @return A boolean indicating if the response was successful
      */
-    public final boolean handleGameDataReceived(User user, GameData response, SocketController controller){
+    public final boolean handleGameDataReceived(User user, GameData response){
 
         if(response instanceof ChatMessageData){
-            return processChatMessage((ChatMessageData) response, controller)
+            return processChatMessage((ChatMessageData) response)
                     && processGameDataForGame(user, response);
         }
 
@@ -86,9 +88,9 @@ public abstract class Room {
 
     }
 
-    private boolean processChatMessage(ChatMessageData chatMessage, SocketController controller){
+    private boolean processChatMessage(ChatMessageData chatMessage){
 
-        controller.broadcastMessageToRoom(this, chatMessage.parseObjectToDataMessage().data);
+        messengerService.broadcastMessageToRoom(this, chatMessage.parseObjectToDataMessage().data);
 
         return true;
 

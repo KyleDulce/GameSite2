@@ -3,6 +3,7 @@ package me.dulce.gamesite.gamesite2.rooms.managers.games;
 import java.lang.reflect.Constructor;
 import java.util.UUID;
 
+import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,10 +28,10 @@ public enum GameType {
         return name;
     }
 
-    public Room createRoomInstance(UUID uuid, User host, int maxPlayers) {
+    public Room createRoomInstance(UUID uuid, User host, int maxPlayers, SocketMessengerService messengerService) {
         try {
-            Constructor<? extends Room> objectConstructor = attatchedClass.getConstructor(UUID.class, Integer.TYPE, User.class);
-            Room roomInstance = objectConstructor.newInstance(uuid, maxPlayers, host);
+            Constructor<? extends Room> objectConstructor = attatchedClass.getConstructor(UUID.class, Integer.TYPE, User.class, SocketMessengerService.class);
+            Room roomInstance = objectConstructor.newInstance(uuid, maxPlayers, host, messengerService);
             return roomInstance;
         } catch(Exception e) {
             LOGGER.error("Failed to create Room Instance of type {}, Exception: {}", name, e.getMessage());

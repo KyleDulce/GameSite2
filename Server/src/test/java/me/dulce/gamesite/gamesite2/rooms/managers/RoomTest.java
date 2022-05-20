@@ -18,7 +18,7 @@ import me.dulce.gamesite.gamesite2.user.User;
 public class RoomTest {
     
     public Room getTestRoom() {
-        return new Room(UUID.randomUUID(), 2, null) {
+        return new Room(UUID.randomUUID(), 2, null, null) {
             @Override
             public GameType getGameType() {
                 return null;
@@ -81,7 +81,7 @@ public class RoomTest {
         //assign
         class RoomChild extends Room {
             RoomChild() {
-                super(UUID.randomUUID(), 2, null);
+                super(UUID.randomUUID(), 2, null, null);
                 inProgress = true;
             }
             @Override
@@ -163,7 +163,7 @@ public class RoomTest {
     public void getRoomListingObject_RoomListingContainsSameData() {
         //assign
         User user = User.createGuestUser();
-        Room room = new Room(UUID.randomUUID(), 2, user) {
+        Room room = new Room(UUID.randomUUID(), 2, user, null) {
             @Override
             public GameType getGameType() {
                 return GameType.NULL_GAME_TYPE;
