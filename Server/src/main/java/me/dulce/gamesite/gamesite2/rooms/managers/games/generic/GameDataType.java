@@ -1,5 +1,6 @@
 package me.dulce.gamesite.gamesite2.rooms.managers.games.generic;
 
+import me.dulce.gamesite.gamesite2.rooms.managers.games.common.chatmessage.ChatMessageData;
 import me.dulce.gamesite.gamesite2.rooms.managers.games.common.joingame.JoinRoomGameData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,8 +10,8 @@ import java.util.Optional;
 
 public enum GameDataType {
     NULL("Null", null),
-
-    JOIN_ROOM("JoinRoomData", JoinRoomGameData.class)
+    JOIN_ROOM("JoinRoomData", JoinRoomGameData.class),
+    CHAT_MESSAGE("ChatMessageData", ChatMessageData.class)
     ;
     private static Logger LOGGER = LoggerFactory.getLogger(GameDataType.class);
     private String id;

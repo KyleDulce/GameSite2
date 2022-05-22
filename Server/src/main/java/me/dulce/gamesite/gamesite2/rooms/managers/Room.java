@@ -4,7 +4,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import me.dulce.gamesite.gamesite2.rooms.managers.games.common.chatmessage.ChatMessageData;
 import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
+import me.dulce.gamesite.gamesite2.transportcontroller.SocketController;
+import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,14 +26,16 @@ public abstract class Room {
     private int maxUsers;
     protected boolean inProgress = false;
     protected long timeStarted = -1;
+    protected SocketMessengerService messengerService;
 
     public abstract GameType getGameType();
-    public abstract boolean handleGameDataReceived(User user, GameData response);
+    protected abstract boolean processGameDataForGame(User user, GameData response);
 
-    public Room(UUID roomid, int maxUserCount, User host) {
+    public Room(UUID roomid, int maxUserCount, User host, SocketMessengerService messengerService) {
         this.roomid = roomid;
         this.host = host;
         this.maxUsers = maxUserCount;
+        this.messengerService = messengerService;
 
         usersJoinedList = new LinkedList<>();
         spectatorsJoinedList = new LinkedList<>();
@@ -63,6 +68,32 @@ public abstract class Room {
             spectatorsJoinedList.remove(user);
         }
         User.cachedUsers.remove(user.getuuid());
+    }
+
+    /**
+     * This method is for common logic among games for handling GameData such as broadcasting chat messages.
+     * A separate protected method, processGameDataForGame is called to handle game specific GameData processing.
+     * @param user The user sending the gameData
+     * @param response The GameData from the user
+     * @return A boolean indicating if the response was successful
+     */
+    public final boolean handleGameDataReceived(User user, GameData response){
+
+        if(response instanceof ChatMessageData){
+            return processChatMessage((ChatMessageData) response)
+                    && processGameDataForGame(user, response);
+        }
+
+        return processGameDataForGame(user, response);
+
+    }
+
+    private boolean processChatMessage(ChatMessageData chatMessage){
+
+        messengerService.broadcastMessageToRoom(this, chatMessage.parseObjectToDataMessage().data);
+
+        return true;
+
     }
 
     public UUID getRoomUid() { return roomid; }

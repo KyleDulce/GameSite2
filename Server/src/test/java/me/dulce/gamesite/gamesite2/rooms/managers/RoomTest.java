@@ -3,10 +3,14 @@ package me.dulce.gamesite.gamesite2.rooms.managers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
 
 import java.util.UUID;
 
+import me.dulce.gamesite.gamesite2.rooms.managers.games.TestGame;
+import me.dulce.gamesite.gamesite2.rooms.managers.games.common.chatmessage.ChatMessageData;
 import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
+import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -18,16 +22,14 @@ import me.dulce.gamesite.gamesite2.user.User;
 public class RoomTest {
     
     public Room getTestRoom() {
-        return new Room(UUID.randomUUID(), 2, null) {
+        return new Room(UUID.randomUUID(), 2, null, null) {
             @Override
             public GameType getGameType() {
                 return null;
             }
 
             @Override
-            public boolean handleGameDataReceived(User user, GameData response) {
-                return false;
-            }
+            protected boolean processGameDataForGame(User user, GameData response) { return false; }
         };
     }
 
@@ -83,16 +85,14 @@ public class RoomTest {
         //assign
         class RoomChild extends Room {
             RoomChild() {
-                super(UUID.randomUUID(), 2, null);
+                super(UUID.randomUUID(), 2, null, null);
                 inProgress = true;
             }
             @Override
             public GameType getGameType() { return null; }
 
             @Override
-            public boolean handleGameDataReceived(User user, GameData response) {
-                return false;
-            }
+            protected boolean processGameDataForGame(User user, GameData response) { return false; }
         }
 
         Room room = new RoomChild();
@@ -167,16 +167,14 @@ public class RoomTest {
     public void getRoomListingObject_RoomListingContainsSameData() {
         //assign
         User user = User.createGuestUser();
-        Room room = new Room(UUID.randomUUID(), 2, user) {
+        Room room = new Room(UUID.randomUUID(), 2, user, null) {
             @Override
             public GameType getGameType() {
                 return GameType.NULL_GAME_TYPE;
             }
 
             @Override
-            public boolean handleGameDataReceived(User user, GameData response) {
-                return false;
-            }
+            protected boolean processGameDataForGame(User user, GameData response) { return false; }
         };
         String expectedUuid = room.getRoomUid().toString();
         int expectedLobbySize = room.getAllJoinedUsers().size();
@@ -200,4 +198,21 @@ public class RoomTest {
         assertEquals(expectedProgressState, actual.inProgress);
         assertEquals(expectedGameStartTime, actual.gameStartTime);
     }
+
+    @Test
+    public void handleGameDataReceived_MessageIsBroadcasted(){
+
+        //assign
+        SocketMessengerService messengerService = mock(SocketMessengerService.class);
+        Room testRoom = new TestGame(UUID.randomUUID(), 2, null, messengerService);
+        ChatMessageData sampleData = new ChatMessageData(testRoom.getRoomUid(), "This is a message", "Bobbert");
+
+        //actual
+        testRoom.handleGameDataReceived(null, sampleData);
+
+        //assert
+        verify(messengerService, times(1)).broadcastMessageToRoom(testRoom, sampleData.parseObjectToDataMessage().data);
+
+    }
+
 }

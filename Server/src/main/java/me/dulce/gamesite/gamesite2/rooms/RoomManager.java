@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.UUID;
 
 import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
+import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -22,6 +23,14 @@ public class RoomManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(RoomManager.class);
 
     private HashMap<UUID, Room> activeRooms = new HashMap<>();
+
+    private final SocketMessengerService messengerService;
+
+    public RoomManager(SocketMessengerService messengerService){
+
+        this.messengerService = messengerService;
+
+    }
 
     public RoomListing[] getAllRoomListings() {
         LinkedList<RoomListing> result = new LinkedList<>();
@@ -70,7 +79,7 @@ public class RoomManager {
     public UUID createRoom(GameType type, User host, int maxPlayers) {
         UUID uuid = UUID.randomUUID();
 
-        Room room = type.createRoomInstance(uuid, host, maxPlayers);
+        Room room = type.createRoomInstance(uuid, host, maxPlayers, messengerService);
 
         if(room == null) {
             return null;
