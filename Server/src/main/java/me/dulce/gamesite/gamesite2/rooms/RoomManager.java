@@ -78,7 +78,7 @@ public class RoomManager {
         if(room.isEmpty()) {
             activeRooms.remove(room.getRoomUid());
         }else if(room.getHost().equals(user)){
-            room.newRandomHost();
+            room.selectNewRandomHost();
         }
 
     }

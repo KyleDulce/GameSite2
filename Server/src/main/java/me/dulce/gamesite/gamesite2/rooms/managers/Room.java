@@ -88,7 +88,7 @@ public abstract class Room {
 
     }
 
-    public void newRandomHost(){
+    public void selectNewRandomHost(){
 
         Random rng = new Random();
         host = usersJoinedList.get(rng.nextInt(usersJoinedList.size()));
