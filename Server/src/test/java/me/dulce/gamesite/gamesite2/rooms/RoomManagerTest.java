@@ -33,6 +33,21 @@ public class RoomManagerTest {
     }
 
     @Test
+    public void lastUserLeaves_GetRoomThatContainsUserNull(){
+
+        //assign
+        User testUser = User.createGuestUser();
+        UUID roomId = roomManager.createRoom(GameType.TEST, testUser, 5);
+
+        //actual
+        roomManager.processUserLeaveRoomRequest(testUser, roomId);
+
+        //assert
+        assertNull(roomManager.getRoomThatContainsUser(testUser));
+
+    }
+
+    @Test
     public void hostLeaves_NewHostChosen(){
 
         //assign
