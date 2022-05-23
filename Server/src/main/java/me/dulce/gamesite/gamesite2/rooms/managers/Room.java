@@ -118,6 +118,12 @@ public abstract class Room {
         return result;
     }
 
+    public boolean isEmpty(){
+
+        return spectatorsJoinedList.isEmpty() && usersJoinedList.isEmpty();
+
+    }
+
     public class RoomListing {
         public String roomId;
         public int lobbySize;
