@@ -2,11 +2,11 @@ package me.dulce.gamesite.gamesite2.rooms.managers;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import me.dulce.gamesite.gamesite2.rooms.managers.games.common.chatmessage.ChatMessageData;
 import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
-import me.dulce.gamesite.gamesite2.transportcontroller.SocketController;
 import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,6 +88,13 @@ public abstract class Room {
 
     }
 
+    public void selectNewRandomHost(){
+
+        Random rng = new Random();
+        host = usersJoinedList.get(rng.nextInt(usersJoinedList.size()));
+
+    }
+
     private boolean processChatMessage(ChatMessageData chatMessage){
 
         messengerService.broadcastMessageToRoom(this, chatMessage.parseObjectToDataMessage().data);
@@ -116,6 +123,12 @@ public abstract class Room {
         result.gameStartTime = timeStarted;
 
         return result;
+    }
+
+    public boolean isEmpty(){
+
+        return usersJoinedList.isEmpty() && spectatorsJoinedList.isEmpty();
+
     }
 
     public class RoomListing {

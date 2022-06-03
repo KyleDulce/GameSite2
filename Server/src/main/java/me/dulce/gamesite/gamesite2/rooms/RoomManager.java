@@ -74,6 +74,13 @@ public class RoomManager {
         }
 
         room.userLeave(user);
+
+        if(room.isEmpty()) {
+            activeRooms.remove(room.getRoomUid());
+        }else if(room.getHost().equals(user)){
+            room.selectNewRandomHost();
+        }
+
     }
 
     public UUID createRoom(GameType type, User host, int maxPlayers) {
