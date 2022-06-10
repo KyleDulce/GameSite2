@@ -68,7 +68,7 @@ public class User {
         return message;
     }
 
-    public class UserMessage {
+    public static class UserMessage {
         public String uuid;
         public String name;
         public boolean isGuest;

@@ -45,7 +45,7 @@ public class ChatMessageData extends GameData {
         return result;
     }
 
-    private static class ChatMessage{
+    public static class ChatMessage{
         String message;
         String senderName;
     }
