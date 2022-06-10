@@ -9,7 +9,7 @@ server:
   error:
     path: "/pages/PageNotFound"
 
-  allowedOrigins: http://localhost:8080, http://localhost:4200, null
+  allowedOrigins: http://localhost:8080, http://localhost:4200, null, http://localhost:3000
 
 endpoints:
   frontendPrefix: pages
