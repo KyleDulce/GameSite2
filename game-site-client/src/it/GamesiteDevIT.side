@@ -1,0 +1,47 @@
+{
+  "id": "45f29272-f5e7-48d2-a497-f89abaac8f5b",
+  "version": "2.0",
+  "name": "GamesiteClientIT",
+  "url": "http://localhost:3000",
+  "tests": [{
+    "id": "c3663798-ef00-47c1-baaa-f8fefcf293c7",
+    "name": "It should have the right homepage text",
+    "commands": [{
+      "id": "7e0c91ae-2678-4f2a-b59e-ec859de8696f",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "6cf82031-0d56-49af-82bf-0fac726af085",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "944x702",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "af8f9a6b-56a9-47d0-981f-8191c6ceaed4",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=p",
+      "targets": [
+        ["css=p", "css:finder"],
+        ["xpath=//div[@id='root']/div/header/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'Edit src/App.tsx and save to reload.')]", "xpath:innerText"]
+      ],
+      "value": "Edit src/App.tsx and save to reload."
+    }]
+  }],
+  "suites": [{
+    "id": "2eddddab-6d28-4b17-a674-4224344d1376",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": []
+  }],
+  "urls": ["http://localhost:3000/"],
+  "plugins": []
+}
