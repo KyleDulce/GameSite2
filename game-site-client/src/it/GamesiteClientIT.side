@@ -35,12 +35,12 @@
     }]
   }],
   "suites": [{
-    "id": "2eddddab-6d28-4b17-a674-4224344d1376",
-    "name": "Default Suite",
+    "id": "ac235113-2564-4b65-958b-452159a29480",
+    "name": "Home",
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": []
+    "tests": ["c3663798-ef00-47c1-baaa-f8fefcf293c7"]
   }],
   "urls": ["http://localhost:3000/"],
   "plugins": []
