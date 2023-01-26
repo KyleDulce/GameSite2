@@ -11,7 +11,7 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <spring-boot.version>2.6.2</spring-boot.version>
+        <spring-boot.version>2.6.6</spring-boot.version>
         <jackson-databind.version>2.13.4.1</jackson-databind.version>
 
         <mockito.version>5.0.0</mockito.version>
