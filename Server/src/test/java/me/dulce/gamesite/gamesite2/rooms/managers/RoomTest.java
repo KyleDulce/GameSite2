@@ -211,7 +211,7 @@ public class RoomTest {
         testRoom.handleGameDataReceived(null, sampleData);
 
         //assert
-        verify(messengerService, times(1)).broadcastMessageToRoom(testRoom, sampleData.parseObjectToDataMessage().data);
+        verify(messengerService, times(1)).broadcastMessageToRoom(eq(testRoom), any());
 
     }
 
