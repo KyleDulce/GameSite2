@@ -1,52 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import {connectAndSubscribeTo, sendTo} from "./socketConnection";
-import {CompatClient} from "@stomp/stompjs";
+import { Suspense } from "react";
+import { RouterProvider, createBrowserRouter, createRoutesFromElements, Outlet, Route, Routes } from 'react-router-dom';
 
-let client: CompatClient;
+import { CircularProgress } from "@mui/material";
+
+import Home from "./pages/Home";
+import MainHeader from "./components/MainHeader";
+
+const PageLayout = () => (
+  <>
+    <MainHeader />
+    <Outlet />
+  </>
+);
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route element={<PageLayout />}>
+      <Route path="/" element={<Home />} />
+    </Route>
+  )
+);
 
 function App() {
   return (
-    <div className="App" onLoad={async () => client = (await connectAndSubscribeTo([
-        {
-          endpoint: process.env.REACT_APP_STOMP_ENDPOINT,
-          callback: function(payload) {
-             console.log(payload);
-          }
-        }]))}>
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <button onClick={() => sendTo('/socket/app/test', client,
-            {
-                user: {
-                  uuid: 12,
-                  name: 'John',
-                  isGuest: false
-                },
-              gameData: {
-                  gameDataIdString: 'test',
-                  roomId: 'test',
-                  data: {
-                    name: 'John'
-                  }
-              }
-            }, {
-              myHeader: 'test'
-            })}>Hello World</button>
-      </header>
-    </div>
+    <>
+      <Suspense fallback={<CircularProgress />} >
+        <RouterProvider router={router} />
+      </Suspense>
+    </>
   );
 }
 
