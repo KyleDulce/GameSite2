@@ -180,7 +180,7 @@ public class RoomTest {
         int expectedLobbySize = room.getAllJoinedUsers().size();
         int expectedMaxLobbySize = room.getMaxUsers();
         int expectedSpectatorCount = room.getAllSpectatingUsers().size();
-        String expectedGameType = room.getGameType().toString();
+        int expectedGameType = room.getGameType().getId();
         String expectedHostName = room.getHost().getName();
         boolean expectedProgressState = room.getInProgressState();
         long expectedGameStartTime = room.getStartTime();

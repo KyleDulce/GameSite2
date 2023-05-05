@@ -3,8 +3,8 @@ import { RouterProvider, createBrowserRouter, createRoutesFromElements, Outlet, 
 
 import { CircularProgress } from "@mui/material";
 
-import Home from "./pages/Home";
-import MainHeader from "./components/MainHeader";
+import Home from "./ts/pages/Home";
+import MainHeader from "./ts/components/MainHeader";
 
 const PageLayout = () => (
   <>
