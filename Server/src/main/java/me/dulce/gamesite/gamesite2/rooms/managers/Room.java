@@ -117,7 +117,7 @@ public abstract class Room {
         result.lobbySize = usersJoinedList.size();
         result.maxLobbySize = maxUsers;
         result.spectatorsAmount = spectatorsJoinedList.size();
-        result.gameType = getGameType().toString();
+        result.gameType = getGameType().getId();
         result.hostName = host.getName();
         result.inProgress = inProgress;
         result.gameStartTime = timeStarted;
@@ -136,7 +136,7 @@ public abstract class Room {
         public int lobbySize;
         public int maxLobbySize;
         public int spectatorsAmount;
-        public String gameType;
+        public int gameType;
         public String hostName;
         public boolean inProgress;
         public long gameStartTime;
