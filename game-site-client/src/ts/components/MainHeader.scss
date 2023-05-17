@@ -1,0 +1,59 @@
+.appbar {
+    background-color: var(--primary-main);
+    flex: 0 1 auto;
+}
+
+.header-container {
+    padding: 0.1rem 1rem 0.1rem 1rem;
+    width: 100% !important;
+    background-color: var(--primary-main);
+
+    .header-router-links {
+        display: flex;
+        flex-grow: 1;
+        margin-right: 1rem;
+    }
+
+    & > Box {
+        min-height: 100%;
+        min-width: 100%;
+        padding: auto;
+    }
+
+    .header-account-tooltip {
+        vertical-align: middle;
+    }
+
+    .header-theme-tooltip {
+        margin-right: 0.5rem;
+        vertical-align: middle;
+    }
+}
+
+.header-account-box {
+    margin-right: 0;
+    flex-grow: 0;
+}
+
+.header-nav-button {
+    color: white !important;
+}
+
+.header-logo-button {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 1rem;
+    margin-left: 1rem;
+
+    & > * {
+        color: var(--primary-contrast);
+    }
+}
+
+.header-nav-menu {
+    display: block;
+}
+
+.header-account-menu {
+    margin-top: 3rem;
+}

@@ -1,0 +1,13 @@
+.create-games-container {
+    padding: 0.5rem 2rem 2rem 2rem;
+
+    .create-games-textbox {
+        display: block;
+        margin-bottom: 1.5rem;
+        width: 15rem;
+
+        &>* {
+            width: inherit;
+        }
+    }
+}

@@ -1,6 +1,6 @@
 import exp from "constants";
 import axios from "../../../node_modules/axios";
-import { RoomCreateResponse, RoomListing, RoomListingRaw, rawListingToFullListing } from "../../ts/model/RestProtocolModels";
+import { RoomCreateResponse, RoomListing, RoomListingRaw, emptyRoomCreateData, emptyRoomJoinRequest, emptyRoomLeaveRequest, rawListingToFullListing } from "../../ts/model/RestProtocolModels";
 import RestService from '../../ts/services/RestService';
 
 jest.mock('axios');
@@ -85,7 +85,7 @@ describe('postJoinRoom(RoomJoinRequest) -> Promise<boolean>', () => {
             return Promise.resolve({data: {success: true}});
         });
 
-        let actual = RestService.postJoinRoom(null);
+        let actual = RestService.postJoinRoom(emptyRoomJoinRequest);
 
         expect(actual).resolves.toBe(true);
     });
@@ -95,7 +95,7 @@ describe('postJoinRoom(RoomJoinRequest) -> Promise<boolean>', () => {
             return Promise.resolve({data: {success: false}});
         });
 
-        let actual = RestService.postJoinRoom(null);
+        let actual = RestService.postJoinRoom(emptyRoomJoinRequest);
 
         expect(actual).resolves.toBe(false);
     });
@@ -105,7 +105,7 @@ describe('postJoinRoom(RoomJoinRequest) -> Promise<boolean>', () => {
             return Promise.resolve({data: null});
         });
 
-        let actual = RestService.postJoinRoom(null);
+        let actual = RestService.postJoinRoom(emptyRoomJoinRequest);
 
         expect(actual).rejects.toBeDefined()
     });
@@ -115,7 +115,7 @@ describe('postJoinRoom(RoomJoinRequest) -> Promise<boolean>', () => {
             return Promise.resolve({data: {success: null}});
         });
 
-        let actual = RestService.postJoinRoom(null);
+        let actual = RestService.postJoinRoom(emptyRoomJoinRequest);
 
         expect(actual).rejects.toBeDefined()
     });
@@ -125,7 +125,7 @@ describe('postJoinRoom(RoomJoinRequest) -> Promise<boolean>', () => {
             return Promise.resolve({data: {success: null}});
         });
 
-        let actual = RestService.postJoinRoom(null);
+        let actual = RestService.postJoinRoom(emptyRoomJoinRequest);
 
         expect(actual).rejects.toBeDefined()
     });
@@ -138,7 +138,7 @@ describe('postLeaveRoom(RoomLeaveRequest) -> void', () => {
             return Promise.resolve("Success");
         });
 
-        RestService.postLeaveRoom(null);
+        RestService.postLeaveRoom(emptyRoomLeaveRequest);
         await new Promise((r) => setTimeout(r, 1000));
 
         expect(logSpy).toHaveBeenCalledTimes(0);
@@ -150,7 +150,7 @@ describe('postLeaveRoom(RoomLeaveRequest) -> void', () => {
             return Promise.reject(new Error("Failure"));
         });
 
-        RestService.postLeaveRoom(null);
+        RestService.postLeaveRoom(emptyRoomLeaveRequest);
         await new Promise((r) => setTimeout(r, 1000));
 
         expect(logSpy).toHaveBeenCalledTimes(1);
@@ -167,7 +167,7 @@ describe('postCreateRoom(RoomCreateData) -> Promise<RoomCreateResponse>', () => 
             return Promise.resolve({data: expectedResponse});
         });
 
-        let actual = RestService.postCreateRoom(null);
+        let actual = RestService.postCreateRoom(emptyRoomCreateData);
 
         expect(actual).resolves.toEqual(expectedResponse);
     });
@@ -180,7 +180,7 @@ describe('postCreateRoom(RoomCreateData) -> Promise<RoomCreateResponse>', () => 
             return Promise.resolve({data: response});
         });
 
-        let actual = RestService.postCreateRoom(null);
+        let actual = RestService.postCreateRoom(emptyRoomCreateData);
 
         expect(actual).rejects.toBeDefined();
     });
@@ -191,7 +191,7 @@ describe('postCreateRoom(RoomCreateData) -> Promise<RoomCreateResponse>', () => 
             return Promise.reject(new Error(error));
         });
 
-        let actual = RestService.postCreateRoom(null);
+        let actual = RestService.postCreateRoom(emptyRoomCreateData);
 
         expect(actual).rejects.toBeDefined();
     });

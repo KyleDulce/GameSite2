@@ -3,13 +3,17 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { ContextOptionProvider } from './ts/model/ConfigOptions';
+import './Theme.scss';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <ContextOptionProvider>
+      <App />
+    </ContextOptionProvider>
   </React.StrictMode>
 );
 

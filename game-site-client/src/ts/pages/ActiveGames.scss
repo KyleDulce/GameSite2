@@ -1,0 +1,22 @@
+
+.rooms-container {
+    padding: 0.5rem 2rem 2rem 2rem;
+
+    .active-games-header-container {
+        height: 3rem;
+        margin-top: 1rem;
+        .active-games-header-title {
+            float: left;
+            height: inherit;
+            &>h1 {
+                height: inherit;
+                margin: 0;
+            }
+        }
+
+        .active-games-header-button {
+            float: right;
+        }
+    }
+}
+
