@@ -7,7 +7,7 @@ export interface User {
     isGuest: boolean;
 }
 
-const emptyUser: User = {
+export const emptyUser: User = {
     userid: 0,
     name: "",
     isGuest: false
@@ -32,7 +32,7 @@ export interface RoomListingRaw {
     gameStartTime: number;
 }
 
-const emptyRoomListingRaw: RoomListingRaw = {
+export const emptyRoomListingRaw: RoomListingRaw = {
     roomId: "",
     lobbySize: 0,
     maxLobbySize: 0,
@@ -83,9 +83,20 @@ export interface RoomJoinRequest {
     roomId: string;
 }
 
+export const emptyRoomJoinRequest: RoomJoinRequest = {
+    user: emptyUser,
+    asSpectator: false,
+    roomId: ""
+}
+
 export interface RoomLeaveRequest {
     user: User;
     roomId: string;
+}
+
+export const emptyRoomLeaveRequest: RoomLeaveRequest = {
+    user: emptyUser,
+    roomId: ""
 }
 
 export interface RoomCreateDataRaw {
@@ -98,6 +109,12 @@ export interface RoomCreateData {
     maxLobbySize: number;
     gameType: GameType
     host: User;
+}
+
+export const emptyRoomCreateData = {
+    maxLobbySize: 0,
+    gameType: GameType.NULL,
+    host: emptyUser
 }
 
 export interface RoomCreateResponse {
@@ -114,4 +131,9 @@ export function isCompliantRoomCreateResponse(obj: any): boolean {
     return doAllPropertiesExistInObject(obj, Object.keys(emptyRoomCreateResponse).map(key => {
         return key
     }));
+}
+
+export interface ChatMessage {
+    messageText: string,
+    senderName: string
 }

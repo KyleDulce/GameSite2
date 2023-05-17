@@ -1,8 +1,9 @@
+import './Home.scss';
 
 export default function Home() {
     return (
-        <>
-            Hello World
-        </>
+        <div className="home-container">
+            <h1>Temporary Home Page</h1>
+        </div>
     );
 }

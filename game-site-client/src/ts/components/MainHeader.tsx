@@ -1,11 +1,16 @@
 import React from "react";
-import { AppBar, Toolbar, Container, Box, Menu, MenuItem, Tooltip, Button, IconButton, Avatar } from "@mui/material";
+import { ResponsiveContext } from "src/App";
+import { AppBar, Toolbar, Container, Box, Menu, MenuItem, Tooltip, Button, IconButton, useTheme } from "@mui/material";
 import { Link as RouterLink } from 'react-router-dom';
 
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import MenuIcon from '@mui/icons-material/Menu';
-import avatarPic from "../resources/temporary/avatar.png";
-import "./MainHeader.css";
+import "./MainHeader.scss";
+import LightModeIcon from '@mui/icons-material/WbSunny';
+import DarkModeIcon from '@mui/icons-material/ModeNight'
+import { ConfigContext } from "../model/ConfigOptions";
+import { saveConfigOptions } from "../services/StorageService";
+import ChangeNameDialog from "./ChangeNameDialog";
 
 class NavLink {
     readonly text: string;
@@ -18,15 +23,21 @@ class NavLink {
 }
 
 const links: NavLink[]  = [
-    new NavLink("Games", "/games"),
-    new NavLink("Create Game", "/create")
+    new NavLink("Games", "/rooms"),
+    new NavLink("Create Game", "/createroom")
 ];
 
 export default function MainHeader() {
 
     const [avatarMenuOpen, setAvatarMenuOpen] = React.useState<null | HTMLElement>();
     const [sideMenuOpen, setSideMenuOpen] = React.useState<null | HTMLElement>();
-    const [playerLogged, setPlayerLogged] = React.useState<Boolean>();
+    const [changeNameDialogOpen, setChangeNameDialogOpen] = React.useState(false);
+
+    const { PlayerName, UseLightMode, setUseLightMode } = React.useContext(ConfigContext);
+    const fullConfig = React.useContext(ConfigContext);
+    const isMobile = React.useContext(ResponsiveContext);
+
+    const theme = useTheme();
 
     function handleAvatarMenuOpen(event: React.MouseEvent<HTMLElement>) {
         setAvatarMenuOpen(event.currentTarget);
@@ -44,95 +55,108 @@ export default function MainHeader() {
         setSideMenuOpen(null);
     }
 
+    function handleModeToggle(useLight: boolean) {
+        setUseLightMode(useLight);
+        fullConfig.UseLightMode = useLight;
+        saveConfigOptions(fullConfig);
+    }
+
+    function handleNameChange(value: string) {
+        setChangeNameDialogOpen(false);
+    }
+
     return (
-        <AppBar position="static">
-            <Container maxWidth="xl">
+        <AppBar className="appbar" color='primary' position="static">
+            <Container className="header-container" maxWidth={false}>
                 <Toolbar disableGutters>
 
-                    {/* Visible when Normal */}
-                    <Box sx={{mr: 1, flexGrow: 1, display: {xs: "none", md:"flex"}}}>
-                        <AutoFixHighIcon sx={{mr: 1}} />
-
-                        <Box>
-                            {links.map((page) => (
-                                <Button sx={{color: 'white'}} component={RouterLink} to={page.linkValue}>
-                                    {page.text}
-                                </Button>
-                            ))}
-                        </Box>
+                    { isMobile ? /* MOBILE */
+                    (
+                        <Box className="header-router-links">
+                            <IconButton className="header-logo-button" onClick={handleSideMenuOpen}>
+                                <MenuIcon />
+                            </IconButton>
+                            <Menu
+                                className="header-nav-menu"
+                                anchorEl={sideMenuOpen}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'left',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'left',
+                                }}
+                                open={Boolean(sideMenuOpen)}
+                                onClose={handleSideMenuClose}
+                            >
+                                {links.map((page) => (
+                                    <MenuItem component={RouterLink} to={page.linkValue}>
+                                        {page.text}
+                                    </MenuItem >
+                                ))}
+                            </Menu>
+                        <AutoFixHighIcon className="header-logo-button" />
                     </Box>
+                    ) : /*DESKTOP*/(
+                        <Box className="header-router-links">
+                            <IconButton component={RouterLink} to='/'>
+                                <AutoFixHighIcon className="header-logo-button"/>
+                            </IconButton>
 
-                    {/* Visible when Small */}
-                    <Box sx={{mr: 1, flexGrow: 1, display: {xs: "flex", md:"none"}}}>
-                        <IconButton onClick={handleSideMenuOpen}>
-                             <MenuIcon />
-                        </IconButton>
+                            <Box>
+                                {links.map((page) => (
+                                    <Button className="header-nav-button" component={RouterLink} to={page.linkValue}>
+                                        {page.text}
+                                    </Button>
+                                ))}
+                            </Box>
+                        </Box>
+                    )}
+                    
+                    <Box className="header-account-box">
+                        <Box>
+                            {UseLightMode ? (
+                                    <Tooltip className="header-theme-tooltip" title="Dark Mode">
+                                        <IconButton onClick={() => handleModeToggle(false)}>
+                                            <DarkModeIcon sx={{color: theme.palette.primary.contrastText}}/>
+                                        </IconButton>
+                                    </Tooltip>
+                                ) : (
+                                    <Tooltip className="header-theme-tooltip" title="Light Mode">
+                                        <IconButton onClick={() => handleModeToggle(true)}>
+                                            <LightModeIcon sx={{color: theme.palette.primary.contrastText}}/>
+                                        </IconButton>
+                                    </Tooltip>
+                                )
+                            }
+                            <Tooltip className="header-account-tooltip" title="Open Profile">
+                                <Button className="header-nav-button" onClick={event => handleAvatarMenuOpen(event)}>{PlayerName}</Button>
+                            </Tooltip>
+                        </Box>
                         <Menu
-                            anchorEl={sideMenuOpen}
+                            className="header-account-menu"
+                            anchorEl={avatarMenuOpen}
                             anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
+                                vertical: 'top',
+                                horizontal: 'right',
                             }}
                             keepMounted
                             transformOrigin={{
                                 vertical: 'top',
-                                horizontal: 'left',
+                                horizontal: 'right',
                             }}
-                            open={Boolean(sideMenuOpen)}
-                            onClose={handleSideMenuClose}
-                            sx={{
-                                display: { xs: 'block', md: 'none' },
-                            }}
+                            open={Boolean(avatarMenuOpen)}
+                            onClose={handleAvatarMenuClose}
                         >
-                            {links.map((page) => (
-                                <MenuItem component={RouterLink} to={page.linkValue}>
-                                    {page.text}
-                                </MenuItem >
-                            ))}
+                            <MenuItem onClick={() => setChangeNameDialogOpen(true)}>Change Name</MenuItem>
+                            <MenuItem>Logout</MenuItem>
                         </Menu>
-                        <AutoFixHighIcon />
-                    </Box>
-
-                    <Box sx={{mr: 0, flexGrow: 0}}>
-                        {
-                            playerLogged ? 
-                            <>
-                                <Tooltip title="Open Profile">
-                                    <IconButton onClick={handleAvatarMenuOpen}>
-                                        <Avatar alt="temp" src={avatarPic}></Avatar>
-                                    </IconButton>
-                                </Tooltip>
-                                <Menu
-                                    sx={{ mt: '45px' }}
-                                    anchorEl={avatarMenuOpen}
-                                    anchorOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'right',
-                                    }}
-                                    keepMounted
-                                    transformOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'right',
-                                    }}
-                                    open={Boolean(avatarMenuOpen)}
-                                    onClose={handleAvatarMenuClose}
-                                >
-                                    <MenuItem>
-                                        Logout
-                                    </MenuItem >
-                                </Menu> 
-                            </>
-                            :
-                            <>
-                                <Button sx={{color: 'white'}} component={RouterLink} to="/createAccount">
-                                    Create an Account
-                                </Button>
-                            </>
-                        }
-                        
                     </Box>
                 </Toolbar>
             </Container>
+            <ChangeNameDialog open={changeNameDialogOpen} onSubmit={handleNameChange} onCancel={() => setChangeNameDialogOpen(false)} />
         </AppBar>
     );
 }
