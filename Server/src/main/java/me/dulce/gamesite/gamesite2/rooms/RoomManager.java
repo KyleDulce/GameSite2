@@ -76,17 +76,17 @@ public class RoomManager {
         room.userLeave(user);
 
         if(room.isEmpty()) {
-            activeRooms.remove(room.getRoomUid());
+            activeRooms.remove(room.getRoomid());
         }else if(room.getHost().equals(user)){
             room.selectNewRandomHost();
         }
 
     }
 
-    public UUID createRoom(GameType type, User host, int maxPlayers) {
+    public UUID createRoom(GameType type, User host, int maxPlayers, String roomName) {
         UUID uuid = UUID.randomUUID();
 
-        Room room = type.createRoomInstance(uuid, host, maxPlayers, messengerService);
+        Room room = type.createRoomInstance(uuid, host, maxPlayers, roomName, messengerService);
 
         if(room == null) {
             return null;
@@ -99,15 +99,15 @@ public class RoomManager {
 
     public UUID getRoomThatContainsUser(User user) {
         for(Room room : activeRooms.values()) {
-            if(room.getAllJoinedUsers().contains(user) || room.getAllSpectatingUsers().contains(user)) {
-                return room.getRoomUid();
+            if(room.getUsersJoinedList().contains(user) || room.getSpectatorsJoinedList().contains(user)) {
+                return room.getRoomid();
             }
         }
         return null;
     }
 
     public boolean isUserInRoom(User user, Room room) {
-        return room.getAllJoinedUsers().contains(user) || room.getAllSpectatingUsers().contains(user);
+        return room.getUsersJoinedList().contains(user) || room.getSpectatorsJoinedList().contains(user);
     }
 
     public boolean handleIncomingRoomData(User user, GameData data) {

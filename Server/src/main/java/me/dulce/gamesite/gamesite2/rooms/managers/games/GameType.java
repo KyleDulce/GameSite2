@@ -28,10 +28,10 @@ public enum GameType {
         return name;
     }
 
-    public Room createRoomInstance(UUID uuid, User host, int maxPlayers, SocketMessengerService messengerService) {
+    public Room createRoomInstance(UUID uuid, User host, int maxPlayers, String roomName, SocketMessengerService messengerService) {
         try {
-            Constructor<? extends Room> objectConstructor = attatchedClass.getConstructor(UUID.class, Integer.TYPE, User.class, SocketMessengerService.class);
-            Room roomInstance = objectConstructor.newInstance(uuid, maxPlayers, host, messengerService);
+            Constructor<? extends Room> objectConstructor = attatchedClass.getConstructor(UUID.class, Integer.TYPE, User.class, String.class, SocketMessengerService.class);
+            Room roomInstance = objectConstructor.newInstance(uuid, maxPlayers, host, roomName, messengerService);
             return roomInstance;
         } catch(Exception e) {
             LOGGER.error("Failed to create Room Instance of type {}, Exception: {}", name, e.getMessage());

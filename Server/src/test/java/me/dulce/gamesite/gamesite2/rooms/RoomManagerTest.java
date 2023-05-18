@@ -22,7 +22,7 @@ public class RoomManagerTest {
 
         //assign
         User testUser = User.createGuestUser();
-        UUID roomId = roomManager.createRoom(GameType.TEST, testUser, 5);
+        UUID roomId = roomManager.createRoom(GameType.TEST, testUser, 5, "test");
 
         //actual
         roomManager.processUserLeaveRoomRequest(testUser, roomId);
@@ -37,7 +37,7 @@ public class RoomManagerTest {
 
         //assign
         User testUser = User.createGuestUser();
-        UUID roomId = roomManager.createRoom(GameType.TEST, testUser, 5);
+        UUID roomId = roomManager.createRoom(GameType.TEST, testUser, 5, "test");
 
         //actual
         roomManager.processUserLeaveRoomRequest(testUser, roomId);
@@ -56,7 +56,7 @@ public class RoomManagerTest {
             users[i] = User.createGuestUser();
         }
 
-        UUID roomId = roomManager.createRoom(GameType.TEST, users[0], 5);
+        UUID roomId = roomManager.createRoom(GameType.TEST, users[0], 5, "test");
         Room room = roomManager.getRoomFromUUID(roomId);
 
         for(int i = 0; i < 5; i++){

@@ -9,13 +9,7 @@ import me.dulce.gamesite.gamesite2.rooms.RoomManager;
 @SpringBootApplication
 public class Gamesite2Application {
 
-	@Autowired
-	public RoomManager roomManager;
-
 	public static void main(String[] args) {
 		SpringApplication.run(Gamesite2Application.class, args);
 	}
-
-	public Gamesite2Application() {}
-
 }

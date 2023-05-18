@@ -7,6 +7,9 @@ import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameDataType;
 
 import java.util.UUID;
 
+/**
+ * Chat Message Data for chat messages incoming or outgoing
+ */
 public class ChatMessageData extends GameData {
 
     public UUID roomId;

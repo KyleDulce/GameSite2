@@ -1,8 +1,11 @@
 package me.dulce.gamesite.gamesite2.transportcontroller;
 
+import java.util.Random;
 import java.util.UUID;
 
+import me.dulce.gamesite.gamesite2.GamesiteUtils;
 import me.dulce.gamesite.gamesite2.configuration.AppConfig;
+import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -151,6 +154,11 @@ public class RestWebController {
 			return ResponseEntity.badRequest().body(response);
 		}
 
+		String roomName = roomCreateRequest.roomName;
+		if(GamesiteUtils.isBlank(roomName)) {
+			roomName = "room" + new Random().nextInt(1000000);
+		}
+
 		User user;
 		if(User.cachedUsers.containsKey(userUid)) {
 			user = User.cachedUsers.get(userUid);
@@ -167,7 +175,7 @@ public class RestWebController {
 			return ResponseEntity.badRequest().body(response);
 		}
 
-		UUID roomid = roomManager.createRoom(gameType, user, roomCreateRequest.maxLobbySize);
+		UUID roomid = roomManager.createRoom(gameType, user, roomCreateRequest.maxLobbySize, roomName);
 		response.success = roomid != null;
 		if(response.success) {
 			response.roomId = roomid.toString();

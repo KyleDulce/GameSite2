@@ -6,4 +6,5 @@ public class RoomCreateRequest {
     public int maxLobbySize;
     public int gameType;
     public UserMessage user;
+    public String roomName;
 }

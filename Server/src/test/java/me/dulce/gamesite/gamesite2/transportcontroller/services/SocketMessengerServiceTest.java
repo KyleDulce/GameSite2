@@ -19,8 +19,8 @@ class SocketMessengerServiceTest {
         //assign
         SimpMessagingTemplate simpMessagingTemplate = mock(SimpMessagingTemplate.class);
         SocketMessengerService messengerService = new SocketMessengerService(simpMessagingTemplate);
-        Room room = new TestGame(UUID.randomUUID(), 10, null, messengerService);
-        Object data = new ChatMessageData(room.getRoomUid(), "This is a test", "Bobbert")
+        Room room = new TestGame(UUID.randomUUID(), 10, null, "test", messengerService);
+        Object data = new ChatMessageData(room.getRoomid(), "This is a test", "Bobbert")
                 .parseObjectToDataMessage();
 
         //actual
@@ -28,7 +28,7 @@ class SocketMessengerServiceTest {
 
         //assert
         verify(simpMessagingTemplate, times(1)).convertAndSend(
-                SocketMessengerService.BROADCAST_DESTINATION + room.getRoomUid().toString(),
+                SocketMessengerService.BROADCAST_DESTINATION + room.getRoomid().toString(),
                 data);
 
     }

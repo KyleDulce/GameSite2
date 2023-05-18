@@ -8,7 +8,10 @@ import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameDataType;
 
 import java.util.UUID;
 
-//incoming only
+/**
+ * GameData for request to join a room
+ * For incoming Data only
+ */
 public class JoinRoomGameData extends GameData {
     public UUID roomId = null;
     public boolean isSpectator = false;

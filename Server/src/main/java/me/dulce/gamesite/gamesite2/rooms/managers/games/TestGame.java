@@ -8,8 +8,8 @@ import me.dulce.gamesite.gamesite2.user.User;
 import java.util.UUID;
 
 public class TestGame extends Room {
-    public TestGame(UUID roomid, int maxUserCount, User host, SocketMessengerService messengerService) {
-        super(roomid, maxUserCount, host, messengerService);
+    public TestGame(UUID roomid, int maxUserCount, User host, String roomName, SocketMessengerService messengerService) {
+        super(roomid, maxUserCount, host, roomName, messengerService);
     }
 
     @Override

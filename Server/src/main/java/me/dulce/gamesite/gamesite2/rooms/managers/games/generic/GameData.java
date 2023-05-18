@@ -7,15 +7,42 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Class representing data a game that can be sent or recieved
+ */
 public abstract class GameData {
     private static final Logger LOGGER = LoggerFactory.getLogger(GameType.class);
 
+    /**
+     * returns the id of the room
+     * @return the id of the current room
+     */
     public abstract UUID roomId();
+
+    /**
+     * returns the type of game the data represents
+     * @return the type of game data handles
+     */
     public abstract GameDataType gameDataType();
 
+    /**
+     * Method to parse generic GameDataMessage data variable into this object
+     * @param message the game data messag recieved
+     * @throws Exception when parse is not successful
+     */
     protected abstract void setupFromGameDataMessage(GameDataMessage message) throws Exception;
+
+    /**
+     * Method that parses this object into generic Java Object
+     * @return generic object from parse
+     * @throws Exception when parse is not successful
+     */
     protected abstract Object onGetParse() throws Exception;
 
+    /**
+     * Parses this object into a GameDataMessage
+     * @return representation of this object as GameDataMessage
+     */
     public GameDataMessage parseObjectToDataMessage() {
         GameDataMessage gameDataMessage = new GameDataMessage();
         gameDataMessage.roomId = roomId().toString();
@@ -29,6 +56,11 @@ public abstract class GameData {
         return gameDataMessage;
     }
 
+    /**
+     * Returns an optional of GameData parsed from a GameDataMessage
+     * @param message the Message recieved
+     * @return Parsed version of GameData
+     */
     public static Optional<GameData> getGameDataFromMessage(GameDataMessage message) {
         if(message == null) {
             return Optional.empty();

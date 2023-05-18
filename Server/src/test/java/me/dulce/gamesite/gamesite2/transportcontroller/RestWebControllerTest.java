@@ -56,7 +56,7 @@ public class RestWebControllerTest {
         //assign
         User user = User.createGuestUser();
         User fakeHost = User.createGuestUser();
-        UUID roomId = roomManager.createRoom(GameType.TEST, fakeHost, 10);
+        UUID roomId = roomManager.createRoom(GameType.TEST, fakeHost, 10, "test");
         Room roomObj = roomManager.getRoomFromUUID(roomId);
         RoomJoinRequest request = new RoomJoinRequest();
         request.user = user.toMessagableObject();
@@ -70,7 +70,7 @@ public class RestWebControllerTest {
         assertEquals(HttpStatus.OK, actual.getStatusCode());
         assertTrue(actual.hasBody());
         assertTrue(actual.getBody().success);
-        assertTrue(roomObj.getAllJoinedUsers().contains(user));
+        assertTrue(roomObj.getUsersJoinedList().contains(user));
     }
 
     @Test
@@ -78,9 +78,9 @@ public class RestWebControllerTest {
         //assign
         User user = User.createGuestUser();
         User fakeHost = User.createGuestUser();
-        UUID roomId = roomManager.createRoom(GameType.TEST, fakeHost, 10);
+        UUID roomId = roomManager.createRoom(GameType.TEST, fakeHost, 10, "test");
         Room roomObj = roomManager.getRoomFromUUID(roomId);
-        UUID oldRoomId = roomManager.createRoom(GameType.TEST, fakeHost, 10);
+        UUID oldRoomId = roomManager.createRoom(GameType.TEST, fakeHost, 10, "test");
         Room oldRoomObj = roomManager.getRoomFromUUID(oldRoomId);
         RoomJoinRequest request = new RoomJoinRequest();
         request.user = user.toMessagableObject();
@@ -96,8 +96,8 @@ public class RestWebControllerTest {
         assertEquals(HttpStatus.OK, actual.getStatusCode());
         assertTrue(actual.hasBody());
         assertTrue(actual.getBody().success);
-        assertTrue(roomObj.getAllJoinedUsers().contains(user));
-        assertFalse(oldRoomObj.getAllJoinedUsers().contains(user));
+        assertTrue(roomObj.getUsersJoinedList().contains(user));
+        assertFalse(oldRoomObj.getUsersJoinedList().contains(user));
     }
 
     @Test
@@ -166,7 +166,7 @@ public class RestWebControllerTest {
         //assign
         User user = User.createGuestUser();
         User fakeHost = User.createGuestUser();
-        UUID roomId = roomManager.createRoom(GameType.TEST, fakeHost, 10);
+        UUID roomId = roomManager.createRoom(GameType.TEST, fakeHost, 10, "test");
         Room roomObj = roomManager.getRoomFromUUID(roomId);
         roomManager.processUserJoinRoomRequest(user, roomId, false);
         RoomLeaveRequest request = new RoomLeaveRequest();
@@ -178,7 +178,7 @@ public class RestWebControllerTest {
 
         //assert
         assertEquals(HttpStatus.OK, actual.getStatusCode());
-        assertFalse(roomObj.getAllJoinedUsers().contains(user));
+        assertFalse(roomObj.getUsersJoinedList().contains(user));
     }
 
     @Test
@@ -186,7 +186,7 @@ public class RestWebControllerTest {
         //assign
         User user = User.createGuestUser();
         User fakeHost = User.createGuestUser();
-        UUID roomId = roomManager.createRoom(GameType.TEST, fakeHost, 10);
+        UUID roomId = roomManager.createRoom(GameType.TEST, fakeHost, 10, "test");
         Room roomObj = roomManager.getRoomFromUUID(roomId);
         RoomLeaveRequest request = new RoomLeaveRequest();
         request.user = user.toMessagableObject();
@@ -197,14 +197,14 @@ public class RestWebControllerTest {
 
         //assert
         assertEquals(HttpStatus.OK, actual.getStatusCode());
-        assertFalse(roomObj.getAllJoinedUsers().contains(user));
+        assertFalse(roomObj.getUsersJoinedList().contains(user));
     }
 
     @Test
     public void postLeaveRoom_nullUserFailed() {
         //assign
         User fakeHost = User.createGuestUser();
-        UUID roomId = roomManager.createRoom(GameType.TEST, fakeHost, 10);
+        UUID roomId = roomManager.createRoom(GameType.TEST, fakeHost, 10, "test");
         RoomLeaveRequest request = new RoomLeaveRequest();
         request.user = null;
         request.roomId = roomId.toString();

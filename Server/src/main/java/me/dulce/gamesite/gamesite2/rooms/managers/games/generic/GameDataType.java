@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Constructor;
 import java.util.Optional;
 
+/**
+ * Typs of Game data a Message can represent
+ */
 public enum GameDataType {
     NULL("Null", null),
     JOIN_ROOM("JoinRoomData", JoinRoomGameData.class),

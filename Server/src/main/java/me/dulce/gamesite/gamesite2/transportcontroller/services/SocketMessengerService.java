@@ -23,7 +23,7 @@ public class SocketMessengerService {
     }
 
     public void broadcastMessageToRoom(Room room, Object payload) {
-        simpMessagingTemplate.convertAndSend(BROADCAST_DESTINATION + room.getRoomUid().toString(), payload);
+        simpMessagingTemplate.convertAndSend(BROADCAST_DESTINATION + room.getRoomid().toString(), payload);
     }
 
     public void sendMessageToUser(User user, SocketDestinations destination, Object payload) {
