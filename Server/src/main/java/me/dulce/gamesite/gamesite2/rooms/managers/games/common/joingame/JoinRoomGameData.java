@@ -1,7 +1,7 @@
 package me.dulce.gamesite.gamesite2.rooms.managers.games.common.joingame;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import me.dulce.gamesite.gamesite2.GamesiteUtils;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
 import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameDataMessage;
 import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameDataType;
@@ -12,9 +12,10 @@ import java.util.UUID;
  * GameData for request to join a room
  * For incoming Data only
  */
+@NoArgsConstructor
+@AllArgsConstructor
 public class JoinRoomGameData extends GameData {
     public UUID roomId = null;
-    public boolean isSpectator = false;
 
     @Override
     public UUID roomId() {
@@ -27,20 +28,15 @@ public class JoinRoomGameData extends GameData {
     }
 
     @Override
-    protected void setupFromGameDataMessage(GameDataMessage message) {
-        MessageObject obj = new ObjectMapper().convertValue(message.data, MessageObject.class);
-        isSpectator = obj.isSpectator;
+    public void setupFromGameDataMessage(GameDataMessage message) {
         roomId = UUID.fromString(message.roomId);
     }
 
     @Override
-    protected Object onGetParse() throws Exception {
-        MessageObject result = new MessageObject();
-        result.isSpectator = isSpectator;
-        return result;
+    public Object onGetParse() throws Exception {
+        return new MessageObject();
     }
 
     private static class MessageObject {
-        boolean isSpectator;
     }
 }

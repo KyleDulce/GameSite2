@@ -1,11 +1,11 @@
 package me.dulce.gamesite.gamesite2;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import me.dulce.gamesite.gamesite2.rooms.RoomManager;
-
+/**
+ * Entry point of application
+ */
 @SpringBootApplication
 public class Gamesite2Application {
 

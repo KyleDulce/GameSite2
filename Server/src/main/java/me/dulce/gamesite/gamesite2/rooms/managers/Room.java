@@ -5,8 +5,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import lombok.AccessLevel;
-import lombok.Getter;
+import lombok.*;
 import me.dulce.gamesite.gamesite2.rooms.managers.games.common.chatmessage.ChatMessageData;
 import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
 import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
@@ -16,40 +15,43 @@ import org.slf4j.LoggerFactory;
 import me.dulce.gamesite.gamesite2.rooms.managers.games.GameType;
 import me.dulce.gamesite.gamesite2.user.User;
 
+/**
+ * Room instance for games
+ */
 @Getter
 public abstract class Room {
     private static final Logger LOGGER = LoggerFactory.getLogger(Room.class);
 
-    private UUID roomid;
-    private String roomName;
+    private final UUID roomId;
+    private final String roomName;
 
     protected User host;
-    protected List<User> usersJoinedList;
-    protected List<User> spectatorsJoinedList;
+    protected final List<User> usersJoinedList;
+    protected final List<User> spectatorsJoinedList;
 
-    private int maxUsers;
+    private final int maxUsers;
     protected boolean isInProgress = false;
-    protected long timeStarted = -1;
+    protected final long timeStarted = -1;
 
     @Getter(AccessLevel.NONE)
-    protected SocketMessengerService messengerService;
+    protected final SocketMessengerService messengerService;
 
     /**
      * returns the game type that the current room partakes in
-     * @return the gametype of its subclass
+     * @return the game type of its subclass
      */
     public abstract GameType getGameType();
 
     /**
-     * Method that handles recieved game data from user
+     * Method that handles received game data from user
      * @param user the user sending the data
      * @param response the data the user provides
      * @return true if successful
      */
     protected abstract boolean processGameDataForGame(User user, GameData response);
 
-    public Room(UUID roomid, int maxUserCount, User host, String roomName, SocketMessengerService messengerService) {
-        this.roomid = roomid;
+    public Room(UUID roomId, int maxUserCount, User host, String roomName, SocketMessengerService messengerService) {
+        this.roomId = roomId;
         this.roomName = roomName;
         this.host = host;
         this.maxUsers = maxUserCount;
@@ -58,7 +60,7 @@ public abstract class Room {
         usersJoinedList = new LinkedList<>();
         spectatorsJoinedList = new LinkedList<>();
 
-        LOGGER.info("Room {} created", roomid.toString());
+        LOGGER.info("Room {} created", roomId.toString());
     }
 
     /**
@@ -69,7 +71,6 @@ public abstract class Room {
     public boolean userJoin(User user) {
         if(usersJoinedList.size() < maxUsers && !isInProgress && !usersJoinedList.contains(user)) {
             usersJoinedList.add(user);
-            User.cachedUsers.put(user.getuuid(), user);
             return true;
         }
         return false;
@@ -80,10 +81,9 @@ public abstract class Room {
      * @param user the user to add
      * @return true if successful, false otherwise
      */
-    public boolean specatorJoin(User user) {
+    public boolean spectatorJoin(User user) {
         if(!spectatorsJoinedList.contains(user)) {
             spectatorsJoinedList.add(user);
-            User.cachedUsers.put(user.getuuid(), user);
             return true;
         }
         return false;
@@ -99,7 +99,6 @@ public abstract class Room {
         } else if(spectatorsJoinedList.contains(user)) {
             spectatorsJoinedList.remove(user);
         }
-        User.cachedUsers.remove(user.getuuid());
     }
 
     /**
@@ -135,9 +134,13 @@ public abstract class Room {
         return true;
     }
 
+    /**
+     * Convert Room object to a listing serializable object
+     * @return the serializable listing object
+     */
     public RoomListing getRoomListingObject() {
         RoomListing result = new RoomListing();
-        result.roomId = roomid.toString();
+        result.roomId = roomId.toString();
         result.lobbySize = usersJoinedList.size();
         result.maxLobbySize = maxUsers;
         result.spectatorsAmount = spectatorsJoinedList.size();
@@ -161,7 +164,11 @@ public abstract class Room {
     /**
      * Serializable representation of a room
      */
-    public class RoomListing {
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @EqualsAndHashCode
+    public static class RoomListing {
         public String roomId;
         public int lobbySize;
         public int maxLobbySize;

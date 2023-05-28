@@ -9,27 +9,45 @@ import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service handling socket communication
+ */
 @Service
 public class SocketMessengerService {
 
-    private SimpMessagingTemplate simpMessagingTemplate;
+    private final SimpMessagingTemplate simpMessagingTemplate;
     public static final String BROADCAST_DESTINATION = "/socket/topic/game";
 
     @Autowired
     public SocketMessengerService(SimpMessagingTemplate simpMessagingTemplate){
-
         this.simpMessagingTemplate = simpMessagingTemplate;
-
     }
 
+    /**
+     * Broadcasts message payload to specific room
+     * @param room
+     * @param payload
+     */
     public void broadcastMessageToRoom(Room room, Object payload) {
-        simpMessagingTemplate.convertAndSend(BROADCAST_DESTINATION + room.getRoomid().toString(), payload);
+        simpMessagingTemplate.convertAndSend(BROADCAST_DESTINATION + room.getRoomId().toString(), payload);
     }
 
+    /**
+     * privately sends message to a specific user
+     * @param user
+     * @param destination
+     * @param payload
+     */
     public void sendMessageToUser(User user, SocketDestinations destination, Object payload) {
-        sendMessageToUser(user.getSessionId(),destination,payload);
+        sendMessageToUser(user.getSocketId(),destination,payload);
     }
 
+    /**
+     * privately sends message to a specific user via sessionId
+     * @param sessionId
+     * @param destination
+     * @param payload
+     */
     public void sendMessageToUser(String sessionId, SocketDestinations destination, Object payload) {
         SimpMessageHeaderAccessor simpMessageHeaderAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
         simpMessageHeaderAccessor.setSessionId(sessionId);
@@ -37,10 +55,24 @@ public class SocketMessengerService {
         simpMessagingTemplate.convertAndSendToUser(sessionId, destination.getEndpoint(), payload, simpMessageHeaderAccessor.getMessageHeaders());
     }
 
+
+    /**
+     * sends message to user regarding invalid message
+     * @param sessionId
+     * @param destination
+     * @param code
+     * @param message
+     */
     public void sendInvalidSocketMessageToUser(String sessionId, SocketDestinations destination, int code, String message) {
         sendMessageToUser(sessionId, destination, buildInvalidMessageObject(code, message));
     }
 
+    /**
+     * creates invalid message for socket
+     * @param code
+     * @param message
+     * @return
+     */
     public InvalidSocketMessage buildInvalidMessageObject(int code, String message) {
         InvalidSocketMessage result = new InvalidSocketMessage();
         result.code = code;
@@ -48,11 +80,15 @@ public class SocketMessengerService {
         return result;
     }
 
+    /**
+     * All destinations for clients to receive data
+     */
     public enum SocketDestinations {
         GAMEDATA("/gamePlayer"),
+        REFRESH("/refresh"),
         TEST("/test");
 
-        private String endpoint;
+        private final String endpoint;
         SocketDestinations(String endpoint) {
             this.endpoint = endpoint;
         }

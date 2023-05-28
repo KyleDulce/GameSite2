@@ -14,6 +14,9 @@
         <spring-boot.version>2.6.14</spring-boot.version>
         <jackson-databind.version>2.13.4.1</jackson-databind.version>
         <lombok.version>1.18.26</lombok.version>
+        <jjwt.version>0.11.5</jjwt.version>
+        <commons-codec.version>1.15</commons-codec.version>
+        <jetbrains-annotations.version>24.0.1</jetbrains-annotations.version>
 
         <mockito.version>5.0.0</mockito.version>
 
@@ -81,7 +84,33 @@
             <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jjwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jjwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${commons-codec.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>${jetbrains-annotations.version}</version>
+        </dependency>
 
         <!-- Testing -->
         <dependency>

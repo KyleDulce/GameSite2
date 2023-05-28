@@ -7,37 +7,43 @@ import static org.mockito.Mockito.*;
 
 import java.util.UUID;
 
-import me.dulce.gamesite.gamesite2.rooms.managers.games.TestGame;
+import me.dulce.gamesite.gamesite2.rooms.managers.games.common.testgame.TestGame;
 import me.dulce.gamesite.gamesite2.rooms.managers.games.common.chatmessage.ChatMessageData;
+import me.dulce.gamesite.gamesite2.rooms.managers.games.common.testgame.TestMessageData;
 import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
 import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import me.dulce.gamesite.gamesite2.rooms.managers.Room.RoomListing;
 import me.dulce.gamesite.gamesite2.rooms.managers.games.GameType;
 import me.dulce.gamesite.gamesite2.user.User;
 
-@SpringBootTest
 public class RoomTest {
-    
-    public Room getTestRoom() {
-        return new Room(UUID.randomUUID(), 2, null, "test", null) {
-            @Override
-            public GameType getGameType() {
-                return null;
-            }
 
-            @Override
-            protected boolean processGameDataForGame(User user, GameData response) { return false; }
-        };
+    private static final String roomUUID_str = "5eb7a634-22a1-43c0-9d35-8b0be08b7557";
+    private static final String user1UUID_str = "eb0f39e0-d108-4bc9-83cd-1e12d4b0c784";
+    private static final String user2UUID_str = "7095790b-7a45-462c-8fbd-9506ec6a727a";
+    private static final String user3UUID_str = "15b98a25-ba8c-44f0-a5fd-0e7788a1738e";
+
+    private static UUID roomUUID;
+    private static UUID user1UUID;
+    private static UUID user2UUID;
+    private static UUID user3UUID;
+
+    @BeforeAll
+    public static void beforeTests() {
+        roomUUID = UUID.fromString(roomUUID_str);
+        user1UUID = UUID.fromString(user1UUID_str);
+        user2UUID = UUID.fromString(user2UUID_str);
+        user3UUID = UUID.fromString(user3UUID_str);
     }
 
     @Test
     public void userJoin_userAddedToRoomSuccessfully() {
         //assign
         Room room = getTestRoom();
-        User user = User.createGuestUser();
+        User user = User.createNewUser(user1UUID);
 
         //actual
         boolean actual = room.userJoin(user);
@@ -51,9 +57,9 @@ public class RoomTest {
     public void userJoin_userBlockedFromRoomWhenFull_resultsFalse() {
         //assign
         Room room = getTestRoom();
-        User user1 = User.createGuestUser();
-        User user2 = User.createGuestUser();
-        User user3 = User.createGuestUser();
+        User user1 = User.createNewUser(user1UUID);
+        User user2 = User.createNewUser(user2UUID);
+        User user3 = User.createNewUser(user3UUID);
         room.userJoin(user1);
         room.userJoin(user2);
 
@@ -69,7 +75,7 @@ public class RoomTest {
     public void userJoin_userBlockedFromRoomWhenDuplicateUser_resultsFalse() {
         //assign
         Room room = getTestRoom();
-        User user = User.createGuestUser();
+        User user = User.createNewUser(user1UUID);
         room.userJoin(user);
 
         //actual
@@ -85,7 +91,7 @@ public class RoomTest {
         //assign
         class RoomChild extends Room {
             RoomChild() {
-                super(UUID.randomUUID(), 2, null, "test", null);
+                super(roomUUID, 2, null, "test", null);
                 isInProgress = true;
             }
             @Override
@@ -96,7 +102,7 @@ public class RoomTest {
         }
 
         Room room = new RoomChild();
-        User user = User.createGuestUser();
+        User user = User.createNewUser(user1UUID);
 
         //actual
         boolean actual = room.userJoin(user);
@@ -107,13 +113,13 @@ public class RoomTest {
     }
 
     @Test
-    public void specatorJoin_userAddedToRoomSuccessfully() {
+    public void spectatorJoin_userAddedToRoomSuccessfully() {
         //assign
         Room room = getTestRoom();
-        User user = User.createGuestUser();
+        User user = User.createNewUser(user1UUID);
 
         //actual
-        boolean actual = room.specatorJoin(user);
+        boolean actual = room.spectatorJoin(user);
 
         //assert
         assertEquals(1, room.getSpectatorsJoinedList().size());
@@ -121,14 +127,14 @@ public class RoomTest {
     }
 
     @Test
-    public void specatorJoin_userBlockedFromRoomWhenDuplicateUser_resultsFalse() {
+    public void spectatorJoin_userBlockedFromRoomWhenDuplicateUser_resultsFalse() {
         //assign
         Room room = getTestRoom();
-        User user = User.createGuestUser();
-        room.specatorJoin(user);
+        User user = User.createNewUser(user1UUID);
+        room.spectatorJoin(user);
 
         //actual
-        boolean actual = room.specatorJoin(user);
+        boolean actual = room.spectatorJoin(user);
 
         //assert
         assertEquals(1, room.getSpectatorsJoinedList().size());
@@ -139,7 +145,7 @@ public class RoomTest {
     public void userLeave_userRemovedFromRoomIfPlaying() {
         //assign
         Room room = getTestRoom();
-        User user = User.createGuestUser();
+        User user = User.createNewUser(user1UUID);
         room.userJoin(user);
 
         //actual
@@ -153,8 +159,8 @@ public class RoomTest {
     public void userLeave_userRemovedFromRoomIfSpectating() {
         //assign
         Room room = getTestRoom();
-        User user = User.createGuestUser();
-        room.specatorJoin(user);
+        User user = User.createNewUser(user1UUID);
+        room.spectatorJoin(user);
 
         //actual
         room.userLeave(user);
@@ -166,8 +172,8 @@ public class RoomTest {
     @Test
     public void getRoomListingObject_RoomListingContainsSameData() {
         //assign
-        User user = User.createGuestUser();
-        Room room = new Room(UUID.randomUUID(), 2, user, "test", null) {
+        User user = User.createNewUser(user1UUID);
+        Room room = new Room(roomUUID, 2, user, "test", null) {
             @Override
             public GameType getGameType() {
                 return GameType.NULL_GAME_TYPE;
@@ -176,7 +182,7 @@ public class RoomTest {
             @Override
             protected boolean processGameDataForGame(User user, GameData response) { return false; }
         };
-        String expectedUuid = room.getRoomid().toString();
+        String expectedUuid = room.getRoomId().toString();
         int expectedLobbySize = room.getUsersJoinedList().size();
         int expectedMaxLobbySize = room.getMaxUsers();
         int expectedSpectatorCount = room.getSpectatorsJoinedList().size();
@@ -200,12 +206,12 @@ public class RoomTest {
     }
 
     @Test
-    public void handleGameDataReceived_MessageIsBroadcasted(){
+    public void handleGameDataReceived_chatMessage_MessageIsBroadcast(){
 
         //assign
         SocketMessengerService messengerService = mock(SocketMessengerService.class);
-        Room testRoom = new TestGame(UUID.randomUUID(), 2, null, "test", messengerService);
-        ChatMessageData sampleData = new ChatMessageData(testRoom.getRoomid(), "This is a message", "Bobbert");
+        Room testRoom = new TestGame(roomUUID, 2, null, "test", messengerService);
+        ChatMessageData sampleData = new ChatMessageData(testRoom.getRoomId(), "This is a message", "Bobby");
 
         //actual
         testRoom.handleGameDataReceived(null, sampleData);
@@ -215,4 +221,28 @@ public class RoomTest {
 
     }
 
+    @Test
+    public void handleGameDataReceived_other_MessageIsProcessed() {
+        SocketMessengerService messengerService = mock(SocketMessengerService.class);
+        Room testRoom = new TestGame(roomUUID, 2, null, "test", messengerService);
+        Room testRoomSpy = spy(testRoom);
+        TestMessageData testMessageData = new TestMessageData();
+
+        boolean actual = testRoomSpy.handleGameDataReceived(null, testMessageData);
+
+        assertTrue(actual);
+        verify(testRoomSpy, times(1)).processGameDataForGame(any(), any());
+    }
+
+    public Room getTestRoom() {
+        return new Room(roomUUID, 2, null, "test", null) {
+            @Override
+            public GameType getGameType() {
+                return null;
+            }
+
+            @Override
+            protected boolean processGameDataForGame(User user, GameData response) { return false; }
+        };
+    }
 }

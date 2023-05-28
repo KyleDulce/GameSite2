@@ -1,8 +1,0 @@
-
-server:
-  allowedOrigins: http://localhost:8080, http://localhost:4200, null
-
-endpoints:
-  frontendPrefix: pages
-  socket: socket
-  stomp: stomp

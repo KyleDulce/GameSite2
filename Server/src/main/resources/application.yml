@@ -12,6 +12,11 @@ server:
   allowedOrigins: http://localhost:8080, http://localhost:4200, null, http://localhost:3000
 
 endpoints:
-  frontendPrefix: pages
+  frontendPrefix: ""
   socket: socket
   stomp: stomp
+
+userActivityTimeoutSeconds: 3600
+cacheClearIntervalSeconds: 1800
+
+allowed-users-file: ./UsersFile-dev.json

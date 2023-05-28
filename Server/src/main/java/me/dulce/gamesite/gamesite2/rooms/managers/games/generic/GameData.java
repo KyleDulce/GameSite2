@@ -8,10 +8,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Class representing data a game that can be sent or recieved
+ * Class representing data a game that can be sent or received
  */
 public abstract class GameData {
     private static final Logger LOGGER = LoggerFactory.getLogger(GameType.class);
+    public static final String NO_VALUE_STRING = "No Value!";
 
     /**
      * returns the id of the room
@@ -27,17 +28,17 @@ public abstract class GameData {
 
     /**
      * Method to parse generic GameDataMessage data variable into this object
-     * @param message the game data messag recieved
+     * @param message the game data message received
      * @throws Exception when parse is not successful
      */
-    protected abstract void setupFromGameDataMessage(GameDataMessage message) throws Exception;
+    public abstract void setupFromGameDataMessage(GameDataMessage message) throws Exception;
 
     /**
      * Method that parses this object into generic Java Object
      * @return generic object from parse
      * @throws Exception when parse is not successful
      */
-    protected abstract Object onGetParse() throws Exception;
+    public abstract Object onGetParse() throws Exception;
 
     /**
      * Parses this object into a GameDataMessage
@@ -51,14 +52,14 @@ public abstract class GameData {
             gameDataMessage.data = onGetParse();
         } catch (Exception e) {
             LOGGER.error("Error on parsing object of type {}", gameDataType().toString(), e);
-            gameDataMessage.data = "No Value!";
+            gameDataMessage.data = NO_VALUE_STRING;
         }
         return gameDataMessage;
     }
 
     /**
      * Returns an optional of GameData parsed from a GameDataMessage
-     * @param message the Message recieved
+     * @param message the Message received
      * @return Parsed version of GameData
      */
     public static Optional<GameData> getGameDataFromMessage(GameDataMessage message) {
@@ -78,6 +79,7 @@ public abstract class GameData {
             createdObject.setupFromGameDataMessage(message);
         } catch (Exception e) {
             LOGGER.error("Error on getting object of type {}", message.gameDataIdString, e);
+            return Optional.empty();
         }
         return Optional.of(createdObject);
     }

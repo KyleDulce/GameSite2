@@ -4,6 +4,6 @@ import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameDataMessage;
 import me.dulce.gamesite.gamesite2.user.User;
 
 public class GameDataUpdate {
-    public User.UserMessage user;
+    public String authToken;
     public GameDataMessage gameData;
 }

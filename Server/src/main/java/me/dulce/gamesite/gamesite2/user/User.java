@@ -1,10 +1,10 @@
 package me.dulce.gamesite.gamesite2.user;
 
-import lombok.Getter;
+import lombok.*;
+import me.dulce.gamesite.gamesite2.utilservice.GamesiteUtils;
 
-import java.util.HashMap;
-import java.util.Random;
-import java.util.UUID;
+import java.time.Instant;
+import java.util.*;
 
 /**
  * Class Representing Generic User
@@ -15,74 +15,115 @@ public class User {
     /**
      * Users that are temporarily cached
      */
-    public static HashMap<UUID, User> cachedUsers = new HashMap<>();
+    @Getter
+    private static final HashMap<UUID, User> cachedUsers = new HashMap<>();
+    private static final Random random = new Random();
 
     /**
-     * Deprecated for removal, guest users are no longer going to be supported
-     * Creates a user of type guest
-     * @return
+     * Creates new user from uuid
+     * @param uuid uuid of user
+     * @return user object
      */
-    @Deprecated(forRemoval = true)
-    public static User createGuestUser() {
-        UUID generatedUuid = UUID.randomUUID();
-        String generatedName = "Guest#" + new Random().nextInt(10000);
-        return new User(generatedUuid, generatedName, true);
+    public static User createNewUser(UUID uuid) {
+        return createNewUser(uuid, String.valueOf(random.nextInt(10000)));
     }
 
     /**
-     * Gets a user object from the user message
-     * @param message
-     * @return
+     * Creates new user from uuid and name
+     * @param uuid uuid of user
+     * @param name name of user
+     * @return user object
      */
-    public static User getUserFromMessage(UserMessage message) {
-        UUID uidObject = UUID.fromString(message.uuid);
-        if(cachedUsers.containsKey(uidObject)) {
-            return cachedUsers.get(uidObject);
+    public static User createNewUser(UUID uuid, String name) {
+        User user;
+        String sessionId = GamesiteUtils.generateRandomSessionId();
+        if(!cachedUsers.containsKey(uuid)) {
+            user = new User(uuid, name, sessionId);
         } else {
-            return new User(UUID.fromString(message.uuid), message.name, message.isGuest);
+            user = cachedUsers.get(uuid);
+            user.setSessionId(sessionId);
+            user.setName(name);
+            user.setSocketId(null);
         }
+        return user;
     }
 
-    private User(UUID uid, String name, boolean guest) {
+    /**
+     * Gets a user based on their uuid. returns null if their cached session is not available
+     * @param uuid the uuid to search
+     * @return Option with the user, empty if user is not available
+     */
+    public static Optional<User> getUserFromUUID(UUID uuid) {
+        if(cachedUsers.containsKey(uuid)) {
+            return Optional.of(cachedUsers.get(uuid));
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Gets a user based on their uuid. returns null if their cached session is not available
+     * @param uuid the uuid to search
+     * @return Option with the user, empty if user is not available
+     */
+    public static Optional<User> getUserFromUUID(String uuid) {
+        UUID uidObj = UUID.fromString(uuid);
+        return getUserFromUUID(uidObj);
+    }
+
+    public static void addUserToCache(User user) {
+        cachedUsers.put(user.getUuid(), user);
+    }
+
+    private User(UUID uid, String name, String sessionId) {
         this.uuid = uid;
         this.name = name;
-        this.isGuest = guest;
-    }
-
-    private UUID uuid;
-    private String name;
-    /**
-     * Deprecated for removal, guest users are no longer supported
-     */
-    @Deprecated(forRemoval = true)
-    private boolean isGuest;
-    private String sessionId = null;
-
-    public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        return (this == obj) || (obj instanceof User && uuid.equals(((User) obj).uuid));
+    private final UUID uuid;
+    @Setter private String name;
+    @Setter private String sessionId;
+    @Setter private String socketId = null;
+    @Setter private String cookieIdentifier = null;
+    private Instant lastActiveTime = null;
+
+    /**
+     * updates lastActiveTime for user to current Instant
+     */
+    public void updateActiveTime(Instant time) {
+        lastActiveTime = time;
     }
 
     /**
      * Converts User into a serializable version
      * @return
      */
-    public UserMessage toMessagableObject() {
+    public UserMessage toMessageableObject() {
         UserMessage message = new UserMessage();
         message.uuid = uuid.toString();
         message.name = name;
-        message.isGuest = isGuest;
         
         return message;
+    }
+
+    public boolean equals(User user) {
+        return uuid.equals(user.getUuid());
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if(!(other instanceof User)) {
+            return false;
+        }
+        return equals((User) other);
     }
 
     /**
      * Serializable version of a user
      */
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class UserMessage {
         public String uuid;
         public String name;
