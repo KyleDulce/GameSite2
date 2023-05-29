@@ -12,13 +12,13 @@ import me.dulce.gamesite.gamesite2.configuration.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 import me.dulce.gamesite.gamesite2.rooms.RoomManager;
 import me.dulce.gamesite.gamesite2.rooms.managers.Room.RoomListing;
@@ -32,6 +32,7 @@ import me.dulce.gamesite.gamesite2.user.User;
 public class RestWebController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RestWebController.class);
+	private static final String INDEX_HTML_LOCATION = "/index.html";
 
 	@Autowired
 	private RoomManager roomManager;
@@ -46,25 +47,6 @@ public class RestWebController {
 	private CookieService cookieService;
 
 	private final Random random = new Random();
-
-    @RequestMapping("/")
-    public RedirectView index() {
-        return new RedirectView("/" + config.getFrontendPrefixEndpoint());
-    }
-
-	@RequestMapping("{requested}")
-	public ModelAndView requestAnyPathChild(@PathVariable("requested") String requested) {
-		LOGGER.debug("Request for {}", requested);
-		if(!GamesiteUtils.isBlank(requested) && requested.matches(".+\\..+")) {
-			ModelAndView mav = new ModelAndView();
-			mav.setViewName(requested);
-			return mav;
-		} else {
-			ModelAndView mav = new ModelAndView();
-			mav.setViewName(String.format("/%s", config.getFrontendPrefixEndpoint()));
-			return mav;	
-		}
-	}
 
 	@GetMapping("/api/getRoomLists")
 	public ResponseEntity<RoomListing[]> getRoomLists() {

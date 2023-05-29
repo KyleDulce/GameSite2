@@ -38,12 +38,6 @@ public class AppConfig {
     private String stompEndpoint;
 
     /**
-     * The frontend prefix that the frontend page operates
-     */
-    @Value("${endpoints.frontendPrefix}")
-    private String frontendPrefixEndpoint;
-
-    /**
      * Seconds before a user is automatically timed out
      */
     @Value("${userActivityTimeoutSeconds}")

@@ -67,30 +67,6 @@ public class RestWebControllerTest {
     public void afterEachTest() {
         User.getCachedUsers().clear();
     }
-    
-    @Test
-    public void requestAnyPathChild_actualResource() {
-        //assign
-
-        //actual
-        ModelAndView actual = webController.requestAnyPathChild("./index.html");
-
-        //assert
-        assertEquals("./index.html", actual.getViewName());
-    }
-
-    @Test
-    public void requestAnyPathChild_nonResource() {
-        //assign
-        when(config.getFrontendPrefixEndpoint())
-                .thenReturn("");
-
-        //actual
-        ModelAndView actual = webController.requestAnyPathChild("random");
-
-        //assert
-        assertEquals("/", actual.getViewName());
-    }
 
     @Test
     public void getRoomLists_getsRooms() {

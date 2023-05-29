@@ -7,16 +7,16 @@ server:
   compression:
     enabled: true
   error:
-    path: "/pages/PageNotFound"
+    whitelabel:
+      enabled: false
 
   allowedOrigins: http://localhost:8080, http://localhost:4200, null, http://localhost:3000
 
 endpoints:
-  frontendPrefix: ""
   socket: socket
   stomp: stomp
 
 userActivityTimeoutSeconds: 3600
 cacheClearIntervalSeconds: 1800
 
-allowed-users-file: ./UsersFile-dev.json
+allowed-users-file: classpath:/UsersFile-dev.json
