@@ -1,26 +1,40 @@
 import { Button, Grid } from '@mui/material';
 import { User } from '../model/RestProtocolModels';
-import './SettingBar.scss';
+import { ConfigContext } from '../model/ConfigOptions';
+import { useContext, useEffect, useState } from 'react';
 
-const playerList: User[] = [
-    {
-        userid: 100,
-        name: 'hello',
-        isGuest: false
-    },
-    {
-        userid: 101,
-        name: 'hello2',
-        isGuest: false
-    },
-    {
-        userid: 102,
-        name: 'hello3',
-        isGuest: false
-    }
-]
+import './SettingBar.scss';
+import { GameSocketContext } from '../pages/PlayGame';
+import { filter, tap } from 'rxjs';
+import { CommonGameTypeStrings, KickPlayerData, SettingsDataResponse } from '../model/SocketModel';
 
 export default function SettingBar({children}: any) {
+    const {Uid} = useContext(ConfigContext);
+    const socketConnection = useContext(GameSocketContext);
+
+    const [playerList, setPlayerList] = useState<Array<User>>([]);
+
+    useEffect(() => {
+        socketConnection?.privateMessages
+        .pipe(
+            filter(message => message.gameDataIdString === CommonGameTypeStrings.SETTINGS_DATA_RESPONSE),
+            tap(message => {
+                const settingsDataResposne: SettingsDataResponse = message.data;
+                setPlayerList(settingsDataResposne.players);
+            })
+        ).subscribe();
+
+        socketConnection?.sendGameMessage(CommonGameTypeStrings.SETTINGS_DATA_REQUEST, null);
+    }, []);
+
+    function kickPlayer(player: User) {
+        const data: KickPlayerData = {
+            player: player.uuid
+        };
+
+        socketConnection?.sendGameMessage(CommonGameTypeStrings.KICK_PLAYER_DATA, data);
+    }
+    
     return (
         <div className='setting-bar-container'>
             <div className='setting-bar-playerList'>
@@ -32,7 +46,9 @@ export default function SettingBar({children}: any) {
                             <p>{player.name}</p>
                             </Grid>
                             <Grid item xs={4} className='setting-bar-player-row-button'>
-                                <Button variant='contained'>Kick</Button>
+                                <Button variant='contained' 
+                                    onClick={() => kickPlayer(player)} 
+                                    disabled={Uid === player.uuid}>Kick</Button>
                             </Grid>
                         </>
                     ))}

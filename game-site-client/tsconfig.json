@@ -19,7 +19,7 @@
     "baseUrl": "./",
     "rootDir": "src",
     "paths": {
-      "@components/*": ["src/components/*"],
+      "@components/*": ["src/components/*"]
     },
     "types": ["jest", "node"],
     "plugins": [
@@ -31,6 +31,7 @@
   "exclude": [
     "node_modules",
     "build/dist",
+    "./build/dist/**/*",
     "build",
     "scripts",
     "acceptance-tests",

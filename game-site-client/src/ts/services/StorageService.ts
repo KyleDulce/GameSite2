@@ -3,6 +3,7 @@ import { ConfigOptions, EMPTY_CONFIG_OPTIONS } from "../model/ConfigOptions";
 enum StorageConstants {
     CONFIG_AUTH = "gs-config-auth",
     CONFIG_NAME = "gs-config-name",
+    CONFIG_UID = "gs-config-uid",
     CONFIG_USE_LIGHT = "gs-config-use-light"
 }
 
@@ -13,7 +14,18 @@ export function saveConfigOptions(config: ConfigOptions) {
     if(config.PlayerName != null) {
         saveToStorage(StorageConstants.CONFIG_NAME, config.PlayerName);
     }
+    if(config.Uid != null) {
+        saveToStorage(StorageConstants.CONFIG_UID, config.Uid);
+    }
     saveToStorage(StorageConstants.CONFIG_USE_LIGHT, String(config.UseLightMode));
+}
+
+export function saveAuthCookie(auth: string | null) {
+    if (auth != null) {
+        saveToStorage(StorageConstants.CONFIG_AUTH, auth)
+    } else {
+        removeFromStorage(StorageConstants.CONFIG_AUTH);
+    }
 }
 
 export function getConfigOptions(): ConfigOptions {
@@ -24,10 +36,12 @@ export function getConfigOptions(): ConfigOptions {
 
     const auth = getFromStorage(StorageConstants.CONFIG_AUTH);
     const name = getFromStorage(StorageConstants.CONFIG_NAME);
+    const uid = getFromStorage(StorageConstants.CONFIG_UID);
 
     const result: ConfigOptions = EMPTY_CONFIG_OPTIONS;
     result.AuthToken = auth;
     result.PlayerName = name;
+    result.Uid = uid;
     result.UseLightMode = useLight === "true";
 
     return result;

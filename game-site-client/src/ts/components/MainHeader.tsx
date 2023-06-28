@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ResponsiveContext } from "src/App";
 import { AppBar, Toolbar, Container, Box, Menu, MenuItem, Tooltip, Button, IconButton, useTheme } from "@mui/material";
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -11,6 +11,7 @@ import DarkModeIcon from '@mui/icons-material/ModeNight'
 import { ConfigContext } from "../model/ConfigOptions";
 import { saveConfigOptions } from "../services/StorageService";
 import ChangeNameDialog from "./ChangeNameDialog";
+import RestService from "../services/RestService";
 
 class NavLink {
     readonly text: string;
@@ -38,6 +39,11 @@ export default function MainHeader() {
     const isMobile = React.useContext(ResponsiveContext);
 
     const theme = useTheme();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        saveConfigOptions(fullConfig);
+    }, [UseLightMode, PlayerName])
 
     function handleAvatarMenuOpen(event: React.MouseEvent<HTMLElement>) {
         setAvatarMenuOpen(event.currentTarget);
@@ -57,12 +63,16 @@ export default function MainHeader() {
 
     function handleModeToggle(useLight: boolean) {
         setUseLightMode(useLight);
-        fullConfig.UseLightMode = useLight;
-        saveConfigOptions(fullConfig);
     }
 
     function handleNameChange(value: string) {
         setChangeNameDialogOpen(false);
+    }
+
+    function handleLogout() {
+        RestService.deleteAuthToken(fullConfig);
+
+        navigate("/login");
     }
 
     return (
@@ -106,8 +116,8 @@ export default function MainHeader() {
                             </IconButton>
 
                             <Box>
-                                {links.map((page) => (
-                                    <Button className="header-nav-button" component={RouterLink} to={page.linkValue}>
+                                {links.map((page, i) => (
+                                    <Button className="header-nav-button" component={RouterLink} to={page.linkValue} key={`headerNav-${i}`}>
                                         {page.text}
                                     </Button>
                                 ))}
@@ -151,7 +161,7 @@ export default function MainHeader() {
                             onClose={handleAvatarMenuClose}
                         >
                             <MenuItem onClick={() => setChangeNameDialogOpen(true)}>Change Name</MenuItem>
-                            <MenuItem>Logout</MenuItem>
+                            <MenuItem onClick={handleLogout}>Logout</MenuItem>
                         </Menu>
                     </Box>
                 </Toolbar>

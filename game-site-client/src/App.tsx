@@ -1,6 +1,6 @@
-import { Suspense, useContext, } from "react";
-import { RouterProvider, Outlet, Route, Navigate, useLocation, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
-import { ConfigContext } from "./ts/model/ConfigOptions";
+import { Suspense, useContext, useEffect } from "react";
+import { RouterProvider, Outlet, Route, useLocation, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
+import { ConfigContext, containsGameAuth } from "./ts/model/ConfigOptions";
 import { removeAttributeFromRoot, setAttributeToRoot } from "./ts/services/NativeHtmlService";
 import { Box, CircularProgress, CssBaseline, createTheme, useMediaQuery } from "@mui/material";
 import { DARK_MODE_HTML_ATTRIBUTE } from "./ts/model/SystemConstants";
@@ -14,15 +14,23 @@ import CreateGames from "./ts/pages/CreateGames";
 import PlayGame from "./ts/pages/PlayGame";
 import "./App.scss";
 import { getThemeOptions } from "./Theme";
+import NotFound from "./ts/pages/NotFound";
+import { saveConfigOptions } from "./ts/services/StorageService";
+import { appPageLayoutShouldRedirect } from "./ts/services/DevModeService";
 
 export const ResponsiveContext = React.createContext(false);
 
 const PageLayout = () => {
   const location = useLocation();
-  const {AuthToken} = useContext(ConfigContext);
-  if(location.pathname !== "/login" && process.env.REACT_APP_IGNORE_AUTH === "false" && AuthToken == undefined) {
-    return <Navigate to={"/login"} replace={true}/>
+  const containsAuth = containsGameAuth();
+  const configContext = useContext(ConfigContext);
+  
+  const checkResult = appPageLayoutShouldRedirect(configContext, location, containsAuth);
+
+  if(checkResult.result) {
+    return checkResult.data;
   }
+  
   return (
     <Box className="app-enclosing">
       {location.pathname !== "/login" && (<MainHeader/>)}
@@ -38,12 +46,15 @@ const router = createBrowserRouter(
       <Route path="/rooms" element={<ActiveGames />} />
       <Route path="/createroom" element={<CreateGames />} />
       <Route path="/play" element={<PlayGame />} />
+      
+      <Route path="*" element={<NotFound />} />
     </Route>
   )
 );
 
 export default function App() {
   const {UseLightMode, setUseLightMode} = useContext(ConfigContext);
+  const fullConfig = useContext(ConfigContext);
   const isMobile = useMediaQuery('(max-width:768px)');
 
   const theme = React.useMemo(
@@ -57,14 +68,16 @@ export default function App() {
     },
     [UseLightMode, setUseLightMode]
   );
-  
+
+  useEffect(() => {
+    saveConfigOptions(fullConfig);
+  }, [UseLightMode]);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <ResponsiveContext.Provider value={isMobile}>
-        <Suspense fallback={<CircularProgress />} >
           <RouterProvider router={router} />
-        </Suspense>
       </ResponsiveContext.Provider>
     </ThemeProvider>
   );

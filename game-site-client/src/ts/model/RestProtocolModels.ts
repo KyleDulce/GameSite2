@@ -1,14 +1,56 @@
-import { GameType } from "./SystemConstants";
+import { AxiosRequestConfig } from "axios";
+import { GameType, isValidGameTypeNum, parseNumberToGameType } from "./SystemConstants";
 import { doAllPropertiesExistInObject } from './Utils';
 
+export const axiosConfig: AxiosRequestConfig = {
+    baseURL: (process.env.REACT_APP_BACKEND_URL || 'http://localhost:8080') + (process.env.REACT_APP_REST_ENDPOINT || ''),
+    withCredentials: true
+}
+
+export interface RestError extends Error {
+    statusCode: RestStatusCode;
+    message: string;
+    error: Error | undefined;
+}
+
+export interface RestMessage<T> {
+    data: T;
+    statusCode: RestStatusCode;
+}
+
+export enum RestStatusCode {
+    UNAUTHORIZED, NOT_FOUND, BAD_REQUEST, SERVER_ERROR, OTHER, 
+    OK
+}
+
+export function getStatusCodeFromNumber(value: number | null | undefined): RestStatusCode {
+    let status: RestStatusCode = RestStatusCode.OTHER;
+    if(value != undefined) {
+        if(value >= 200 && value < 300) {
+            status = RestStatusCode.OK;
+        } else if(value === 401 || value === 403) {
+            status = RestStatusCode.UNAUTHORIZED;
+        } else if(value === 404) {
+            status = RestStatusCode.NOT_FOUND;
+        } else if(value < 500 && value >= 400) {
+            status = RestStatusCode.BAD_REQUEST;
+        } else if(value < 600 && value >= 500) {
+            status = RestStatusCode.SERVER_ERROR;
+        } else {
+            status = RestStatusCode.OTHER;
+        }
+    }
+    return status;
+}
+
 export interface User {
-    userid: number;
+    uuid: string;
     name: string;
     isGuest: boolean;
 }
 
 export const emptyUser: User = {
-    userid: 0,
+    uuid: "",
     name: "",
     isGuest: false
 };
@@ -25,22 +67,24 @@ export interface RoomListingRaw {
     roomId: string;
     lobbySize: number;
     maxLobbySize: number;
-    spectatorAmount: number;
-    gameType: string; 
+    spectatorsAmount: number;
+    gameType: number; 
     hostName: string;
     inProgress: boolean;
     gameStartTime: number;
+    roomName: string;
 }
 
 export const emptyRoomListingRaw: RoomListingRaw = {
     roomId: "",
     lobbySize: 0,
     maxLobbySize: 0,
-    spectatorAmount: 0,
-    gameType: "", 
+    spectatorsAmount: 0,
+    gameType: -1, 
     hostName: "",
     inProgress: false,
-    gameStartTime: 0
+    gameStartTime: 0,
+    roomName: ""
 }
 
 export function isCompliantRoomListingRaw(obj: any): boolean {
@@ -49,7 +93,7 @@ export function isCompliantRoomListingRaw(obj: any): boolean {
     }))) {
         return false;
     }
-    return Object.values(GameType).some((key: string) => key === obj.gameType);
+    return isValidGameTypeNum(obj.gameType as number);
 }
 
 export function rawListingToFullListing(listing: RoomListingRaw): RoomListing {
@@ -58,11 +102,12 @@ export function rawListingToFullListing(listing: RoomListingRaw): RoomListing {
         roomId: listing.roomId,
         lobbySize: listing.lobbySize,
         maxLobbySize: listing.maxLobbySize,
-        spectatorAmount: listing.spectatorAmount,
-        gameType: (<any>GameType)[listing.gameType],
+        spectatorAmount: listing.spectatorsAmount,
+        gameType: parseNumberToGameType(listing.gameType),
         hostName: listing.hostName,
         inProgress: listing.inProgress,
-        gameStartTime: listing.gameStartTime
+        gameStartTime: listing.gameStartTime,
+        roomName: listing.roomName
     }
 }
 
@@ -75,27 +120,29 @@ export interface RoomListing {
     hostName: string;
     inProgress: boolean;
     gameStartTime: number;
+    roomName: string;
 }
 
 export interface RoomJoinRequest {
-    user: User;
     asSpectator: boolean;
     roomId: string;
 }
 
 export const emptyRoomJoinRequest: RoomJoinRequest = {
-    user: emptyUser,
     asSpectator: false,
     roomId: ""
 }
 
+export interface RoomJoinResponse {
+    success: boolean;
+    isHost: boolean;
+}
+
 export interface RoomLeaveRequest {
-    user: User;
     roomId: string;
 }
 
 export const emptyRoomLeaveRequest: RoomLeaveRequest = {
-    user: emptyUser,
     roomId: ""
 }
 
@@ -129,6 +176,64 @@ const emptyRoomCreateResponse = {
 
 export function isCompliantRoomCreateResponse(obj: any): boolean {
     return doAllPropertiesExistInObject(obj, Object.keys(emptyRoomCreateResponse).map(key => {
+        return key
+    }));
+}
+
+export interface UserUpdateRequest {
+    name: string
+}
+
+export const emptyUserUpdateRequest = {
+    name: ""
+}
+
+export interface UserUpdateResponse {
+    success: boolean
+}
+
+export const emptyUserUpdateResponse = {
+    success: false
+}
+
+export interface UserAuthRequest {
+    login: string,
+    passHash: string
+}
+
+export const emptyUserAuthRequest = {
+    login: "",
+    passHash: ""
+}
+
+export interface UserAuthResponse {
+    success: boolean,
+    user: User
+}
+
+export function isCompliantUserAuthResponse(obj: any): boolean {
+    return doAllPropertiesExistInObject(obj, Object.keys(emptyUserAuthResponse).map(key => {
+        return key
+    }));
+}
+
+export const emptyUserAuthResponse = {
+    success: false,
+    user: emptyUser
+}
+
+export interface RoomInfoResponse {
+    room: RoomListingRaw
+    isHost: boolean
+}
+
+export const emptyRoomInfoResponse: RoomInfoResponse = {
+    room: emptyRoomListingRaw,
+    isHost: false
+}
+
+export function isCompliantRoomInfoResponse(obj: any): boolean {
+    return doAllPropertiesExistInObject(obj, Object.keys(emptyRoomInfoResponse).map(key => {
         return key
     }));
 }

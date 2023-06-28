@@ -1,4 +1,4 @@
-import { doAllPropertiesExistInObject } from "../../ts/model/Utils";
+import { doAllPropertiesExistInObject } from "./Utils";
 
 describe('doAllPropertiesExistInObject', () => {
 
