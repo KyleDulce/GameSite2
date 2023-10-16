@@ -7,11 +7,29 @@ server:
   compression:
     enabled: true
   error:
-    path: "/pages/PageNotFound"
+    whitelabel:
+      enabled: false
 
   allowedOrigins: http://localhost:8080, http://localhost:4200, null, http://localhost:3000
 
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include:
+          - httptrace
+  httpexchanges:
+    recording:
+      enabled: true
+
 endpoints:
-  frontendPrefix: pages
   socket: socket
   stomp: stomp
+
+auth:
+  cookieIdBuffer: 3
+  userActivityTimeoutSeconds: 3600
+  cacheClearIntervalSeconds: 1800
+
+  allowed-users-file: classpath:/UsersFile-dev.json

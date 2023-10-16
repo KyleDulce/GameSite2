@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "outDir": "build/dist",
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "module": "commonjs",
+    "target": "ES5",
+    "jsx": "react-jsx",
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "allowJs": true,
+    "baseUrl": "./",
+    "rootDir": "src",
+    "paths": {
+      "@components/*": ["src/components/*"]
+    },
+    "types": ["jest", "node"],
+    "plugins": [
+      { 
+        "transform": "ts-transformer-keys/transformer"
+      }
+    ]
+  },
+  "exclude": [
+    "node_modules",
+    "build/dist",
+    "./build/dist/**/*",
+    "build",
+    "scripts",
+    "acceptance-tests",
+    "webpack",
+    "jest",
+    "src/setupTests.ts"
+  ]
+}

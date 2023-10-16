@@ -1,0 +1,12 @@
+
+server:
+  allowedOrigins: http://localhost:8080, http://localhost:4200, null
+
+endpoints:
+  frontendPrefix: ""
+  socket: socket
+  stomp: stomp
+
+allowed-users-file: classpath:/json/UsersFile-test.json
+userActivityTimeoutSeconds: 30
+cacheClearIntervalSeconds: 1800

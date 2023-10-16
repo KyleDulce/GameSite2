@@ -1,0 +1,78 @@
+<div class="rooms-container">
+    <div class="active-games-header-container">
+        <div class="active-games-header-title">
+            <h1>Games</h1>
+        </div>
+        <div class="active-games-header-button">
+            <button mat-raised-button color="accent" (click)="loadRooms()">Refresh</button>
+            <button mat-raised-button color="accent" routerLink="/createroom">Create Room</button>
+        </div>
+    </div>
+    <table mat-table [dataSource]="roomList" class="mat-elevation-z1 active-games-table-container">
+        <ng-container matColumnDef="roomId">
+            <th mat-header-cell *matHeaderCellDef>Room Id</th>
+            <td mat-cell *matCellDef="let listing">{{listing.roomId.substring(0,5)}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="roomName">
+            <th mat-header-cell *matHeaderCellDef>Room Name</th>
+            <td mat-cell *matCellDef="let listing">{{listing.roomName}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="host">
+            <th mat-header-cell *matHeaderCellDef>Host</th>
+            <td mat-cell *matCellDef="let listing">{{listing.hostName}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="numPlayers">
+            <th mat-header-cell *matHeaderCellDef>Players</th>
+            <td mat-cell *matCellDef="let listing">
+                <span [className]="getNumPlayersClass(listing)">{{listing.lobbySize}} / {{listing.maxLobbySize}}</span>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="game">
+            <th mat-header-cell *matHeaderCellDef>Game</th>
+            <td mat-cell *matCellDef="let listing">{{listing.gameType}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let listing">
+                <span [className]="getGameStatusClass(listing)">{{getGameStatusText(listing)}}</span>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="play">
+            <th mat-header-cell *matHeaderCellDef>Play</th>
+            <td mat-cell *matCellDef="let listing">
+                <button 
+                    mat-raised-button 
+                    color="accent" 
+                    (click)="joinRoom(false, listing)"
+                    [disabled]="listing.inProgress">
+                Join Game
+                </button>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="spectate">
+            <th mat-header-cell *matHeaderCellDef>Spectate</th>
+            <td mat-cell *matCellDef="let listing">
+                <button 
+                    mat-raised-button 
+                    color="accent" 
+                    (click)="joinRoom(true, listing)"
+                    [disabled]="listing.inProgress">
+                    Spectate Game
+                </button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: tableColumns;"></tr>
+    </table>
+    <div *ngIf="roomList.length === 0">
+        <h2>No Rooms Found</h2>
+    </div>
+</div>

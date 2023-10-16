@@ -1,0 +1,27 @@
+.play-games-settings-container {
+    padding: 0.5rem 1rem 0rem 1rem;
+    display: flex;
+    flex-direction: column;
+
+    .play-games-settings-row {
+        display: flex;
+        margin-bottom: 1rem;
+
+        .play-games-settings-name {
+            flex: 1 0 auto;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            width: 0;
+            margin-right: 0.5rem;
+        }
+    
+        .play-games-settings-button {
+            flex: 0 0 auto;
+        }
+    }
+
+    .play-games-settings-no-players {
+        margin-bottom: 0.5rem;
+    }
+}

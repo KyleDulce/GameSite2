@@ -1,12 +1,17 @@
 package me.dulce.gamesite.gamesite2.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.trace.http.InMemoryHttpTraceRepository;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+/**
+ * Configuration for websockets
+ */
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
@@ -29,6 +34,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint(String.format("/%s/%s", config.getSocketEndpoint(), config.getStompEndpoint()))
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
+    }
+
+    @Bean
+    public InMemoryHttpTraceRepository createTraceRepo() {
+        return new InMemoryHttpTraceRepository();
     }
 
 }

@@ -1,0 +1,75 @@
+
+:host(.gs-flex-component) {
+    display: flex;
+}
+  
+
+.play-games-container {
+    padding: 0.5rem 2rem 2rem 2rem;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+
+    .play-games-options {
+        float: right;
+        flex: 0 1 auto;
+        display: block;
+        margin-bottom: 0.5rem;
+
+        .play-games-option-button {
+            margin-left: 1rem;
+            float: right;
+        }
+    }
+
+    .play-games-content {
+        flex: 1 1 auto;
+        
+        border-style: solid;
+        border-width: 2px;
+        border-color: var(--divider);
+        border-radius: 5px;
+
+        .play-games-outlet {
+            display: flex;
+        }
+
+        .play-games-sidebar {
+            width: 18rem;
+            height: 100%;
+            border-left: 2px solid var(--divider);
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-paper);
+            overflow: hidden;
+
+            .play-games-sidebar-header {
+                flex: 0 0 auto;
+                width: 100%;
+            }
+
+            hr {
+                width: 100%;
+                border-width: 1px;
+                border-style: solid;
+                margin: 0;
+            }
+
+            .play-games-sidebar-content {
+                flex: 1 1 auto;
+                min-height: 0;
+            }
+
+            .play-games-settings-container {
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+        }
+    }
+}
+
+.play-games-spinner {
+    height: 5rem !important;
+    width: 5rem !important;
+    margin: auto;
+}

@@ -5,5 +5,5 @@ import me.dulce.gamesite.gamesite2.user.User.UserMessage;
 public class RoomCreateRequest {
     public int maxLobbySize;
     public int gameType;
-    public UserMessage user;
+    public String roomName;
 }

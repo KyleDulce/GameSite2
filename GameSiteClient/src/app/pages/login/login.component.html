@@ -1,0 +1,43 @@
+<div class="login-container">
+    <div class="login-box">
+        <div class="login-title-container mat-primary-background">
+            <h2 class="login-title">Login With Id</h2>
+        </div>
+        <form class="login-form" [formGroup]="loginFormGroup">
+            <mat-form-field class="login-field-account">
+                <mat-label>Account Id</mat-label>
+                <input 
+                    matInput
+                    formControlName="username"
+                    type="email"
+                />
+                <mat-error *ngIf="loginFormGroup.controls['username'].hasError('required')">
+                    Account Id is required
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field class="login-field-account">
+                <mat-label>Password</mat-label>
+                <input 
+                    matInput
+                    formControlName="password"
+                    [type]="showPassword ? 'text' : 'password'"
+                />
+                <button mat-icon-button matSuffix (click)="togglePasswordVisibility()">
+                    <mat-icon [fontIcon]="showPassword ? 'visibility_off' : 'visibility'" />
+                </button>
+                <mat-error *ngIf="loginFormGroup.controls['password'].hasError('required')">
+                    Password is required
+                </mat-error>
+                <mat-error *ngIf="loginFormGroup.hasError('invalidPassword')">
+                    Password or Username is invalid
+                </mat-error>
+            </mat-form-field>
+            <div class="submit-container">
+                <button class="login-button-submit" mat-raised-button color="primary" (click)="onSubmit()">
+                    Sign In
+                </button>
+                <mat-spinner class="login-loading-spinner" *ngIf="isLoading"></mat-spinner>
+            </div>
+        </form>
+    </div>
+</div>
