@@ -1,7 +1,7 @@
 package me.dulce.gamesite.gamesite2.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.trace.http.InMemoryHttpTraceRepository;
+import org.springframework.boot.actuate.web.exchanges.InMemoryHttpExchangeRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -37,8 +37,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     }
 
     @Bean
-    public InMemoryHttpTraceRepository createTraceRepo() {
-        return new InMemoryHttpTraceRepository();
+    public InMemoryHttpExchangeRepository createTraceRepo() {
+        return new InMemoryHttpExchangeRepository();
     }
 
 }
