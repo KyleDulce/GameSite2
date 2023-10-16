@@ -1,0 +1,18 @@
+<div class="gs-name-change-dialog-container">
+    <h1 mat-dialog-title>Change Name</h1>
+    <div mat-dialog-content class="gs-name-change-content">
+        <p>Change how you appear in game</p>
+        <mat-form-field ngClass="gs-name-field-input">
+            <mat-label>Name</mat-label>
+            <input matInput [formControl]="nameFieldFormControl" [(ngModel)]="nameField" [readonly]="submit"/>
+            <mat-error *ngIf="nameFieldFormControl.hasError('required')">
+                Name cannot be blank
+            </mat-error>
+        </mat-form-field>
+    </div>
+    <div mat-dialog-actions>
+        <button mat-button color="primary" (click)="onCancel()" [disabled]="submit">Cancel</button>
+        <button mat-button color="primary" cdkFocusInitial (click)="onSubmit()" [disabled]="submit">Submit</button>
+        <mat-spinner class="gs-name-change-dialog-spinner" *ngIf="submit"></mat-spinner>
+    </div>
+</div>

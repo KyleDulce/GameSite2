@@ -1,0 +1,11 @@
+<div class="play-games-settings-container">
+    <ng-container *ngIf="!emptyPlayers">
+        <div *ngFor="let player of nonHostPlayers" class="play-games-settings-row">
+            <span class="play-games-settings-name">{{player.name}}</span>
+            <button mat-flat-button color="accent" class="play-games-settings-button" (click)="onPlayerKick(player)">Kick</button>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="emptyPlayers">
+        <span class="play-games-settings-no-players">No Other players in room</span>
+    </ng-container>
+</div>

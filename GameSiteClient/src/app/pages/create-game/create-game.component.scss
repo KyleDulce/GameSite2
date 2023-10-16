@@ -1,0 +1,23 @@
+.gs-create-games-container {
+    padding: 0.5rem 2rem 2rem 2rem;
+
+    .gs-create-games-form {
+        display: flex;
+        flex-direction: column;
+
+        .gs-create-games-submit-container{ 
+            padding-top: 2rem;
+
+            .gs-create-games-submit {
+                display: inline-block;
+            }
+            
+            .gs-create-game-spinner {
+                display: inline-block;
+                margin-left: 1rem;
+                height: 2rem !important;
+                width: 2rem !important;
+            }
+        }
+    }
+}

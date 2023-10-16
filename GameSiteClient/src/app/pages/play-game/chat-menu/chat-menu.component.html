@@ -1,0 +1,17 @@
+<div class="chat-bar-container">
+    <div class='chat-bar-content'>
+        <div class="chat-bar-messages">
+            <ng-container *ngFor="let message of messages">
+                <span class="chat-bar-message"><b>{{message.senderName}}: </b>{{message.message}}</span> 
+            </ng-container>
+        </div>
+    </div>
+    <div class='chat-bar-input'>
+        <mat-form-field class="chat-bar-input-text" appearance="outline" subscriptSizing="dynamic">
+            <input matInput placeholder="Send Message" [(ngModel)]="currentMessage">
+            <button mat-icon-button matSuffix (click)="onMessageSend()">
+                <mat-icon fontIcon="send"/>
+            </button>
+        </mat-form-field>
+    </div>
+</div>

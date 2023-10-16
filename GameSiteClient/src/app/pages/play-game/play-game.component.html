@@ -1,0 +1,39 @@
+<div class="play-games-container">
+    <div class="play-games-options">
+        <button *ngIf="isHost" mat-mini-fab color="primary" class='play-games-option-button' (click)="toggleDrawer(false)">
+            <mat-icon fontIcon="settings" />
+        </button>
+        <button mat-mini-fab color="primary" class='play-games-option-button' (click)="toggleDrawer(true)">
+            <mat-icon fontIcon="chat" />
+        </button>
+    </div>
+
+    <mat-drawer-container class="play-games-content">
+        <mat-drawer-content class="play-games-outlet">
+            <ng-container *ngIf="!gameLoaded">
+                <mat-spinner class="play-games-spinner"></mat-spinner>
+            </ng-container>
+            <ng-template [cdkPortalOutlet]="gameOutlet" *ngIf="gameLoaded"></ng-template>
+        </mat-drawer-content>
+        <mat-drawer mode="side" position="end" [opened]="gameLoaded && isSidebarOpen">
+            <div class="play-games-sidebar">
+                <div class="play-games-sidebar-header">
+                    <button mat-icon-button (click)="closeDrawer()">
+                        <mat-icon fontIcon="close" />
+                    </button>
+                </div>
+                <hr/>
+                <ng-container *ngIf="isChatSelected && gameLoaded">
+                    <gs-chat-menu class="play-games-sidebar-content"></gs-chat-menu>
+                </ng-container>
+                <ng-container *ngIf="!isChatSelected && gameLoaded">
+                    <div class="play-games-settings-container play-games-sidebar-content">
+                        <gs-player-settings-menu></gs-player-settings-menu>
+                        <hr/>
+                        <ng-template [cdkPortalOutlet]="settingOutlet" *ngIf="gameLoaded"></ng-template>
+                    </div>
+                </ng-container>
+            </div>
+        </mat-drawer>
+    </mat-drawer-container>
+</div>

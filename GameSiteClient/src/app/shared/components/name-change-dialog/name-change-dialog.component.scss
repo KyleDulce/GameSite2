@@ -1,0 +1,23 @@
+
+.gs-name-change-dialog-container {
+    padding: 1rem;
+
+    .gs-name-change-content {
+        padding-bottom: 0rem;
+        margin-bottom: 0.5rem;
+
+        .gs-name-field-input {
+            min-width: 20rem;
+        }
+    }
+
+    .gs-name-change-dialog-button {
+        float: right;
+    }
+
+    .gs-name-change-dialog-spinner {
+        margin-left: 1rem;
+        height: 2rem !important;
+        width: 2rem !important;
+    }
+}

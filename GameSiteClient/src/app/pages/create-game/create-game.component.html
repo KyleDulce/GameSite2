@@ -1,0 +1,40 @@
+<div class="gs-create-games-container">
+    <h1>Create Game</h1>
+    <form class="gs-create-games-form" [formGroup]="createRoomForm">
+        <div>
+            <mat-form-field>
+                <mat-label>Room Name</mat-label>
+                <input type="text" 
+                    matInput 
+                    [(ngModel)]="roomNameValue"
+                    formControlName="roomNameFieldControl">
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <mat-label>Game Type</mat-label>
+                <mat-select formControlName="gameTypeFieldControl">
+                    <mat-option *ngFor="let gtype of listedGameTypes" [value]="gtype">
+                        {{gtype}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <mat-label>Max Players</mat-label>
+                <input type="number" 
+                    matInput 
+                    [(ngModel)]="maxPlayersValue"
+                    formControlName="maxPlayersFieldControl">
+                    <mat-error *ngIf="createRoomForm.controls.maxPlayersFieldControl.hasError('min')">
+                        You must have at least 2 players in the room
+                    </mat-error>
+            </mat-form-field>
+        </div>
+        <div class="gs-create-games-submit-container">
+            <button mat-raised-button class="gs-create-games-submit" color="primary" (click)="onSubmit()" [disabled]="isRequested">Submit</button>
+            <mat-spinner class="gs-create-game-spinner" *ngIf="isRequested"></mat-spinner>
+        </div>
+    </form>
+</div>

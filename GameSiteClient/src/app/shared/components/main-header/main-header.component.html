@@ -1,0 +1,32 @@
+<mat-toolbar color="primary">
+    <button *ngIf="mobileMode" mat-icon-button [matMenuTriggerFor]="navMenu">
+        <mat-icon fontIcon="menu"></mat-icon>
+    </button>
+    <button mat-icon-button class="link-button" routerLink="/">
+        <mat-icon fontIcon="heart_broken" />
+    </button>
+    <ng-container *ngTemplateOutlet="mobileMode ? NavigationMenu : NavigationButtons"></ng-container>
+    <span class="nav-spacer"></span>
+    <button mat-icon-button class="link-button" (click)="handleThemeToggle()">
+        <mat-icon [fontIcon]="isDarkMode ? 'light_mode' : 'dark_mode'"/>
+    </button>
+    <button mat-flat-button color="primary" [matMenuTriggerFor]="accountMenu">{{playerName}}</button>
+    <mat-menu #accountMenu="matMenu">
+      <button mat-menu-item (click)="handleNameChange()">Change Name</button>
+      <button mat-menu-item (click)="handleLogout()">Logout</button>
+    </mat-menu>    
+</mat-toolbar>
+
+<ng-template #NavigationButtons>
+    <ng-container *ngFor="let link of links">
+        <button mat-flat-button color="primary" class="link-button" [routerLink]="link.link">{{link.title}}</button>
+    </ng-container>
+</ng-template>
+
+<ng-template #NavigationMenu>
+    <mat-menu #navMenu="matMenu">
+        <ng-container *ngFor="let link of links">
+            <button mat-menu-item class="link-button" [routerLink]="link.link">{{link.title}}</button>
+        </ng-container>
+    </mat-menu>   
+</ng-template>
