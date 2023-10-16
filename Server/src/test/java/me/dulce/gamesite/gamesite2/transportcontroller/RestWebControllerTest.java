@@ -561,7 +561,7 @@ public class RestWebControllerTest {
 
         ResponseEntity<RoomInfoResponse> actual = webController.getRoomInfo(fakeJwtToken, fakeRoomId);
 
-        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, actual.getStatusCode());
         assertFalse(actual.hasBody());
     }
 

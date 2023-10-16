@@ -14,6 +14,7 @@ import me.dulce.gamesite.gamesite2.rooms.games.generic.GameData;
 import me.dulce.gamesite.gamesite2.rooms.games.generic.GameDataType;
 import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
 import me.dulce.gamesite.gamesite2.utilservice.GamesiteUtils;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,12 +109,12 @@ public abstract class Room {
     public void userLeave(User user) {
         if(usersJoinedList.contains(user)) {
             usersJoinedList.remove(user);
+            if(user.equals(host)) {
+                this.selectNewRandomHost();
+            }
             sendDataResponseUpdate();
         } else if(spectatorsJoinedList.contains(user)) {
             spectatorsJoinedList.remove(user);
-        }
-        if(user.equals(host)) {
-            this.selectNewRandomHost();
         }
         onUserLeaveEvent(user);
     }
@@ -125,7 +126,7 @@ public abstract class Room {
      * @param response The GameData from the user
      * @return A boolean indicating if the response was successful
      */
-    public final boolean handleGameDataReceived(User user, GameData response){
+    public final boolean handleGameDataReceived(User user, @NotNull GameData response){
         boolean success = switch (response.gameDataType()) {
             case CHAT_MESSAGE -> processChatMessage((ChatMessageData) response, user);
             case SETTINGS_DATA_REQUEST -> processSettingsDataRequest(user);
@@ -176,10 +177,12 @@ public abstract class Room {
             return false;
         }
         userLeave(data.player);
-        messengerService.sendMessageToUser(
-                data.player,
-                SocketMessengerService.SocketDestinations.GAMEDATA,
-                new BlankGameData(getRoomId(), GameDataType.FORCE_KICK).parseObjectToDataMessage());
+        if(GamesiteUtils.isNotBlank(data.player.getSocketId())) {
+            messengerService.sendMessageToUser(
+                    data.player,
+                    SocketMessengerService.SocketDestinations.GAMEDATA,
+                    new BlankGameData(getRoomId(), GameDataType.FORCE_KICK).parseObjectToDataMessage());
+        }
         return true;
     }
 
@@ -222,7 +225,7 @@ public abstract class Room {
      * @return true if room is empty, false otherwise
      */
     public boolean isEmpty(){
-        return usersJoinedList.isEmpty() && spectatorsJoinedList.isEmpty();
+        return usersJoinedList.isEmpty();
     }
 
     /**

@@ -7,13 +7,17 @@ import static org.mockito.Mockito.*;
 
 import java.util.UUID;
 
-import me.dulce.gamesite.gamesite2.rooms.Room;
+import me.dulce.gamesite.gamesite2.rooms.games.common.BlankGameData;
+import me.dulce.gamesite.gamesite2.rooms.games.common.settings.KickPlayerData;
 import me.dulce.gamesite.gamesite2.rooms.games.common.testgame.TestGame;
 import me.dulce.gamesite.gamesite2.rooms.games.common.chatmessage.ChatMessageData;
 import me.dulce.gamesite.gamesite2.rooms.games.common.testgame.TestMessageData;
 import me.dulce.gamesite.gamesite2.rooms.games.generic.GameData;
+import me.dulce.gamesite.gamesite2.rooms.games.generic.GameDataType;
 import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import me.dulce.gamesite.gamesite2.rooms.Room.RoomListing;
@@ -26,13 +30,17 @@ public class RoomTest {
     private static final String user1UUID_str = "eb0f39e0-d108-4bc9-83cd-1e12d4b0c784";
     private static final String user2UUID_str = "7095790b-7a45-462c-8fbd-9506ec6a727a";
     private static final String user3UUID_str = "15b98a25-ba8c-44f0-a5fd-0e7788a1738e";
+    private static final String hostUserUUID_str = "3fac37e7-aff8-4a1f-879d-2e32eeb28ba6";
 
     private static UUID roomUUID;
     private static UUID user1UUID;
     private static UUID user2UUID;
     private static UUID user3UUID;
+    private static UUID hostUserUUID;
 
     private static int cookieBuffer = 3;
+
+    private SocketMessengerService socketMessengerServiceMock;
 
     @BeforeAll
     public static void beforeTests() {
@@ -40,6 +48,17 @@ public class RoomTest {
         user1UUID = UUID.fromString(user1UUID_str);
         user2UUID = UUID.fromString(user2UUID_str);
         user3UUID = UUID.fromString(user3UUID_str);
+        hostUserUUID = UUID.fromString(hostUserUUID_str);
+    }
+
+    @BeforeEach
+    public void beforeEachTest() {
+        socketMessengerServiceMock = mock(SocketMessengerService.class);
+    }
+
+    @AfterEach
+    public void afterEachTest() {
+        User.getCachedUsers().clear();
     }
 
     @Test
@@ -72,6 +91,8 @@ public class RoomTest {
         //assert
         assertEquals(2, room.getUsersJoinedList().size());
         assertFalse(actual);
+        verify(socketMessengerServiceMock, never())
+                .sendMessageToUser(any(User.class), any(), any());
     }
 
     @Test
@@ -87,6 +108,8 @@ public class RoomTest {
         //assert
         assertEquals(1, room.getUsersJoinedList().size());
         assertFalse(actual);
+        verify(socketMessengerServiceMock, never())
+                .sendMessageToUser(any(User.class), any(), any());
     }
 
     @Test
@@ -120,6 +143,8 @@ public class RoomTest {
         //assert
         assertEquals(0, room.getUsersJoinedList().size());
         assertFalse(actual);
+        verify(socketMessengerServiceMock, never())
+                .sendMessageToUser(any(User.class), any(), any());
     }
 
     @Test
@@ -177,6 +202,27 @@ public class RoomTest {
 
         //assert
         assertEquals(0, room.getSpectatorsJoinedList().size());
+        verify(socketMessengerServiceMock, never())
+                .sendMessageToUser(any(User.class), any(), any());
+    }
+
+    @Test
+    public void userLeave_newHostWhenHostRemoved() {
+        //assign
+        Room room = getTestRoom();
+        User host = User.createNewUser(hostUserUUID, cookieBuffer);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
+        room.userJoin(host);
+        room.userJoin(user);
+
+        //actual
+        room.userLeave(host);
+
+        //assert
+        assertEquals(1, room.getUsersJoinedList().size());
+        assertEquals(user, room.host);
+        verify(socketMessengerServiceMock, times(1))
+                .sendMessageToUser(any(User.class), any(), any());
     }
 
     @Test
@@ -226,15 +272,86 @@ public class RoomTest {
 
         //assign
         SocketMessengerService messengerService = mock(SocketMessengerService.class);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
         Room testRoom = new TestGame(roomUUID, 2, null, "test", messengerService);
         ChatMessageData sampleData = new ChatMessageData(testRoom.getRoomId(), "This is a message", "Bobby");
 
         //actual
-        testRoom.handleGameDataReceived(null, sampleData);
+        testRoom.handleGameDataReceived(user, sampleData);
 
         //assert
         verify(messengerService, times(1)).broadcastMessageToRoom(eq(testRoom), any());
+    }
 
+    @Test
+    public void handleGameDataReceived_settingDataRequest_responseSent(){
+        //assign
+        SocketMessengerService messengerService = mock(SocketMessengerService.class);
+        User user = User.createNewUser(hostUserUUID, cookieBuffer);
+        user.setSocketId("fakeId");
+        Room testRoom = new TestGame(roomUUID, 2, user, "test", messengerService);
+        BlankGameData blankGameData = new BlankGameData(roomUUID, GameDataType.SETTINGS_DATA_REQUEST);
+
+        //actual
+        testRoom.handleGameDataReceived(user, blankGameData);
+
+        //assert
+        verify(messengerService, times(1)).sendMessageToUser(any(User.class), any(), any());
+    }
+
+    @Test
+    public void handleGameDataReceived_settingDataRequestNotHost_sendError(){
+        //assign
+        SocketMessengerService messengerService = mock(SocketMessengerService.class);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
+        user.setSocketId("fakeId");
+        Room testRoom = new TestGame(roomUUID, 2, null, "test", messengerService);
+        BlankGameData blankGameData = new BlankGameData(roomUUID, GameDataType.SETTINGS_DATA_REQUEST);
+
+        //actual
+        testRoom.handleGameDataReceived(user, blankGameData);
+
+        //assert
+        verify(messengerService, times(1)).sendInvalidSocketMessageToUser(any(User.class), any(), anyInt(), anyString());
+    }
+
+    @Test
+    public void handleGameDataReceived_kickPlayerRequest_responseSent(){
+        //assign
+        SocketMessengerService messengerService = mock(SocketMessengerService.class);
+        User host = User.createNewUser(hostUserUUID, cookieBuffer);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
+        host.setSocketId("fakeId");
+        user.setSocketId("fakeId");
+        Room testRoom = new TestGame(roomUUID, 2, host, "test", messengerService);
+        testRoom.userJoin(host);
+        testRoom.userJoin(user);
+        KickPlayerData kickPlayerData = new KickPlayerData(roomUUID, user);
+
+        //actual
+        testRoom.handleGameDataReceived(host, kickPlayerData);
+
+        //assert
+        assertEquals(1, testRoom.getUsersJoinedList().size());
+        verify(messengerService, atLeastOnce()).sendMessageToUser(any(User.class), any(), any());
+    }
+
+    @Test
+    public void handleGameDataReceived_kickPlayerRequestNotHost_sendError(){
+        //assign
+        SocketMessengerService messengerService = mock(SocketMessengerService.class);
+        User host = User.createNewUser(hostUserUUID, cookieBuffer);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
+        host.setSocketId("fakeId");
+        user.setSocketId("fakeId");
+        Room testRoom = new TestGame(roomUUID, 2, null, "test", messengerService);
+        KickPlayerData kickPlayerData = new KickPlayerData(roomUUID, user);
+
+        //actual
+        testRoom.handleGameDataReceived(user, kickPlayerData);
+
+        //assert
+        verify(messengerService, times(1)).sendInvalidSocketMessageToUser(any(User.class), any(), anyInt(), anyString());
     }
 
     @Test
@@ -251,7 +368,8 @@ public class RoomTest {
     }
 
     public Room getTestRoom() {
-        return new Room(roomUUID, 2, null, "test", null) {
+        User hostUser = User.createNewUser(hostUserUUID, cookieBuffer);
+        return new Room(roomUUID, 2, hostUser, "test", socketMessengerServiceMock) {
             @Override
             public GameType getGameType() {
                 return null;
