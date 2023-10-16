@@ -26,7 +26,7 @@
                 <ng-container *ngIf="isChatSelected && gameLoaded">
                     <gs-chat-menu class="play-games-sidebar-content"></gs-chat-menu>
                 </ng-container>
-                <ng-container *ngIf="!isChatSelected && gameLoaded">
+                <ng-container *ngIf="!isChatSelected && gameLoaded && isHost">
                     <div class="play-games-settings-container play-games-sidebar-content">
                         <gs-player-settings-menu></gs-player-settings-menu>
                         <hr/>

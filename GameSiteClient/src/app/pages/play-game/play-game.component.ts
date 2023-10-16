@@ -126,9 +126,21 @@ export class PlayGameComponent implements OnInit, OnDestroy {
 
     this.gameSocketService.privateMessages
       .pipe(
-        filter(message => {
-          return message.gameDataIdString === CommonGameTypeStrings.FORCE_KICK_DATA}),
-        tap(message => this.onKicked())
+        filter(message => 
+          message.gameDataIdString === CommonGameTypeStrings.FORCE_KICK_DATA || 
+          message.gameDataIdString === CommonGameTypeStrings.HOST_CHANGE_DATA),
+        tap(
+          message => {
+            switch(message.gameDataIdString) {
+              case CommonGameTypeStrings.FORCE_KICK_DATA:
+                this.onKicked();
+                break;
+              case CommonGameTypeStrings.HOST_CHANGE_DATA:
+                this.isHost = true;
+                break;
+            }
+          }
+        )
       ).subscribe();
 
     this.gameLoaded = true;
