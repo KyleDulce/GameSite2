@@ -11,20 +11,22 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <spring-boot.version>2.6.14</spring-boot.version>
-        <jackson-databind.version>2.15.3</jackson-databind.version>
-        <lombok.version>1.18.26</lombok.version>
+        <spring-boot.version>3.1.4</spring-boot.version>
+        <jackson.version>2.15.3</jackson.version>
+        <lombok.version>1.18.30</lombok.version>
         <jjwt.version>0.11.5</jjwt.version>
-        <commons-codec.version>1.15</commons-codec.version>
+        <commons-codec.version>1.16.0</commons-codec.version>
+        <commons-collections.version>4.4</commons-collections.version>
         <jetbrains-annotations.version>24.0.1</jetbrains-annotations.version>
 
-        <mockito.version>5.0.0</mockito.version>
+        <mockito.version>5.2.0</mockito.version>
 
-        <webjars-locator.version>0.52</webjars-locator.version>
+        <webjars-locator.version>0.53</webjars-locator.version>
         <sockjs.version>1.5.1</sockjs.version>
         <stomp.version>2.3.4</stomp.version>
-        <bootstrap.version>5.1.3</bootstrap.version>
-        <jquery.version>3.6.0</jquery.version>
+        <bootstrap.version>5.3.2</bootstrap.version>
+        <jquery.version>3.7.1</jquery.version>
+        <slf4j-api.version>2.0.9</slf4j-api.version>
     </properties>
 
     <dependencies>
@@ -80,8 +82,13 @@
         <!-- Other -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson-databind.version}</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -114,12 +121,17 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
-            <version>4.4</version>
+            <version>${commons-collections.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>${jetbrains-annotations.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
         </dependency>
 
         <!-- Testing -->
