@@ -30,7 +30,7 @@ public class SettingsDataResponse extends GameData {
     }
 
     @Override
-    public void setupFromGameDataMessage(GameDataMessage message) throws Exception {
+    public void setupFromGameDataMessage(GameDataMessage message) {
         SettingsDataResponse.SettingsDataResponseMessage parsedMessage
                 = new ObjectMapper().convertValue(message.data, SettingsDataResponse.SettingsDataResponseMessage.class);
         roomId = UUID.fromString(message.roomId);
@@ -42,7 +42,7 @@ public class SettingsDataResponse extends GameData {
     }
 
     @Override
-    public Object onGetParse() throws Exception {
+    public Object onGetParse() {
         SettingsDataResponseMessage message = new SettingsDataResponseMessage();
         message.players = players.stream()
                 .map(User::toMessageableObject)

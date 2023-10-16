@@ -24,13 +24,13 @@ public class TestMessageData extends GameData {
     }
 
     @Override
-    public void setupFromGameDataMessage(GameDataMessage message) throws Exception {
+    public void setupFromGameDataMessage(GameDataMessage message) {
         this.roomId = UUID.fromString(message.roomId);
         this.message = (String) message.data;
     }
 
     @Override
-    public Object onGetParse() throws Exception {
+    public Object onGetParse() {
         return message;
     }
 }

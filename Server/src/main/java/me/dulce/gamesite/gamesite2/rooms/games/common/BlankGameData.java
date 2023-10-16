@@ -25,13 +25,13 @@ public class BlankGameData extends GameData {
     }
 
     @Override
-    public void setupFromGameDataMessage(GameDataMessage message) throws Exception {
+    public void setupFromGameDataMessage(GameDataMessage message) {
         roomId = UUID.fromString(message.roomId);
         gameDataType = GameDataType.getGameDataTypeFromString(message.gameDataIdString);
     }
 
     @Override
-    public Object onGetParse() throws Exception {
+    public Object onGetParse() {
         return null;
     }
 }

@@ -2,6 +2,7 @@ package me.dulce.gamesite.gamesite2.configuration;
 
 import lombok.Getter;
 import me.dulce.gamesite.gamesite2.utilservice.TimeService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -70,7 +71,7 @@ public class AppConfig {
     public WebMvcConfigurer corsConfiguration() {
         return new WebMvcConfigurer() {
             @Override
-            public void addCorsMappings(CorsRegistry registry) {
+            public void addCorsMappings(@NotNull CorsRegistry registry) {
                 registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*")
                         .exposedHeaders(HttpHeaders.SET_COOKIE)
