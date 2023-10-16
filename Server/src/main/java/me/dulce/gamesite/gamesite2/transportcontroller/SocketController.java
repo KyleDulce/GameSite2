@@ -1,7 +1,7 @@
 package me.dulce.gamesite.gamesite2.transportcontroller;
 
 import me.dulce.gamesite.gamesite2.rooms.RoomManager;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
+import me.dulce.gamesite.gamesite2.rooms.games.generic.GameData;
 import me.dulce.gamesite.gamesite2.transportcontroller.messaging.GameDataUpdate;
 import me.dulce.gamesite.gamesite2.transportcontroller.services.CookieService;
 import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
@@ -37,11 +37,6 @@ public class SocketController {
     @Autowired
     private CookieService cookieService;
 
-    @MessageMapping("/test")
-    public void test(@Payload GameDataUpdate payload, @Header("simpSessionId") String sessionId) {
-        socketMessengerService.sendMessageToUser(sessionId, SocketDestinations.TEST, "Hello World");
-    }
-
     @MessageMapping("/game")
     public void game(@Payload GameDataUpdate payload, @Header("simpSessionId") String socketSessionId) {
         Optional<User> userOptional = cookieService.validateUserCookie(payload.authToken);
@@ -53,7 +48,7 @@ public class SocketController {
             return;
         }
 
-        if(!userOptional.get().getSocketId().equals(socketSessionId)) {
+        if(!socketSessionId.equals(userOptional.get().getSocketId())) {
             userOptional.get().setSocketId(socketSessionId);
         }
 

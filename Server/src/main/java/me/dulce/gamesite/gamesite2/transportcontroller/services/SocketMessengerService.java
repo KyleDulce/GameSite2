@@ -1,6 +1,6 @@
 package me.dulce.gamesite.gamesite2.transportcontroller.services;
 
-import me.dulce.gamesite.gamesite2.rooms.managers.Room;
+import me.dulce.gamesite.gamesite2.rooms.Room;
 import me.dulce.gamesite.gamesite2.transportcontroller.messaging.InvalidSocketMessage;
 import me.dulce.gamesite.gamesite2.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +55,16 @@ public class SocketMessengerService {
         simpMessagingTemplate.convertAndSendToUser(sessionId, destination.getEndpoint(), payload, simpMessageHeaderAccessor.getMessageHeaders());
     }
 
+    /**
+     * sends message to user regarding invalid message
+     * @param user
+     * @param destination
+     * @param code
+     * @param message
+     */
+    public void sendInvalidSocketMessageToUser(User user, SocketDestinations destination, int code, String message) {
+        sendMessageToUser(user.getSocketId(), destination, buildInvalidMessageObject(code, message));
+    }
 
     /**
      * sends message to user regarding invalid message
@@ -84,9 +94,7 @@ public class SocketMessengerService {
      * All destinations for clients to receive data
      */
     public enum SocketDestinations {
-        GAMEDATA("/gamePlayer"),
-        REFRESH("/refresh"),
-        TEST("/test");
+        GAMEDATA("/gamePlayer");
 
         private final String endpoint;
         SocketDestinations(String endpoint) {

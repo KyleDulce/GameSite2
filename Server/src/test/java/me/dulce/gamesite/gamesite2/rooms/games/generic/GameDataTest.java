@@ -1,8 +1,11 @@
-package me.dulce.gamesite.gamesite2.rooms.managers.games.generic;
+package me.dulce.gamesite.gamesite2.rooms.games.generic;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import me.dulce.gamesite.gamesite2.rooms.managers.games.common.testgame.TestMessageData;
+import me.dulce.gamesite.gamesite2.rooms.games.common.testgame.TestMessageData;
+import me.dulce.gamesite.gamesite2.rooms.games.generic.GameData;
+import me.dulce.gamesite.gamesite2.rooms.games.generic.GameDataMessage;
+import me.dulce.gamesite.gamesite2.rooms.games.generic.GameDataType;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;

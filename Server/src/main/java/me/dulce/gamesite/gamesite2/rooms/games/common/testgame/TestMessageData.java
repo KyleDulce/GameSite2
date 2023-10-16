@@ -1,8 +1,8 @@
-package me.dulce.gamesite.gamesite2.rooms.managers.games.common.testgame;
+package me.dulce.gamesite.gamesite2.rooms.games.common.testgame;
 
-import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameDataMessage;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameDataType;
+import me.dulce.gamesite.gamesite2.rooms.games.generic.GameData;
+import me.dulce.gamesite.gamesite2.rooms.games.generic.GameDataMessage;
+import me.dulce.gamesite.gamesite2.rooms.games.generic.GameDataType;
 
 import java.util.UUID;
 

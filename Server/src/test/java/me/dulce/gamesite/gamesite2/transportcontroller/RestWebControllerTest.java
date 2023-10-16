@@ -5,8 +5,8 @@ import static org.mockito.Mockito.*;
 
 import me.dulce.gamesite.gamesite2.configuration.AppConfig;
 import me.dulce.gamesite.gamesite2.rooms.RoomManager;
-import me.dulce.gamesite.gamesite2.rooms.managers.Room;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.GameType;
+import me.dulce.gamesite.gamesite2.rooms.Room;
+import me.dulce.gamesite.gamesite2.rooms.games.GameType;
 import me.dulce.gamesite.gamesite2.transportcontroller.messaging.*;
 import me.dulce.gamesite.gamesite2.transportcontroller.services.AuthService;
 import me.dulce.gamesite.gamesite2.transportcontroller.services.CookieService;
@@ -24,10 +24,8 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @ExtendWith({MockitoExtension.class, SpringExtension.class})
 @ContextConfiguration(classes = {RestWebController.class})
@@ -41,6 +39,8 @@ public class RestWebControllerTest {
 
     private static UUID user1UUID;
     private static UUID user2UUID;
+
+    private static int cookieBuffer = 3;
 
     @MockBean
     private RoomManager roomManager;
@@ -70,6 +70,7 @@ public class RestWebControllerTest {
 
     @Test
     public void getRoomLists_getsRooms() {
+        setupFullMockCookie();
         Room.RoomListing listing = Room.RoomListing.builder()
                 .roomId("id1")
                 .lobbySize(1)
@@ -86,17 +87,27 @@ public class RestWebControllerTest {
                    listing
                 });
 
-        ResponseEntity<Room.RoomListing[]> actual = webController.getRoomLists();
+        ResponseEntity<Room.RoomListing[]> actual = webController.getRoomLists(fakeJwtToken);
 
         assertEquals(1, actual.getBody().length);
         assertEquals(listing, actual.getBody()[0]);
     }
 
     @Test
+    public void getRoomLists_unauthorizedUser_unauthorized() {
+        when(cookieService.validateUserCookie(anyString()))
+                .thenReturn(Optional.empty());
+
+        ResponseEntity<Room.RoomListing[]> actual = webController.getRoomLists(fakeJwtToken);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, actual.getStatusCode());
+    }
+
+    @Test
     public void postJoinRoom_userJoinSuccess() {
         //assign
         setupFullMockCookie();
-        User user = User.createNewUser(user1UUID);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
         RoomJoinRequest request = new RoomJoinRequest();
         request.asSpectator = false;
         request.roomId = fakeRoomId;
@@ -122,7 +133,7 @@ public class RestWebControllerTest {
         setupFullMockCookie();
         UUID fakeRoom1UUID = UUID.fromString(fakeRoomId);
         UUID fakeRoom2UUID = UUID.fromString(fakeRoomId2);
-        User user = User.createNewUser(user1UUID);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
         RoomJoinRequest request = new RoomJoinRequest();
         request.asSpectator = false;
         request.roomId = fakeRoomId;
@@ -140,6 +151,126 @@ public class RestWebControllerTest {
         assertTrue(actual.getBody().success);
         verify(roomManager, times(1))
                 .processUserLeaveRoomRequest(eq(user), eq(fakeRoom2UUID));
+    }
+
+    @Test
+    public void postJoinRoom_userAlreadyInSameRoomAsSpec_doNothingSuccess() {
+        //assign
+        setupFullMockCookie();
+        UUID fakeRoom1UUID = UUID.fromString(fakeRoomId);
+        Room fakeRoom1 = mock(Room.class);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
+        RoomJoinRequest request = new RoomJoinRequest();
+        request.asSpectator = true;
+        request.roomId = fakeRoomId;
+        when(roomManager.getRoomThatContainsUser(any()))
+                .thenReturn(fakeRoom1UUID);
+        when(roomManager.processUserJoinRoomRequest(eq(user), eq(fakeRoom1UUID), anyBoolean()))
+                .thenReturn(true);
+        when(roomManager.getRoomFromUUID(any()))
+                .thenReturn(fakeRoom1);
+        when(fakeRoom1.getUsersJoinedList())
+                .thenReturn(Collections.emptyList());
+
+        //actual
+        ResponseEntity<RoomJoinResponse> actual = webController.postJoinRoom(fakeJwtToken, request);
+
+        //assert
+        assertEquals(HttpStatus.OK, actual.getStatusCode());
+        assertTrue(actual.hasBody());
+        assertTrue(actual.getBody().success);
+        verify(roomManager, never())
+                .processUserLeaveRoomRequest(eq(user), eq(fakeRoom1UUID));
+    }
+
+    @Test
+    public void postJoinRoom_userAlreadyInSameRoomAsJoined_doNothingSuccess() {
+        //assign
+        setupFullMockCookie();
+        UUID fakeRoom1UUID = UUID.fromString(fakeRoomId);
+        Room fakeRoom1 = mock(Room.class);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
+        RoomJoinRequest request = new RoomJoinRequest();
+        request.asSpectator = false;
+        request.roomId = fakeRoomId;
+        when(roomManager.getRoomThatContainsUser(any()))
+                .thenReturn(fakeRoom1UUID);
+        when(roomManager.processUserJoinRoomRequest(eq(user), eq(fakeRoom1UUID), anyBoolean()))
+                .thenReturn(true);
+        when(roomManager.getRoomFromUUID(any()))
+                .thenReturn(fakeRoom1);
+        when(fakeRoom1.getSpectatorsJoinedList())
+                .thenReturn(Collections.emptyList());
+
+        //actual
+        ResponseEntity<RoomJoinResponse> actual = webController.postJoinRoom(fakeJwtToken, request);
+
+        //assert
+        assertEquals(HttpStatus.OK, actual.getStatusCode());
+        assertTrue(actual.hasBody());
+        assertTrue(actual.getBody().success);
+        verify(roomManager, never())
+                .processUserLeaveRoomRequest(eq(user), eq(fakeRoom1UUID));
+    }
+
+    @Test
+    public void postJoinRoom_userRequestSpecAlreadyJoined_leaveRejoinSuccess() {
+        //assign
+        setupFullMockCookie();
+        UUID fakeRoom1UUID = UUID.fromString(fakeRoomId);
+        Room fakeRoom1 = mock(Room.class);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
+        RoomJoinRequest request = new RoomJoinRequest();
+        request.asSpectator = false;
+        request.roomId = fakeRoomId;
+        when(roomManager.getRoomThatContainsUser(any()))
+                .thenReturn(fakeRoom1UUID);
+        when(roomManager.processUserJoinRoomRequest(eq(user), eq(fakeRoom1UUID), anyBoolean()))
+                .thenReturn(true);
+        when(roomManager.getRoomFromUUID(any()))
+                .thenReturn(fakeRoom1);
+        when(fakeRoom1.getSpectatorsJoinedList())
+                .thenReturn(List.of(user));
+
+        //actual
+        ResponseEntity<RoomJoinResponse> actual = webController.postJoinRoom(fakeJwtToken, request);
+
+        //assert
+        assertEquals(HttpStatus.OK, actual.getStatusCode());
+        assertTrue(actual.hasBody());
+        assertTrue(actual.getBody().success);
+        verify(roomManager, times(1))
+                .processUserLeaveRoomRequest(eq(user), eq(fakeRoom1UUID));
+    }
+
+    @Test
+    public void postJoinRoom_userRequestJoinAlreadySpec_leaveRejoinSuccess() {
+        //assign
+        setupFullMockCookie();
+        UUID fakeRoom1UUID = UUID.fromString(fakeRoomId);
+        Room fakeRoom1 = mock(Room.class);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
+        RoomJoinRequest request = new RoomJoinRequest();
+        request.asSpectator = true;
+        request.roomId = fakeRoomId;
+        when(roomManager.getRoomThatContainsUser(any()))
+                .thenReturn(fakeRoom1UUID);
+        when(roomManager.processUserJoinRoomRequest(eq(user), eq(fakeRoom1UUID), anyBoolean()))
+                .thenReturn(true);
+        when(roomManager.getRoomFromUUID(any()))
+                .thenReturn(fakeRoom1);
+        when(fakeRoom1.getUsersJoinedList())
+                .thenReturn(List.of(user));
+
+        //actual
+        ResponseEntity<RoomJoinResponse> actual = webController.postJoinRoom(fakeJwtToken, request);
+
+        //assert
+        assertEquals(HttpStatus.OK, actual.getStatusCode());
+        assertTrue(actual.hasBody());
+        assertTrue(actual.getBody().success);
+        verify(roomManager, times(1))
+                .processUserLeaveRoomRequest(eq(user), eq(fakeRoom1UUID));
     }
 
     @Test
@@ -161,7 +292,7 @@ public class RestWebControllerTest {
         //assign
         setupMockCookie();
         RoomJoinRequest request = new RoomJoinRequest();
-        User userObj = User.createNewUser(user1UUID);
+        User userObj = User.createNewUser(user1UUID, cookieBuffer);
 
         //actual
         ResponseEntity<RoomJoinResponse> actual = webController.postJoinRoom(fakeJwtToken, request);
@@ -178,7 +309,7 @@ public class RestWebControllerTest {
         setupMockCookie();
         RoomJoinRequest request = new RoomJoinRequest();
         request.roomId = "Bad UUID";
-        User userObj = User.createNewUser(user1UUID);
+        User userObj = User.createNewUser(user1UUID, cookieBuffer);
 
         //actual
         ResponseEntity<RoomJoinResponse> actual = webController.postJoinRoom(fakeJwtToken, request);
@@ -195,7 +326,7 @@ public class RestWebControllerTest {
                 .thenReturn(Optional.empty());
         RoomJoinRequest request = new RoomJoinRequest();
         request.roomId = "Bad UUID";
-        User userObj = User.createNewUser(user1UUID);
+        User userObj = User.createNewUser(user1UUID, cookieBuffer);
 
         ResponseEntity<RoomJoinResponse> actual = webController.postJoinRoom(fakeJwtToken, request);
 
@@ -209,7 +340,7 @@ public class RestWebControllerTest {
         //assign
         setupFullMockCookie();
         UUID roomId = UUID.fromString(fakeRoomId);
-        User user = User.createNewUser(user1UUID);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
         RoomLeaveRequest request = new RoomLeaveRequest();
         request.roomId = fakeRoomId;
 
@@ -255,7 +386,7 @@ public class RestWebControllerTest {
     public void postLeaveRoom_nullRoomIdHandled() {
         //assign
         setupMockCookie();
-        User user = User.createNewUser(user1UUID);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
         RoomLeaveRequest request = new RoomLeaveRequest();
         request.roomId = null;
 
@@ -270,7 +401,7 @@ public class RestWebControllerTest {
     public void postCreateRoom_roomCreateSuccess() {
         //assign
         setupFullMockCookie();
-        User user = User.createNewUser(user1UUID);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
         RoomCreateRequest request = new RoomCreateRequest();
         request.gameType = GameType.TEST.getId();
         request.maxLobbySize = 10;
@@ -379,9 +510,65 @@ public class RestWebControllerTest {
     }
 
     @Test
+    public void getRoomInfo_success() {
+        setupFullMockCookie();
+        Room mockRoom = mock(Room.class);
+        Room.RoomListing mockRoomListing = mock(Room.RoomListing.class);
+        User mockUser = mock(User.class);
+        when(roomManager.getRoomFromUUID(any()))
+                .thenReturn(mockRoom);
+        when(mockRoom.getRoomListingObject())
+                .thenReturn(mockRoomListing);
+        when(mockRoom.getHost())
+                .thenReturn(mockUser);
+        when(mockUser.equals(any()))
+                .thenReturn(true);
+
+        ResponseEntity<RoomInfoResponse> actual = webController.getRoomInfo(fakeJwtToken, fakeRoomId);
+
+        assertEquals(HttpStatus.OK, actual.getStatusCode());
+        assertEquals(mockRoomListing, actual.getBody().room);
+        assertTrue(actual.getBody().isHost);
+    }
+
+    @Test
+    public void getRoomInfo_unauthenticatedUser_unAuthorized() {
+        setupMockCookie();
+        when(cookieService.validateUserCookie(anyString()))
+                .thenReturn(Optional.empty());
+
+        ResponseEntity<RoomInfoResponse> actual = webController.getRoomInfo(fakeJwtToken, fakeRoomId);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, actual.getStatusCode());
+        assertFalse(actual.hasBody());
+    }
+
+    @Test
+    public void getRoomInfo_invalidUUID_badRequest() {
+        setupMockCookie();
+
+        ResponseEntity<RoomInfoResponse> actual = webController.getRoomInfo(fakeJwtToken, "Bad uid");
+
+        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode());
+        assertFalse(actual.hasBody());
+    }
+
+    @Test
+    public void getRoomInfo_invalidRoom_badRequest() {
+        setupMockCookie();
+        when(roomManager.getRoomFromUUID(any()))
+                .thenReturn(null);
+
+        ResponseEntity<RoomInfoResponse> actual = webController.getRoomInfo(fakeJwtToken, fakeRoomId);
+
+        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode());
+        assertFalse(actual.hasBody());
+    }
+
+    @Test
     public void postUpdateUser_success() {
         String expectedName = "A specific Name";
-        User user = User.createNewUser(user1UUID);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
         when(cookieService.validateUserCookie(fakeJwtToken))
                 .thenReturn(Optional.of(user));
         setupMockCookieResponse("");
@@ -399,7 +586,7 @@ public class RestWebControllerTest {
     public void postUpdateUser_blankName_failedRequest() {
         String requestedName = "   ";
         String expectedName = "This is a name";
-        User user = User.createNewUser(user1UUID, expectedName);
+        User user = User.createNewUser(user1UUID, expectedName, cookieBuffer);
         when(cookieService.validateUserCookie(fakeJwtToken))
                 .thenReturn(Optional.of(user));
         UserUpdateRequest request = new UserUpdateRequest();
@@ -416,7 +603,7 @@ public class RestWebControllerTest {
     public void postUpdateUser_unauthorized_unauthorizedResponse() {
         String requestedName = "This is a name";
         String expectedName = "This is another name";
-        User user = User.createNewUser(user1UUID, expectedName);
+        User user = User.createNewUser(user1UUID, expectedName, cookieBuffer);
         when(cookieService.validateUserCookie(fakeJwtToken))
                 .thenReturn(Optional.empty());
         UserUpdateRequest request = new UserUpdateRequest();
@@ -460,6 +647,8 @@ public class RestWebControllerTest {
     public void postAuth_noPreviousCookie_success() {
         when(cookieService.getNameFromCookie(anyString()))
                 .thenReturn(Optional.empty());
+        when(config.getCookieIdBuffer())
+                .thenReturn(3);
         String samplePassword = "SomePass";
         String sampleLogin = "SomeLogin";
         UserAuthRequest request = new UserAuthRequest();
@@ -478,6 +667,8 @@ public class RestWebControllerTest {
                 .get(HttpHeaders.SET_COOKIE)
                 .get(0));
         assertEquals(1, User.getCachedUsers().size());
+
+        User.clearCache();
     }
 
     @Test
@@ -485,6 +676,8 @@ public class RestWebControllerTest {
         String expectedName = "SomeName";
         when(cookieService.getNameFromCookie(anyString()))
                 .thenReturn(Optional.of(expectedName));
+        when(config.getCookieIdBuffer())
+                .thenReturn(3);
         String samplePassword = "SomePass";
         String sampleLogin = "SomeLogin";
         UserAuthRequest request = new UserAuthRequest();
@@ -506,6 +699,8 @@ public class RestWebControllerTest {
         assertEquals(expectedName, User.getCachedUsers()
                 .get(user1UUID)
                 .getName());
+
+        User.clearCache();
     }
 
     @Test
@@ -516,6 +711,8 @@ public class RestWebControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode());
         assertFalse(actual.getBody().success);
         assertEquals(0, User.getCachedUsers().size());
+
+        User.clearCache();
     }
 
     @Test
@@ -535,13 +732,15 @@ public class RestWebControllerTest {
         assertEquals(HttpStatus.UNAUTHORIZED, actual.getStatusCode());
         assertFalse(actual.getBody().success);
         assertEquals(0, User.getCachedUsers().size());
+
+        User.clearCache();
     }
 
     @Test
     public void deleteAuthenticationToken_success() {
         String responseCookie = "deleteCookie";
         when(cookieService.validateUserCookie(eq(fakeJwtToken)))
-                .thenReturn(Optional.of(User.createNewUser(user1UUID)));
+                .thenReturn(Optional.of(User.createNewUser(user1UUID, cookieBuffer)));
         ResponseCookie responseCookieMock = mock(ResponseCookie.class);
         when(responseCookieMock.toString())
                 .thenReturn(responseCookie);
@@ -568,7 +767,7 @@ public class RestWebControllerTest {
 
     private void setupMockCookie() {
         when(cookieService.validateUserCookie(fakeJwtToken))
-                .thenReturn(Optional.of(User.createNewUser(user1UUID)));
+                .thenReturn(Optional.of(User.createNewUser(user1UUID, cookieBuffer)));
     }
 
     private void setupMockCookieResponse(String cookieValue) {

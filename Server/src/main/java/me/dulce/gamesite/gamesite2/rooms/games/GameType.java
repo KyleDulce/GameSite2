@@ -1,14 +1,14 @@
-package me.dulce.gamesite.gamesite2.rooms.managers.games;
+package me.dulce.gamesite.gamesite2.rooms.games;
 
 import java.lang.reflect.Constructor;
 import java.util.UUID;
 
-import me.dulce.gamesite.gamesite2.rooms.managers.games.common.testgame.TestGame;
+import me.dulce.gamesite.gamesite2.rooms.games.common.testgame.TestGame;
 import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import me.dulce.gamesite.gamesite2.rooms.managers.Room;
+import me.dulce.gamesite.gamesite2.rooms.Room;
 import me.dulce.gamesite.gamesite2.user.User;
 
 /**

@@ -1,4 +1,4 @@
-package me.dulce.gamesite.gamesite2.rooms.managers.games.generic;
+package me.dulce.gamesite.gamesite2.rooms.games.generic;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

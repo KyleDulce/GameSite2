@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.UUID;
 
-import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
+import me.dulce.gamesite.gamesite2.rooms.games.generic.GameData;
 import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import me.dulce.gamesite.gamesite2.rooms.managers.Room;
-import me.dulce.gamesite.gamesite2.rooms.managers.Room.RoomListing;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.GameType;
+import me.dulce.gamesite.gamesite2.rooms.Room.RoomListing;
+import me.dulce.gamesite.gamesite2.rooms.games.GameType;
 import me.dulce.gamesite.gamesite2.user.User;
 
 /**
@@ -96,10 +95,7 @@ public class RoomManager {
 
         if(room.isEmpty()) {
             activeRooms.remove(room.getRoomId());
-        }else if(room.getHost().equals(user)){
-            room.selectNewRandomHost();
         }
-
     }
 
     /**

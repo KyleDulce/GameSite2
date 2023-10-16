@@ -1,4 +1,4 @@
-package me.dulce.gamesite.gamesite2.rooms.managers;
+package me.dulce.gamesite.gamesite2.rooms;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -7,16 +7,17 @@ import static org.mockito.Mockito.*;
 
 import java.util.UUID;
 
-import me.dulce.gamesite.gamesite2.rooms.managers.games.common.testgame.TestGame;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.common.chatmessage.ChatMessageData;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.common.testgame.TestMessageData;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
+import me.dulce.gamesite.gamesite2.rooms.Room;
+import me.dulce.gamesite.gamesite2.rooms.games.common.testgame.TestGame;
+import me.dulce.gamesite.gamesite2.rooms.games.common.chatmessage.ChatMessageData;
+import me.dulce.gamesite.gamesite2.rooms.games.common.testgame.TestMessageData;
+import me.dulce.gamesite.gamesite2.rooms.games.generic.GameData;
 import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import me.dulce.gamesite.gamesite2.rooms.managers.Room.RoomListing;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.GameType;
+import me.dulce.gamesite.gamesite2.rooms.Room.RoomListing;
+import me.dulce.gamesite.gamesite2.rooms.games.GameType;
 import me.dulce.gamesite.gamesite2.user.User;
 
 public class RoomTest {
@@ -31,6 +32,8 @@ public class RoomTest {
     private static UUID user2UUID;
     private static UUID user3UUID;
 
+    private static int cookieBuffer = 3;
+
     @BeforeAll
     public static void beforeTests() {
         roomUUID = UUID.fromString(roomUUID_str);
@@ -43,7 +46,7 @@ public class RoomTest {
     public void userJoin_userAddedToRoomSuccessfully() {
         //assign
         Room room = getTestRoom();
-        User user = User.createNewUser(user1UUID);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
 
         //actual
         boolean actual = room.userJoin(user);
@@ -57,9 +60,9 @@ public class RoomTest {
     public void userJoin_userBlockedFromRoomWhenFull_resultsFalse() {
         //assign
         Room room = getTestRoom();
-        User user1 = User.createNewUser(user1UUID);
-        User user2 = User.createNewUser(user2UUID);
-        User user3 = User.createNewUser(user3UUID);
+        User user1 = User.createNewUser(user1UUID, cookieBuffer);
+        User user2 = User.createNewUser(user2UUID, cookieBuffer);
+        User user3 = User.createNewUser(user3UUID, cookieBuffer);
         room.userJoin(user1);
         room.userJoin(user2);
 
@@ -75,7 +78,7 @@ public class RoomTest {
     public void userJoin_userBlockedFromRoomWhenDuplicateUser_resultsFalse() {
         //assign
         Room room = getTestRoom();
-        User user = User.createNewUser(user1UUID);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
         room.userJoin(user);
 
         //actual
@@ -99,10 +102,17 @@ public class RoomTest {
 
             @Override
             protected boolean processGameDataForGame(User user, GameData response) { return false; }
+
+            @Override
+            protected void onUserJoinEvent(User user) {}
+            @Override
+            protected void onSpectatorJoinEvent(User user) {}
+            @Override
+            protected void onUserLeaveEvent(User user) {}
         }
 
         Room room = new RoomChild();
-        User user = User.createNewUser(user1UUID);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
 
         //actual
         boolean actual = room.userJoin(user);
@@ -116,7 +126,7 @@ public class RoomTest {
     public void spectatorJoin_userAddedToRoomSuccessfully() {
         //assign
         Room room = getTestRoom();
-        User user = User.createNewUser(user1UUID);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
 
         //actual
         boolean actual = room.spectatorJoin(user);
@@ -130,7 +140,7 @@ public class RoomTest {
     public void spectatorJoin_userBlockedFromRoomWhenDuplicateUser_resultsFalse() {
         //assign
         Room room = getTestRoom();
-        User user = User.createNewUser(user1UUID);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
         room.spectatorJoin(user);
 
         //actual
@@ -145,7 +155,7 @@ public class RoomTest {
     public void userLeave_userRemovedFromRoomIfPlaying() {
         //assign
         Room room = getTestRoom();
-        User user = User.createNewUser(user1UUID);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
         room.userJoin(user);
 
         //actual
@@ -159,7 +169,7 @@ public class RoomTest {
     public void userLeave_userRemovedFromRoomIfSpectating() {
         //assign
         Room room = getTestRoom();
-        User user = User.createNewUser(user1UUID);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
         room.spectatorJoin(user);
 
         //actual
@@ -172,7 +182,7 @@ public class RoomTest {
     @Test
     public void getRoomListingObject_RoomListingContainsSameData() {
         //assign
-        User user = User.createNewUser(user1UUID);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
         Room room = new Room(roomUUID, 2, user, "test", null) {
             @Override
             public GameType getGameType() {
@@ -181,6 +191,12 @@ public class RoomTest {
 
             @Override
             protected boolean processGameDataForGame(User user, GameData response) { return false; }
+            @Override
+            protected void onUserJoinEvent(User user) {}
+            @Override
+            protected void onSpectatorJoinEvent(User user) {}
+            @Override
+            protected void onUserLeaveEvent(User user) {}
         };
         String expectedUuid = room.getRoomId().toString();
         int expectedLobbySize = room.getUsersJoinedList().size();
@@ -243,6 +259,12 @@ public class RoomTest {
 
             @Override
             protected boolean processGameDataForGame(User user, GameData response) { return false; }
+            @Override
+            protected void onUserJoinEvent(User user) {}
+            @Override
+            protected void onSpectatorJoinEvent(User user) {}
+            @Override
+            protected void onUserLeaveEvent(User user) {}
         };
     }
 }

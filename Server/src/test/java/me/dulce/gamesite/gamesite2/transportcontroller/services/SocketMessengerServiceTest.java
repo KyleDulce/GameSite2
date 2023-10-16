@@ -1,9 +1,8 @@
 package me.dulce.gamesite.gamesite2.transportcontroller.services;
 
-import me.dulce.gamesite.gamesite2.rooms.managers.Room;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.common.testgame.TestGame;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.common.chatmessage.ChatMessageData;
-import me.dulce.gamesite.gamesite2.transportcontroller.SocketController;
+import me.dulce.gamesite.gamesite2.rooms.Room;
+import me.dulce.gamesite.gamesite2.rooms.games.common.testgame.TestGame;
+import me.dulce.gamesite.gamesite2.rooms.games.common.chatmessage.ChatMessageData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

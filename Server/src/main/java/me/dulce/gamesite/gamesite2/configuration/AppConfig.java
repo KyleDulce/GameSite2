@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -40,14 +41,20 @@ public class AppConfig {
     /**
      * Seconds before a user is automatically timed out
      */
-    @Value("${userActivityTimeoutSeconds}")
+    @Value("${auth.userActivityTimeoutSeconds}")
     private long userActivityTimeoutSeconds;
 
     /**
      * The auth user profile file
      */
-    @Value("${allowed-users-file}")
+    @Value("${auth.allowed-users-file}")
     private String usersFile;
+
+    /**
+     * Amount of active allowed cookies
+     */
+    @Value("${auth.cookieIdBuffer}")
+    private int cookieIdBuffer;
 
     public String[] getAllowedOriginsAsArray() {
         return allowedOrigins.toArray(new String[0]);
@@ -66,6 +73,7 @@ public class AppConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*")
+                        .exposedHeaders(HttpHeaders.SET_COOKIE)
                         .allowCredentials(true)
                         .allowedOrigins(getAllowedOriginsAsArray());
             }

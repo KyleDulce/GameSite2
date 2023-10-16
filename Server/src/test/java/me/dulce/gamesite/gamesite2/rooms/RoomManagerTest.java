@@ -1,7 +1,6 @@
 package me.dulce.gamesite.gamesite2.rooms;
 
-import me.dulce.gamesite.gamesite2.rooms.managers.Room;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.GameType;
+import me.dulce.gamesite.gamesite2.rooms.games.GameType;
 import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
 import me.dulce.gamesite.gamesite2.user.User;
 import org.junit.jupiter.api.BeforeAll;
@@ -23,6 +22,7 @@ public class RoomManagerTest {
 
     private static final String user1UUID_str = "eb0f39e0-d108-4bc9-83cd-1e12d4b0c784";
     private static UUID user1UUID;
+    private static int cookieBuffer = 3;
 
     @MockBean
     SocketMessengerService socketMessengerService;
@@ -39,7 +39,7 @@ public class RoomManagerTest {
     public void allUsersLeave_RoomDoesNotExist(){
 
         //assign
-        User testUser = User.createNewUser(user1UUID);
+        User testUser = User.createNewUser(user1UUID, cookieBuffer);
         UUID roomId = roomManager.createRoom(GameType.TEST, testUser, 5, "test");
 
         //actual
@@ -54,7 +54,7 @@ public class RoomManagerTest {
     public void lastUserLeaves_GetRoomThatContainsUserNull(){
 
         //assign
-        User testUser = User.createNewUser(user1UUID);
+        User testUser = User.createNewUser(user1UUID, cookieBuffer);
         UUID roomId = roomManager.createRoom(GameType.TEST, testUser, 5, "test");
 
         //actual
@@ -71,7 +71,7 @@ public class RoomManagerTest {
         //assign
         User[] users = new User[5];
         for(int i = 0; i < 5; i++){
-            users[i] = User.createNewUser(UUID.randomUUID());
+            users[i] = User.createNewUser(UUID.randomUUID(), cookieBuffer);
         }
 
         UUID roomId = roomManager.createRoom(GameType.TEST, users[0], 5, "test");

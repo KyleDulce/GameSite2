@@ -1,7 +1,7 @@
 package me.dulce.gamesite.gamesite2.transportcontroller.messaging;
 
-import me.dulce.gamesite.gamesite2.rooms.managers.games.GameType;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
+import me.dulce.gamesite.gamesite2.rooms.games.GameType;
+import me.dulce.gamesite.gamesite2.rooms.games.generic.GameData;
 import me.dulce.gamesite.gamesite2.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

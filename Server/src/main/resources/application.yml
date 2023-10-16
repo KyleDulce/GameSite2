@@ -12,11 +12,24 @@ server:
 
   allowedOrigins: http://localhost:8080, http://localhost:4200, null, http://localhost:3000
 
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include:
+          - httptrace
+  httpexchanges:
+    recording:
+      enabled: true
+
 endpoints:
   socket: socket
   stomp: stomp
 
-userActivityTimeoutSeconds: 3600
-cacheClearIntervalSeconds: 1800
+auth:
+  cookieIdBuffer: 3
+  userActivityTimeoutSeconds: 3600
+  cacheClearIntervalSeconds: 1800
 
-allowed-users-file: classpath:/UsersFile-dev.json
+  allowed-users-file: classpath:/UsersFile-dev.json

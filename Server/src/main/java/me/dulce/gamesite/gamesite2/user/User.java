@@ -2,6 +2,8 @@ package me.dulce.gamesite.gamesite2.user;
 
 import lombok.*;
 import me.dulce.gamesite.gamesite2.utilservice.GamesiteUtils;
+import org.apache.commons.collections4.queue.CircularFifoQueue;
+import org.jetbrains.annotations.TestOnly;
 
 import java.time.Instant;
 import java.util.*;
@@ -24,8 +26,8 @@ public class User {
      * @param uuid uuid of user
      * @return user object
      */
-    public static User createNewUser(UUID uuid) {
-        return createNewUser(uuid, String.valueOf(random.nextInt(10000)));
+    public static User createNewUser(UUID uuid, int cookieBuffer) {
+        return createNewUser(uuid, "User-" + random.nextInt(10000), cookieBuffer);
     }
 
     /**
@@ -34,16 +36,17 @@ public class User {
      * @param name name of user
      * @return user object
      */
-    public static User createNewUser(UUID uuid, String name) {
+    public static User createNewUser(UUID uuid, String name, int cookieBuffer) {
         User user;
         String sessionId = GamesiteUtils.generateRandomSessionId();
         if(!cachedUsers.containsKey(uuid)) {
-            user = new User(uuid, name, sessionId);
+            user = new User(uuid, name, sessionId, cookieBuffer);
         } else {
             user = cachedUsers.get(uuid);
             user.setSessionId(sessionId);
             user.setName(name);
             user.setSocketId(null);
+            user.getCookieIds().clear();
         }
         return user;
     }
@@ -74,17 +77,18 @@ public class User {
         cachedUsers.put(user.getUuid(), user);
     }
 
-    private User(UUID uid, String name, String sessionId) {
+    private User(UUID uid, String name, String sessionId, int cookieBuffer) {
         this.uuid = uid;
         this.name = name;
         this.sessionId = sessionId;
+        cookieIds = new CircularFifoQueue<>(cookieBuffer);
     }
 
     private final UUID uuid;
     @Setter private String name;
     @Setter private String sessionId;
     @Setter private String socketId = null;
-    @Setter private String cookieIdentifier = null;
+    CircularFifoQueue<Long> cookieIds;
     private Instant lastActiveTime = null;
 
     /**
@@ -107,6 +111,9 @@ public class User {
     }
 
     public boolean equals(User user) {
+        if(user == null) {
+            return false;
+        }
         return uuid.equals(user.getUuid());
     }
 
@@ -128,5 +135,10 @@ public class User {
         public String uuid;
         public String name;
         public boolean isGuest;
+    }
+
+    @TestOnly
+    public static void clearCache() {
+        cachedUsers.clear();
     }
 }

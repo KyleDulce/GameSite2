@@ -8,6 +8,7 @@ import me.dulce.gamesite.gamesite2.configuration.AppConfig;
 import me.dulce.gamesite.gamesite2.user.User;
 import me.dulce.gamesite.gamesite2.utilservice.TimeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.server.Cookie;
 import org.springframework.http.ResponseCookie;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -46,7 +47,7 @@ public class CookieService {
         this.jwtKey = Keys.keyPairFor(SIGNATURE_ALGORITHM);
     }
 
-    @Scheduled(fixedDelayString = "${cacheClearIntervalSeconds}")
+    @Scheduled(fixedDelayString = "${auth.cacheClearIntervalSeconds}")
     public void clearCachedUsersTask() {
         Collection<User> users = User.getCachedUsers().values();
         Instant now = timeService.getCurrentInstant();
@@ -70,8 +71,8 @@ public class CookieService {
      */
     public String generateNewUserJwtToken(User user) {
         Instant currentTime = timeService.getCurrentInstant();
-        String cookieValue = String.valueOf(randomObj.nextInt());
-        user.setCookieIdentifier(cookieValue);
+        long cookieValue = randomObj.nextLong();
+        user.getCookieIds().add(cookieValue);
         return Jwts.builder()
                 .setIssuedAt(Date.from(currentTime))
                 .setExpiration(Date.from(currentTime.plus(config.getUserActivityTimeoutSeconds(), ChronoUnit.SECONDS)))
@@ -92,7 +93,9 @@ public class CookieService {
 
         return ResponseCookie.from(AUTH_COOKIE_ID, jws)
                 .maxAge(config.getUserActivityTimeoutSeconds())
-                .httpOnly(true)
+                .httpOnly(false)
+                .sameSite(Cookie.SameSite.LAX.attributeValue())
+                .path("/")
                 .build();
     }
 
@@ -115,7 +118,7 @@ public class CookieService {
             }
             String uuid = claims.getBody().get(UUID_CLAIM, String.class);
             String sessionId = claims.getBody().get(SESSION_CLAIM, String.class);
-            String cookieValue = claims.getBody().get(COOKIE_CLAIM, String.class);
+            long cookieValue = claims.getBody().get(COOKIE_CLAIM, Long.class);
 
             //verify uuid and session
             Optional<User> user = User.getUserFromUUID(uuid);
@@ -127,7 +130,7 @@ public class CookieService {
                 return Optional.empty();
             }
 
-            if(!user.get().getCookieIdentifier().equals(cookieValue)) {
+            if(!user.get().getCookieIds().contains(cookieValue)) {
                 return Optional.empty();
             }
 
@@ -159,10 +162,14 @@ public class CookieService {
      */
     public ResponseCookie getDeleteCookie(User user) {
         User.getCachedUsers().remove(user.getUuid());
+        user.setSessionId(null);
+        user.getCookieIds().clear();
         //kick user from rooms
         UUID roomId = roomManager.getRoomThatContainsUser(user);
         roomManager.processUserLeaveRoomRequest(user, roomId);
         return ResponseCookie.from(AUTH_COOKIE_ID, null)
+                .path("/")
+                .sameSite(Cookie.SameSite.LAX.attributeValue())
                 .build();
     }
 }

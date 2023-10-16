@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import me.dulce.gamesite.gamesite2.rooms.RoomManager;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.common.testgame.TestMessageData;
+import me.dulce.gamesite.gamesite2.rooms.games.common.testgame.TestMessageData;
 import me.dulce.gamesite.gamesite2.transportcontroller.messaging.GameDataUpdate;
 import me.dulce.gamesite.gamesite2.transportcontroller.services.CookieService;
 import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
@@ -35,6 +35,8 @@ public class SocketControllerTest {
 
     private static UUID user1UUID;
     private static UUID room1UUID;
+
+    private static int cookieBuffer = 3;
 
     @MockBean
     private SocketMessengerService socketMessengerService;
@@ -101,7 +103,7 @@ public class SocketControllerTest {
 
     @Test
     public void game_differentSocketSession_changesWithSuccess() {
-        User user = User.createNewUser(user1UUID);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
         user.setSocketId("differentSession");
         when(cookieService.validateUserCookie(fakeJwtToken))
                 .thenReturn(Optional.of(user));
@@ -184,7 +186,7 @@ public class SocketControllerTest {
     }
 
     private void setupMockCookie() {
-        User user = User.createNewUser(user1UUID);
+        User user = User.createNewUser(user1UUID, cookieBuffer);
         user.setSocketId(fakeSessionToken);
         when(cookieService.validateUserCookie(fakeJwtToken))
                 .thenReturn(Optional.of(user));

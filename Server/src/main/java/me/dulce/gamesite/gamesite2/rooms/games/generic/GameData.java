@@ -1,6 +1,6 @@
-package me.dulce.gamesite.gamesite2.rooms.managers.games.generic;
+package me.dulce.gamesite.gamesite2.rooms.games.generic;
 
-import me.dulce.gamesite.gamesite2.rooms.managers.games.GameType;
+import me.dulce.gamesite.gamesite2.rooms.games.GameType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

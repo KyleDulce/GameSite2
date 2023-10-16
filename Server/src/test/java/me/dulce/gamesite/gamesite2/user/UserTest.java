@@ -14,6 +14,7 @@ public class UserTest {
 
     private static final String user1UUID_str = "eb0f39e0-d108-4bc9-83cd-1e12d4b0c784";
     private static UUID user1UUID;
+    private static int cookieBuffer = 3;
 
     @BeforeAll
     public static void beforeTests() {
@@ -24,7 +25,7 @@ public class UserTest {
     public void toMessageableObject_userObjectConvertsToUserMessageObject_expectSameData() {
         //assign
         String expectedName = "SomeName";
-        User userObj = User.createNewUser(user1UUID, expectedName);
+        User userObj = User.createNewUser(user1UUID, expectedName, cookieBuffer);
 
         //actual
         UserMessage actual = userObj.toMessageableObject();

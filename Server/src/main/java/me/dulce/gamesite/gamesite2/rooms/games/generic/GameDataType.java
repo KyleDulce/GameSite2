@@ -1,8 +1,10 @@
-package me.dulce.gamesite.gamesite2.rooms.managers.games.generic;
+package me.dulce.gamesite.gamesite2.rooms.games.generic;
 
-import me.dulce.gamesite.gamesite2.rooms.managers.games.common.testgame.TestMessageData;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.common.chatmessage.ChatMessageData;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.common.joingame.JoinRoomGameData;
+import me.dulce.gamesite.gamesite2.rooms.games.common.testgame.TestMessageData;
+import me.dulce.gamesite.gamesite2.rooms.games.common.BlankGameData;
+import me.dulce.gamesite.gamesite2.rooms.games.common.settings.KickPlayerData;
+import me.dulce.gamesite.gamesite2.rooms.games.common.settings.SettingsDataResponse;
+import me.dulce.gamesite.gamesite2.rooms.games.common.chatmessage.ChatMessageData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,11 +26,32 @@ public enum GameDataType {
     /**
      * Data For joining room
      */
-    JOIN_ROOM("JoinRoomData", JoinRoomGameData.class),
+    JOIN_ROOM("JoinRoomData", BlankGameData.class),
     /**
      * Data for sending chat message data
      */
-    CHAT_MESSAGE("ChatMessageData", ChatMessageData.class)
+    CHAT_MESSAGE("ChatMessageData", ChatMessageData.class),
+    /**
+     * Data for client requesting settings data
+     */
+    SETTINGS_DATA_REQUEST("SettingsDataRequest", BlankGameData.class),
+    /**
+     * Data for server responding to data request
+     */
+    SETTINGS_DATA_RESPONSE("SettingsDataResponse", SettingsDataResponse.class),
+    /**
+     * Data for requesting to kick a player
+     */
+    KICK_PLAYER("KickPlayerData", KickPlayerData.class),
+    /**
+     * Data for requesting player to become host
+     */
+    CHANGE_HOST("HostChangeData", BlankGameData.class),
+    /**
+     * Data for informing player they have been kicked
+     */
+    FORCE_KICK("ForceKickData", BlankGameData.class),
+
     ;
     private static final Logger LOGGER = LoggerFactory.getLogger(GameDataType.class);
     private final String id;

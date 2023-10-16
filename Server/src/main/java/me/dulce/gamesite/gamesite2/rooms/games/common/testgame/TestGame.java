@@ -1,8 +1,8 @@
-package me.dulce.gamesite.gamesite2.rooms.managers.games.common.testgame;
+package me.dulce.gamesite.gamesite2.rooms.games.common.testgame;
 
-import me.dulce.gamesite.gamesite2.rooms.managers.Room;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.GameType;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
+import me.dulce.gamesite.gamesite2.rooms.games.generic.GameData;
+import me.dulce.gamesite.gamesite2.rooms.Room;
+import me.dulce.gamesite.gamesite2.rooms.games.GameType;
 import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
 import me.dulce.gamesite.gamesite2.user.User;
 
@@ -25,4 +25,10 @@ public class TestGame extends Room {
     protected boolean processGameDataForGame(User user, GameData response) {
         return true;
     }
+    @Override
+    protected void onUserJoinEvent(User user) {}
+    @Override
+    protected void onSpectatorJoinEvent(User user) {}
+    @Override
+    protected void onUserLeaveEvent(User user) {}
 }

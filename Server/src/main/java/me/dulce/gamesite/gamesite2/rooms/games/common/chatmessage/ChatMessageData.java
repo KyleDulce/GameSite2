@@ -1,11 +1,11 @@
-package me.dulce.gamesite.gamesite2.rooms.managers.games.common.chatmessage;
+package me.dulce.gamesite.gamesite2.rooms.games.common.chatmessage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameDataMessage;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameDataType;
+import me.dulce.gamesite.gamesite2.rooms.games.generic.GameData;
+import me.dulce.gamesite.gamesite2.rooms.games.generic.GameDataMessage;
+import me.dulce.gamesite.gamesite2.rooms.games.generic.GameDataType;
 
 import java.util.UUID;
 

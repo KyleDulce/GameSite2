@@ -1,4 +1,4 @@
-package me.dulce.gamesite.gamesite2.rooms.managers;
+package me.dulce.gamesite.gamesite2.rooms;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -6,14 +6,20 @@ import java.util.Random;
 import java.util.UUID;
 
 import lombok.*;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.common.chatmessage.ChatMessageData;
-import me.dulce.gamesite.gamesite2.rooms.managers.games.generic.GameData;
+import me.dulce.gamesite.gamesite2.rooms.games.common.BlankGameData;
+import me.dulce.gamesite.gamesite2.rooms.games.common.chatmessage.ChatMessageData;
+import me.dulce.gamesite.gamesite2.rooms.games.common.settings.KickPlayerData;
+import me.dulce.gamesite.gamesite2.rooms.games.common.settings.SettingsDataResponse;
+import me.dulce.gamesite.gamesite2.rooms.games.generic.GameData;
+import me.dulce.gamesite.gamesite2.rooms.games.generic.GameDataType;
 import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
+import me.dulce.gamesite.gamesite2.utilservice.GamesiteUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import me.dulce.gamesite.gamesite2.rooms.managers.games.GameType;
+import me.dulce.gamesite.gamesite2.rooms.games.GameType;
 import me.dulce.gamesite.gamesite2.user.User;
+import org.springframework.http.HttpStatus;
 
 /**
  * Room instance for games
@@ -49,6 +55,9 @@ public abstract class Room {
      * @return true if successful
      */
     protected abstract boolean processGameDataForGame(User user, GameData response);
+    protected abstract void onUserJoinEvent(User user);
+    protected abstract void onSpectatorJoinEvent(User user);
+    protected abstract void onUserLeaveEvent(User user);
 
     public Room(UUID roomId, int maxUserCount, User host, String roomName, SocketMessengerService messengerService) {
         this.roomId = roomId;
@@ -71,6 +80,8 @@ public abstract class Room {
     public boolean userJoin(User user) {
         if(usersJoinedList.size() < maxUsers && !isInProgress && !usersJoinedList.contains(user)) {
             usersJoinedList.add(user);
+            sendDataResponseUpdate();
+            onUserJoinEvent(user);
             return true;
         }
         return false;
@@ -84,6 +95,7 @@ public abstract class Room {
     public boolean spectatorJoin(User user) {
         if(!spectatorsJoinedList.contains(user)) {
             spectatorsJoinedList.add(user);
+            onSpectatorJoinEvent(user);
             return true;
         }
         return false;
@@ -96,9 +108,14 @@ public abstract class Room {
     public void userLeave(User user) {
         if(usersJoinedList.contains(user)) {
             usersJoinedList.remove(user);
+            sendDataResponseUpdate();
         } else if(spectatorsJoinedList.contains(user)) {
             spectatorsJoinedList.remove(user);
         }
+        if(user.equals(host)) {
+            this.selectNewRandomHost();
+        }
+        onUserLeaveEvent(user);
     }
 
     /**
@@ -109,19 +126,28 @@ public abstract class Room {
      * @return A boolean indicating if the response was successful
      */
     public final boolean handleGameDataReceived(User user, GameData response){
-        if(response instanceof ChatMessageData){
-            return processChatMessage((ChatMessageData) response)
-                    && processGameDataForGame(user, response);
-        }
-        return processGameDataForGame(user, response);
+        boolean success = switch (response.gameDataType()) {
+            case CHAT_MESSAGE -> processChatMessage((ChatMessageData) response, user);
+            case SETTINGS_DATA_REQUEST -> processSettingsDataRequest(user);
+            case KICK_PLAYER -> processPlayerKickRequest(user, (KickPlayerData) response);
+            default -> true;
+        };
+
+        return processGameDataForGame(user, response) && success;
     }
 
     /**
      * Randomly selects a new host from the users in the room
      */
-    public void selectNewRandomHost(){
+    protected void selectNewRandomHost(){
+        if(usersJoinedList.size() <= 0) {
+            return;
+        }
         Random rng = new Random();
         host = usersJoinedList.get(rng.nextInt(usersJoinedList.size()));
+        messengerService.sendMessageToUser(host,
+                SocketMessengerService.SocketDestinations.GAMEDATA,
+                new BlankGameData(getRoomId(), GameDataType.CHANGE_HOST).parseObjectToDataMessage());
     }
 
     /**
@@ -129,9 +155,47 @@ public abstract class Room {
      * @param chatMessage the message to send
      * @return true if successful, false otherwise
      */
-    private boolean processChatMessage(ChatMessageData chatMessage){
-        messengerService.broadcastMessageToRoom(this, chatMessage.parseObjectToDataMessage().data);
+    private boolean processChatMessage(ChatMessageData chatMessage, User user){
+        chatMessage.senderName = user.getName();
+        messengerService.broadcastMessageToRoom(this, chatMessage.parseObjectToDataMessage());
         return true;
+    }
+
+    private boolean processSettingsDataRequest(User user) {
+        if(!user.equals(host)) {
+            sendInvalidMessageDueToNotHost(user);
+            return false;
+        }
+        sendDataResponseUpdate();
+        return true;
+    }
+
+    private boolean processPlayerKickRequest(User user, KickPlayerData data) {
+        if(!user.equals(host)) {
+            sendInvalidMessageDueToNotHost(user);
+            return false;
+        }
+        userLeave(data.player);
+        messengerService.sendMessageToUser(
+                data.player,
+                SocketMessengerService.SocketDestinations.GAMEDATA,
+                new BlankGameData(getRoomId(), GameDataType.FORCE_KICK).parseObjectToDataMessage());
+        return true;
+    }
+
+    protected void sendDataResponseUpdate() {
+        if(GamesiteUtils.isNotBlank(host.getSocketId())) {
+            messengerService.sendMessageToUser(host,
+                    SocketMessengerService.SocketDestinations.GAMEDATA,
+                    new SettingsDataResponse(getRoomId(), usersJoinedList).parseObjectToDataMessage());
+        }
+    }
+
+    protected void sendInvalidMessageDueToNotHost(User user) {
+        messengerService.sendInvalidSocketMessageToUser(user,
+                SocketMessengerService.SocketDestinations.GAMEDATA,
+                HttpStatus.FORBIDDEN.value(),
+                "Only Host can make this request");
     }
 
     /**
