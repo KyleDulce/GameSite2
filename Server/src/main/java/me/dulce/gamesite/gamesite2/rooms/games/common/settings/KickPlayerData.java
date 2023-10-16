@@ -28,7 +28,7 @@ public class KickPlayerData extends GameData {
     }
 
     @Override
-    public void setupFromGameDataMessage(GameDataMessage message) throws Exception {
+    public void setupFromGameDataMessage(GameDataMessage message) {
         KickPlayerDataMessage parsedMessage
                 = new ObjectMapper().convertValue(message.data, KickPlayerDataMessage.class);
         roomId = UUID.fromString(message.roomId);
@@ -40,7 +40,7 @@ public class KickPlayerData extends GameData {
     }
 
     @Override
-    public Object onGetParse() throws Exception {
+    public Object onGetParse() {
         KickPlayerDataMessage message = new KickPlayerDataMessage();
         message.player = player.toMessageableObject();
         return message;

@@ -31,7 +31,7 @@ public class ChatMessageData extends GameData {
     }
 
     @Override
-    public void setupFromGameDataMessage(GameDataMessage message) throws Exception {
+    public void setupFromGameDataMessage(GameDataMessage message) {
         ChatMessage parsedMessage = new ObjectMapper().convertValue(message.data, ChatMessage.class);
         roomId = UUID.fromString(message.roomId);
         messageText = parsedMessage.message;
@@ -39,7 +39,7 @@ public class ChatMessageData extends GameData {
     }
 
     @Override
-    public Object onGetParse() throws Exception {
+    public Object onGetParse() {
         ChatMessage result = new ChatMessage();
         result.message = messageText;
         result.senderName = senderName;

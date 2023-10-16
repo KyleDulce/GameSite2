@@ -12,7 +12,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <spring-boot.version>2.6.14</spring-boot.version>
-        <jackson-databind.version>2.13.4.1</jackson-databind.version>
+        <jackson-databind.version>2.15.3</jackson-databind.version>
         <lombok.version>1.18.26</lombok.version>
         <jjwt.version>0.11.5</jjwt.version>
         <commons-codec.version>1.15</commons-codec.version>
