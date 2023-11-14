@@ -27,6 +27,9 @@
         <bootstrap.version>5.3.2</bootstrap.version>
         <jquery.version>3.7.1</jquery.version>
         <slf4j-api.version>2.0.9</slf4j-api.version>
+
+        <maven.surefire.version>3.2.1</maven.surefire.version>
+        <maven.assembly.version>3.6.0</maven.assembly.version>
     </properties>
 
     <dependencies>
@@ -161,4 +164,42 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <finalName>${artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.version}</version>
+                <configuration>
+                    <failIfNoTests>true</failIfNoTests>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${maven.assembly.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <mainClass>
+                                        me.dulce.gamesite.gamesite2.Gamesite2Application
+                                    </mainClass>
+                                </manifest>
+                            </archive>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
