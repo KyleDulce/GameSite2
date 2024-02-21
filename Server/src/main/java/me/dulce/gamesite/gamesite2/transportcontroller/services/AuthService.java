@@ -23,6 +23,7 @@ import java.util.UUID;
  * Service handling authentication of user
  */
 @Service
+@Deprecated
 public class AuthService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthService.class);

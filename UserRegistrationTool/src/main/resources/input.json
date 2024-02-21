@@ -1,0 +1,25 @@
+{
+  "copypasta": {
+    "username": "replaceme",
+    "password": "replaceme",
+    "roles": [
+      "User"
+    ]
+  },
+  "users": [
+    {
+      "username": "SecretDeveloperUser",
+      "password": "SimpleDeveloperPassword",
+      "roles": [
+        "User"
+      ]
+    },
+    {
+      "username": "SecretDeveloperUser2",
+      "password": "SimpleDeveloperPassword",
+      "roles": [
+        "User"
+      ]
+    }
+  ]
+}

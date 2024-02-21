@@ -32,4 +32,6 @@ auth:
   userActivityTimeoutSeconds: 3600
   cacheClearIntervalSeconds: 1800
 
-  allowed-users-file: classpath:/UsersFile-dev.json
+  private_key: classpath:/exclude-from-build/privatekey.key
+  public_key: classpath:/exclude-from-build/publickey.crt
+  allowed-users-file: classpath:/exclude-from-build/UsersFile-dev.json

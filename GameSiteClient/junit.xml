@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="6" failures="2" errors="17" time="28.009">
+  <testsuite name="src\app\app.component.spec.ts" errors="1" failures="0" skipped="0" timestamp="1970-01-01T00:00:00" time="0" tests="0">
+    <testcase classname="Test suite failed to run" name="src\app\app.component.spec.ts" time="0">
+      <error>  ● Test suite failed to run
+
+    Cannot find module &apos;src/environments/environment&apos; from &apos;src/app/shared/services/storage.service.ts&apos;
+
+    Require stack:
+      src/app/shared/services/storage.service.ts
+      src/app/shared/services/configuration.service.ts
+      src/app/app.component.ts
+      src/app/app.component.spec.ts
+
+      1 | import { Injectable } from &apos;@angular/core&apos;;
+    &gt; 2 | import { environment } from &apos;src/environments/environment&apos;;
+        | ^
+      3 |
+      4 | export enum StorageProperty {
+      5 |   CONFIG_USE_LIGHTMODE = &apos;gs-config-use-light&apos;,
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.&lt;anonymous&gt; (src/app/shared/services/storage.service.ts:2:1)
+      at Object.&lt;anonymous&gt; (src/app/shared/services/configuration.service.ts:2:1)
+      at Object.&lt;anonymous&gt; (src/app/app.component.ts:6:1)
+      at Object.&lt;anonymous&gt; (src/app/app.component.spec.ts:3:1)
+</error>
+    </testcase>
+    <testcase classname="Test suite failed to run" name="src\app\app.component.spec.ts" time="0">
+      <failure>{&quot;code&quot;:&quot;MODULE_NOT_FOUND&quot;,&quot;hint&quot;:&quot;&quot;,&quot;requireStack&quot;:[&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\shared\\services\\storage.service.ts&quot;,&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\shared\\services\\configuration.service.ts&quot;,&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\app.component.ts&quot;,&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\app.component.spec.ts&quot;],&quot;siblingWithSimilarExtensionFound&quot;:false,&quot;moduleName&quot;:&quot;src/environments/environment&quot;,&quot;_originalMessage&quot;:&quot;Cannot find module &apos;src/environments/environment&apos; from &apos;src/app/shared/services/storage.service.ts&apos;&quot;}</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="src\app\shared\components\name-change-dialog\name-change-dialog.component.spec.ts" errors="1" failures="0" skipped="0" timestamp="1970-01-01T00:00:00" time="0" tests="0">
+    <testcase classname="Test suite failed to run" name="src\app\shared\components\name-change-dialog\name-change-dialog.component.spec.ts" time="0">
+      <error>  ● Test suite failed to run
+
+    Cannot find module &apos;src/environments/environment&apos; from &apos;src/app/shared/services/rest-api.service.ts&apos;
+
+    Require stack:
+      src/app/shared/services/rest-api.service.ts
+      src/app/shared/components/name-change-dialog/name-change-dialog.component.ts
+      src/app/shared/components/name-change-dialog/name-change-dialog.component.spec.ts
+
+      33 | } from &apos;../models/rest-api.model&apos;;
+      34 | import { serializeGameTypeToNumber } from &apos;../models/system.model&apos;;
+    &gt; 35 | import { environment } from &apos;src/environments/environment&apos;;
+         | ^
+      36 | import { ConfigurationService } from &apos;./configuration.service&apos;;
+      37 |
+      38 | @Injectable({
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.&lt;anonymous&gt; (src/app/shared/services/rest-api.service.ts:35:1)
+      at Object.&lt;anonymous&gt; (src/app/shared/components/name-change-dialog/name-change-dialog.component.ts:4:1)
+      at Object.&lt;anonymous&gt; (src/app/shared/components/name-change-dialog/name-change-dialog.component.spec.ts:3:1)
+</error>
+    </testcase>
+    <testcase classname="Test suite failed to run" name="src\app\shared\components\name-change-dialog\name-change-dialog.component.spec.ts" time="0">
+      <failure>{&quot;code&quot;:&quot;MODULE_NOT_FOUND&quot;,&quot;hint&quot;:&quot;&quot;,&quot;requireStack&quot;:[&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\shared\\services\\rest-api.service.ts&quot;,&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\shared\\components\\name-change-dialog\\name-change-dialog.component.ts&quot;,&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\shared\\components\\name-change-dialog\\name-change-dialog.component.spec.ts&quot;],&quot;siblingWithSimilarExtensionFound&quot;:false,&quot;moduleName&quot;:&quot;src/environments/environment&quot;,&quot;_originalMessage&quot;:&quot;Cannot find module &apos;src/environments/environment&apos; from &apos;src/app/shared/services/rest-api.service.ts&apos;&quot;}</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="NullGameSettingsComponent" errors="0" failures="0" skipped="0" timestamp="2023-10-25T18:08:55" time="0.736" tests="1">
+    <testcase classname="NullGameSettingsComponent should create" name="NullGameSettingsComponent should create" time="0.049">
+    </testcase>
+  </testsuite>
+  <testsuite name="ErrorDialogComponent" errors="0" failures="1" skipped="0" timestamp="2023-10-25T18:08:56" time="0.868" tests="1">
+    <testcase classname="ErrorDialogComponent should create" name="ErrorDialogComponent should create" time="0.023">
+      <failure>NullInjectorError: R3InjectorError(DynamicTestModule)[InjectionToken MatMdcDialogData -&gt; InjectionToken MatMdcDialogData]: 
+  NullInjectorError: No provider for InjectionToken MatMdcDialogData!
+    at NullInjector.get (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@angular\core\fesm2022\core.mjs:8760:27)
+    at R3Injector.get (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@angular\core\fesm2022\core.mjs:9189:33)
+    at R3Injector.get (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@angular\core\fesm2022\core.mjs:9189:33)
+    at ChainedInjector.get (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@angular\core\fesm2022\core.mjs:12995:36)
+    at lookupTokenUsingModuleInjector (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@angular\core\fesm2022\core.mjs:4425:39)
+    at getOrCreateInjectable (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@angular\core\fesm2022\core.mjs:4473:12)
+    at ɵɵdirectiveInject (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@angular\core\fesm2022\core.mjs:10766:12)
+    at NodeInjectorFactory.ErrorDialogComponent_Factory [as factory] (ng:///ErrorDialogComponent/ɵfac.js:5:48)
+    at getNodeInjectable (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@angular\core\fesm2022\core.mjs:4658:44)
+    at createRootComponent (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@angular\core\fesm2022\core.mjs:13240:35)
+    at ComponentFactory.create (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@angular\core\fesm2022\core.mjs:13098:25)
+    at initComponent (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@angular\core\fesm2022\testing.mjs:26373:51)
+    at _ZoneDelegate.Object.&lt;anonymous&gt;._ZoneDelegate.invoke (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\zone.js\bundles\zone.umd.js:412:30)
+    at ProxyZoneSpec.Object.&lt;anonymous&gt;.ProxyZoneSpec.onInvoke (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\zone.js\bundles\zone-testing.umd.js:300:43)
+    at _ZoneDelegate.Object.&lt;anonymous&gt;._ZoneDelegate.invoke (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\zone.js\bundles\zone.umd.js:411:56)
+    at Object.onInvoke (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@angular\core\fesm2022\core.mjs:26249:33)
+    at _ZoneDelegate.Object.&lt;anonymous&gt;._ZoneDelegate.invoke (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\zone.js\bundles\zone.umd.js:411:56)
+    at Zone.Object.&lt;anonymous&gt;.Zone.run (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\zone.js\bundles\zone.umd.js:166:47)
+    at NgZone.run (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@angular\core\fesm2022\core.mjs:26103:28)
+    at _TestBedImpl.createComponent (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@angular\core\fesm2022\testing.mjs:26376:41)
+    at Function.createComponent (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@angular\core\fesm2022\testing.mjs:26183:37)
+    at C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\src\app\shared\components\error-dialog\error-dialog.component.spec.ts:13:23
+    at _ZoneDelegate.Object.&lt;anonymous&gt;._ZoneDelegate.invoke (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\zone.js\bundles\zone.umd.js:412:30)
+    at ProxyZoneSpec.Object.&lt;anonymous&gt;.ProxyZoneSpec.onInvoke (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\zone.js\bundles\zone-testing.umd.js:300:43)
+    at _ZoneDelegate.Object.&lt;anonymous&gt;._ZoneDelegate.invoke (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\zone.js\bundles\zone.umd.js:411:56)
+    at Zone.Object.&lt;anonymous&gt;.Zone.run (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\zone.js\bundles\zone.umd.js:166:47)
+    at Object.wrappedFunc (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\zone.js\bundles\zone-testing.umd.js:789:34)
+    at Promise.then.completed (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\jest-circus\build\run.js:281:40)
+    at async _runTest (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\jest-circus\build\run.js:246:5)
+    at async _runTestsForDescribeBlock (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\jest-circus\build\run.js:126:9)
+    at async _runTestsForDescribeBlock (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\jest-circus\build\run.js:121:9)
+    at async run (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\jest-circus\build\run.js:71:3)
+    at async runAndTransformResultsToJestFormat (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="src\app\shared\components\main-header\main-header.component.spec.ts" errors="1" failures="0" skipped="0" timestamp="1970-01-01T00:00:00" time="0" tests="0">
+    <testcase classname="Test suite failed to run" name="src\app\shared\components\main-header\main-header.component.spec.ts" time="0">
+      <error>  ● Test suite failed to run
+
+    Cannot find module &apos;src/environments/environment&apos; from &apos;src/app/shared/services/storage.service.ts&apos;
+
+    Require stack:
+      src/app/shared/services/storage.service.ts
+      src/app/shared/services/configuration.service.ts
+      src/app/shared/components/main-header/main-header.component.ts
+      src/app/shared/components/main-header/main-header.component.spec.ts
+
+      1 | import { Injectable } from &apos;@angular/core&apos;;
+    &gt; 2 | import { environment } from &apos;src/environments/environment&apos;;
+        | ^
+      3 |
+      4 | export enum StorageProperty {
+      5 |   CONFIG_USE_LIGHTMODE = &apos;gs-config-use-light&apos;,
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.&lt;anonymous&gt; (src/app/shared/services/storage.service.ts:2:1)
+      at Object.&lt;anonymous&gt; (src/app/shared/services/configuration.service.ts:2:1)
+      at Object.&lt;anonymous&gt; (src/app/shared/components/main-header/main-header.component.ts:4:1)
+      at Object.&lt;anonymous&gt; (src/app/shared/components/main-header/main-header.component.spec.ts:3:1)
+</error>
+    </testcase>
+    <testcase classname="Test suite failed to run" name="src\app\shared\components\main-header\main-header.component.spec.ts" time="0">
+      <failure>{&quot;code&quot;:&quot;MODULE_NOT_FOUND&quot;,&quot;hint&quot;:&quot;&quot;,&quot;requireStack&quot;:[&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\shared\\services\\storage.service.ts&quot;,&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\shared\\services\\configuration.service.ts&quot;,&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\shared\\components\\main-header\\main-header.component.ts&quot;,&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\shared\\components\\main-header\\main-header.component.spec.ts&quot;],&quot;siblingWithSimilarExtensionFound&quot;:false,&quot;moduleName&quot;:&quot;src/environments/environment&quot;,&quot;_originalMessage&quot;:&quot;Cannot find module &apos;src/environments/environment&apos; from &apos;src/app/shared/services/storage.service.ts&apos;&quot;}</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="src\app\pages\create-game\create-game.component.spec.ts" errors="1" failures="0" skipped="0" timestamp="1970-01-01T00:00:00" time="0" tests="0">
+    <testcase classname="Test suite failed to run" name="src\app\pages\create-game\create-game.component.spec.ts" time="0">
+      <error>  ● Test suite failed to run
+
+    Cannot find module &apos;src/app/shared/components/error-dialog/error-dialog.component&apos; from &apos;src/app/pages/create-game/create-game.component.ts&apos;
+
+    Require stack:
+      src/app/pages/create-game/create-game.component.ts
+      src/app/pages/create-game/create-game.component.spec.ts
+
+      4 | import { MatFormFieldControl } from &apos;@angular/material/form-field&apos;;
+      5 | import { Router } from &apos;@angular/router&apos;;
+    &gt; 6 | import { ErrorDialogComponent } from &apos;src/app/shared/components/error-dialog/error-dialog.component&apos;;
+        | ^
+      7 | import { RestError, RestStatusCode } from &apos;src/app/shared/models/rest-api.model&apos;;
+      8 | import { GameType, validGameTypes } from &apos;src/app/shared/models/system.model&apos;;
+      9 | import { ConfigurationService } from &apos;src/app/shared/services/configuration.service&apos;;
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.&lt;anonymous&gt; (src/app/pages/create-game/create-game.component.ts:6:1)
+      at Object.&lt;anonymous&gt; (src/app/pages/create-game/create-game.component.spec.ts:3:1)
+</error>
+    </testcase>
+    <testcase classname="Test suite failed to run" name="src\app\pages\create-game\create-game.component.spec.ts" time="0">
+      <failure>{&quot;code&quot;:&quot;MODULE_NOT_FOUND&quot;,&quot;hint&quot;:&quot;&quot;,&quot;requireStack&quot;:[&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\pages\\create-game\\create-game.component.ts&quot;,&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\pages\\create-game\\create-game.component.spec.ts&quot;],&quot;siblingWithSimilarExtensionFound&quot;:false,&quot;moduleName&quot;:&quot;src/app/shared/components/error-dialog/error-dialog.component&quot;,&quot;_originalMessage&quot;:&quot;Cannot find module &apos;src/app/shared/components/error-dialog/error-dialog.component&apos; from &apos;src/app/pages/create-game/create-game.component.ts&apos;&quot;}</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="src\app\pages\active-game\active-game.component.spec.ts" errors="1" failures="0" skipped="0" timestamp="1970-01-01T00:00:00" time="0" tests="0">
+    <testcase classname="Test suite failed to run" name="src\app\pages\active-game\active-game.component.spec.ts" time="0">
+      <error>  ● Test suite failed to run
+
+    Cannot find module &apos;src/app/shared/components/error-dialog/error-dialog.component&apos; from &apos;src/app/pages/active-game/active-game.component.ts&apos;
+
+    Require stack:
+      src/app/pages/active-game/active-game.component.ts
+      src/app/pages/active-game/active-game.component.spec.ts
+
+      3 | import { MatSnackBar } from &apos;@angular/material/snack-bar&apos;;
+      4 | import { Router } from &apos;@angular/router&apos;;
+    &gt; 5 | import { ErrorDialogComponent } from &apos;src/app/shared/components/error-dialog/error-dialog.component&apos;;
+        | ^
+      6 | import { RestError, RestStatusCode, RoomListing } from &apos;src/app/shared/models/rest-api.model&apos;;
+      7 | import { DevModeService } from &apos;src/app/shared/services/dev-mode.service&apos;;
+      8 | import { RestApiService } from &apos;src/app/shared/services/rest-api.service&apos;;
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.&lt;anonymous&gt; (src/app/pages/active-game/active-game.component.ts:5:1)
+      at Object.&lt;anonymous&gt; (src/app/pages/active-game/active-game.component.spec.ts:3:1)
+</error>
+    </testcase>
+    <testcase classname="Test suite failed to run" name="src\app\pages\active-game\active-game.component.spec.ts" time="0">
+      <failure>{&quot;code&quot;:&quot;MODULE_NOT_FOUND&quot;,&quot;hint&quot;:&quot;&quot;,&quot;requireStack&quot;:[&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\pages\\active-game\\active-game.component.ts&quot;,&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\pages\\active-game\\active-game.component.spec.ts&quot;],&quot;siblingWithSimilarExtensionFound&quot;:false,&quot;moduleName&quot;:&quot;src/app/shared/components/error-dialog/error-dialog.component&quot;,&quot;_originalMessage&quot;:&quot;Cannot find module &apos;src/app/shared/components/error-dialog/error-dialog.component&apos; from &apos;src/app/pages/active-game/active-game.component.ts&apos;&quot;}</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="NullGameComponent" errors="0" failures="0" skipped="0" timestamp="2023-10-25T18:08:59" time="0.696" tests="1">
+    <testcase classname="NullGameComponent should create" name="NullGameComponent should create" time="0.046">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\app\pages\play-game\play-game.component.spec.ts" errors="1" failures="0" skipped="0" timestamp="1970-01-01T00:00:00" time="0" tests="0">
+    <testcase classname="Test suite failed to run" name="src\app\pages\play-game\play-game.component.spec.ts" time="0">
+      <error>  ● Test suite failed to run
+
+    Cannot find module &apos;src/app/shared/models/system.model&apos; from &apos;src/app/pages/play-game/game-loading.service.ts&apos;
+
+    Require stack:
+      src/app/pages/play-game/game-loading.service.ts
+      src/app/pages/play-game/play-game.component.ts
+      src/app/pages/play-game/play-game.component.spec.ts
+
+      2 | import { Observable, from } from &apos;rxjs&apos;;
+      3 | import { BaseGameModule } from &apos;src/app/games/common/base/base-game.module&apos;;
+    &gt; 4 | import { GameType } from &apos;src/app/shared/models/system.model&apos;;
+        | ^
+      5 | import { ComponentTypes } from &apos;src/app/shared/models/utils.model&apos;;
+      6 |
+      7 | interface ModuleRef {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.&lt;anonymous&gt; (src/app/pages/play-game/game-loading.service.ts:4:1)
+      at Object.&lt;anonymous&gt; (src/app/pages/play-game/play-game.component.ts:6:1)
+      at Object.&lt;anonymous&gt; (src/app/pages/play-game/play-game.component.spec.ts:3:1)
+</error>
+    </testcase>
+    <testcase classname="Test suite failed to run" name="src\app\pages\play-game\play-game.component.spec.ts" time="0">
+      <failure>{&quot;code&quot;:&quot;MODULE_NOT_FOUND&quot;,&quot;hint&quot;:&quot;&quot;,&quot;requireStack&quot;:[&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\pages\\play-game\\game-loading.service.ts&quot;,&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\pages\\play-game\\play-game.component.ts&quot;,&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\pages\\play-game\\play-game.component.spec.ts&quot;],&quot;siblingWithSimilarExtensionFound&quot;:false,&quot;moduleName&quot;:&quot;src/app/shared/models/system.model&quot;,&quot;_originalMessage&quot;:&quot;Cannot find module &apos;src/app/shared/models/system.model&apos; from &apos;src/app/pages/play-game/game-loading.service.ts&apos;&quot;}</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="NotFoundComponent" errors="0" failures="0" skipped="0" timestamp="2023-10-25T18:09:01" time="0.78" tests="1">
+    <testcase classname="NotFoundComponent should create" name="NotFoundComponent should create" time="0.044">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\app\pages\login\login.component.spec.ts" errors="1" failures="0" skipped="0" timestamp="1970-01-01T00:00:00" time="0" tests="0">
+    <testcase classname="Test suite failed to run" name="src\app\pages\login\login.component.spec.ts" time="0">
+      <error>  ● Test suite failed to run
+
+    Cannot find module &apos;src/app/shared/components/error-dialog/error-dialog.component&apos; from &apos;src/app/pages/login/login.component.ts&apos;
+
+    Require stack:
+      src/app/pages/login/login.component.ts
+      src/app/pages/login/login.component.spec.ts
+
+       6 | import { SHA256 } from &apos;crypto-js&apos;;
+       7 | import { filter, map, pairwise, take } from &apos;rxjs&apos;;
+    &gt;  8 | import { ErrorDialogComponent } from &apos;src/app/shared/components/error-dialog/error-dialog.component&apos;;
+         | ^
+       9 | import { RestError, RestStatusCode } from &apos;src/app/shared/models/rest-api.model&apos;;
+      10 | import { ConfigurationService } from &apos;src/app/shared/services/configuration.service&apos;;
+      11 | import { RestApiService } from &apos;src/app/shared/services/rest-api.service&apos;;
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.&lt;anonymous&gt; (src/app/pages/login/login.component.ts:8:1)
+      at Object.&lt;anonymous&gt; (src/app/pages/login/login.component.spec.ts:3:1)
+</error>
+    </testcase>
+    <testcase classname="Test suite failed to run" name="src\app\pages\login\login.component.spec.ts" time="0">
+      <failure>{&quot;code&quot;:&quot;MODULE_NOT_FOUND&quot;,&quot;hint&quot;:&quot;&quot;,&quot;requireStack&quot;:[&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\pages\\login\\login.component.ts&quot;,&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\pages\\login\\login.component.spec.ts&quot;],&quot;siblingWithSimilarExtensionFound&quot;:false,&quot;moduleName&quot;:&quot;src/app/shared/components/error-dialog/error-dialog.component&quot;,&quot;_originalMessage&quot;:&quot;Cannot find module &apos;src/app/shared/components/error-dialog/error-dialog.component&apos; from &apos;src/app/pages/login/login.component.ts&apos;&quot;}</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="HomeComponent" errors="0" failures="0" skipped="0" timestamp="2023-10-25T18:09:03" time="1.069" tests="1">
+    <testcase classname="HomeComponent should create" name="HomeComponent should create" time="0.067">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\app\shared\services\general-socket.service.spec.ts" errors="1" failures="0" skipped="0" timestamp="1970-01-01T00:00:00" time="0" tests="0">
+    <testcase classname="Test suite failed to run" name="src\app\shared\services\general-socket.service.spec.ts" time="0">
+      <error>  ● Test suite failed to run
+
+    Jest encountered an unexpected token
+
+    Jest failed to parse a file. This happens e.g. when your code or its dependencies use non-standard JavaScript syntax, or when Jest is not configured to support such syntax.
+
+    Out of the box Jest supports Babel, which will be used to transform your files into valid JS based on your Babel configuration.
+
+    By default &quot;node_modules&quot; folder is ignored by transformers.
+
+    Here&apos;s what you can do:
+     • If you are trying to use ECMAScript Modules, see https://jestjs.io/docs/ecmascript-modules for how to enable it.
+     • If you are trying to use TypeScript, see https://jestjs.io/docs/getting-started#using-typescript
+     • To have some of your &quot;node_modules&quot; files transformed, you can specify a custom &quot;transformIgnorePatterns&quot; in your config.
+     • If you need a custom transformation specify a &quot;transform&quot; option in your config.
+     • If you simply want to mock your non-JS modules (e.g. binary assets) you can stub them out with the &quot;moduleNameMapper&quot; config option.
+
+    You&apos;ll find more details and examples of these config options in the docs:
+    https://jestjs.io/docs/configuration
+    For information about custom transformations, see:
+    https://jestjs.io/docs/code-transformation
+
+    Details:
+
+    C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@stomp\rx-stomp\esm6\index.js:1
+    ({&quot;Object.&lt;anonymous&gt;&quot;:function(module,exports,require,__dirname,__filename,jest){export * from &apos;./rx-stomp-config.js&apos;;
+                                                                                      ^^^^^^
+
+    SyntaxError: Unexpected token &apos;export&apos;
+
+      1 | import { Injectable } from &apos;@angular/core&apos;;
+    &gt; 2 | import { RxStomp, RxStompConfig } from &apos;@stomp/rx-stomp&apos;;
+        | ^
+      3 | import { Observable, Subject, first, map, takeUntil } from &apos;rxjs&apos;;
+      4 | import SockJS from &apos;sockjs-client&apos;;
+      5 | import { environment } from &apos;src/environments/environment&apos;;
+
+      at Runtime.createScriptFromCode (node_modules/jest-runtime/build/index.js:1505:14)
+      at Object.&lt;anonymous&gt; (src/app/shared/services/general-socket.service.ts:2:1)
+      at Object.&lt;anonymous&gt; (src/app/shared/services/general-socket.service.spec.ts:3:1)
+</error>
+    </testcase>
+    <testcase classname="Test suite failed to run" name="src\app\shared\services\general-socket.service.spec.ts" time="0">
+      <failure>{}</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="src\app\shared\services\configuration.service.spec.ts" errors="1" failures="0" skipped="0" timestamp="1970-01-01T00:00:00" time="0" tests="0">
+    <testcase classname="Test suite failed to run" name="src\app\shared\services\configuration.service.spec.ts" time="0">
+      <error>  ● Test suite failed to run
+
+    Cannot find module &apos;src/environments/environment&apos; from &apos;src/app/shared/services/storage.service.ts&apos;
+
+    Require stack:
+      src/app/shared/services/storage.service.ts
+      src/app/shared/services/configuration.service.ts
+      src/app/shared/services/configuration.service.spec.ts
+
+      1 | import { Injectable } from &apos;@angular/core&apos;;
+    &gt; 2 | import { environment } from &apos;src/environments/environment&apos;;
+        | ^
+      3 |
+      4 | export enum StorageProperty {
+      5 |   CONFIG_USE_LIGHTMODE = &apos;gs-config-use-light&apos;,
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.&lt;anonymous&gt; (src/app/shared/services/storage.service.ts:2:1)
+      at Object.&lt;anonymous&gt; (src/app/shared/services/configuration.service.ts:2:1)
+      at Object.&lt;anonymous&gt; (src/app/shared/services/configuration.service.spec.ts:3:1)
+</error>
+    </testcase>
+    <testcase classname="Test suite failed to run" name="src\app\shared\services\configuration.service.spec.ts" time="0">
+      <failure>{&quot;code&quot;:&quot;MODULE_NOT_FOUND&quot;,&quot;hint&quot;:&quot;&quot;,&quot;requireStack&quot;:[&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\shared\\services\\storage.service.ts&quot;,&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\shared\\services\\configuration.service.ts&quot;,&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\shared\\services\\configuration.service.spec.ts&quot;],&quot;siblingWithSimilarExtensionFound&quot;:false,&quot;moduleName&quot;:&quot;src/environments/environment&quot;,&quot;_originalMessage&quot;:&quot;Cannot find module &apos;src/environments/environment&apos; from &apos;src/app/shared/services/storage.service.ts&apos;&quot;}</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="src\app\pages\play-game\game-loading.service.spec.ts" errors="1" failures="0" skipped="0" timestamp="1970-01-01T00:00:00" time="0" tests="0">
+    <testcase classname="Test suite failed to run" name="src\app\pages\play-game\game-loading.service.spec.ts" time="0">
+      <error>  ● Test suite failed to run
+
+    Cannot find module &apos;src/app/shared/models/system.model&apos; from &apos;src/app/pages/play-game/game-loading.service.ts&apos;
+
+    Require stack:
+      src/app/pages/play-game/game-loading.service.ts
+      src/app/pages/play-game/game-loading.service.spec.ts
+
+      2 | import { Observable, from } from &apos;rxjs&apos;;
+      3 | import { BaseGameModule } from &apos;src/app/games/common/base/base-game.module&apos;;
+    &gt; 4 | import { GameType } from &apos;src/app/shared/models/system.model&apos;;
+        | ^
+      5 | import { ComponentTypes } from &apos;src/app/shared/models/utils.model&apos;;
+      6 |
+      7 | interface ModuleRef {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.&lt;anonymous&gt; (src/app/pages/play-game/game-loading.service.ts:4:1)
+      at Object.&lt;anonymous&gt; (src/app/pages/play-game/game-loading.service.spec.ts:3:1)
+</error>
+    </testcase>
+    <testcase classname="Test suite failed to run" name="src\app\pages\play-game\game-loading.service.spec.ts" time="0">
+      <failure>{&quot;code&quot;:&quot;MODULE_NOT_FOUND&quot;,&quot;hint&quot;:&quot;&quot;,&quot;requireStack&quot;:[&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\pages\\play-game\\game-loading.service.ts&quot;,&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\pages\\play-game\\game-loading.service.spec.ts&quot;],&quot;siblingWithSimilarExtensionFound&quot;:false,&quot;moduleName&quot;:&quot;src/app/shared/models/system.model&quot;,&quot;_originalMessage&quot;:&quot;Cannot find module &apos;src/app/shared/models/system.model&apos; from &apos;src/app/pages/play-game/game-loading.service.ts&apos;&quot;}</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="NativeHtmlService" errors="0" failures="1" skipped="0" timestamp="2023-10-25T18:09:06" time="1.197" tests="1">
+    <testcase classname="NativeHtmlService should be created" name="NativeHtmlService should be created" time="0.038">
+      <failure>NullInjectorError: R3InjectorError[NativeHtmlService -&gt; NativeHtmlService]: 
+  NullInjectorError: No provider for NativeHtmlService!
+    at NullInjector.get (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@angular\core\fesm2022\core.mjs:8760:27)
+    at R3Injector.get (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@angular\core\fesm2022\core.mjs:9189:33)
+    at R3Injector.get (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@angular\core\fesm2022\core.mjs:9189:33)
+    at _TestBedImpl.inject (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@angular\core\fesm2022\testing.mjs:26310:62)
+    at Function.inject (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@angular\core\fesm2022\testing.mjs:26168:37)
+    at C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\src\app\shared\services\native-html.service.spec.ts:10:23
+    at _ZoneDelegate.Object.&lt;anonymous&gt;._ZoneDelegate.invoke (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\zone.js\bundles\zone.umd.js:412:30)
+    at ProxyZoneSpec.Object.&lt;anonymous&gt;.ProxyZoneSpec.onInvoke (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\zone.js\bundles\zone-testing.umd.js:300:43)
+    at _ZoneDelegate.Object.&lt;anonymous&gt;._ZoneDelegate.invoke (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\zone.js\bundles\zone.umd.js:411:56)
+    at Zone.Object.&lt;anonymous&gt;.Zone.run (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\zone.js\bundles\zone.umd.js:166:47)
+    at Object.wrappedFunc (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\zone.js\bundles\zone-testing.umd.js:789:34)
+    at Promise.then.completed (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\jest-circus\build\run.js:281:40)
+    at async _runTest (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\jest-circus\build\run.js:246:5)
+    at async _runTestsForDescribeBlock (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\jest-circus\build\run.js:126:9)
+    at async _runTestsForDescribeBlock (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\jest-circus\build\run.js:121:9)
+    at async run (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\jest-circus\build\run.js:71:3)
+    at async runAndTransformResultsToJestFormat (C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="src\app\shared\services\game-socket.service.spec.ts" errors="1" failures="0" skipped="0" timestamp="1970-01-01T00:00:00" time="0" tests="0">
+    <testcase classname="Test suite failed to run" name="src\app\shared\services\game-socket.service.spec.ts" time="0">
+      <error>  ● Test suite failed to run
+
+    Jest encountered an unexpected token
+
+    Jest failed to parse a file. This happens e.g. when your code or its dependencies use non-standard JavaScript syntax, or when Jest is not configured to support such syntax.
+
+    Out of the box Jest supports Babel, which will be used to transform your files into valid JS based on your Babel configuration.
+
+    By default &quot;node_modules&quot; folder is ignored by transformers.
+
+    Here&apos;s what you can do:
+     • If you are trying to use ECMAScript Modules, see https://jestjs.io/docs/ecmascript-modules for how to enable it.
+     • If you are trying to use TypeScript, see https://jestjs.io/docs/getting-started#using-typescript
+     • To have some of your &quot;node_modules&quot; files transformed, you can specify a custom &quot;transformIgnorePatterns&quot; in your config.
+     • If you need a custom transformation specify a &quot;transform&quot; option in your config.
+     • If you simply want to mock your non-JS modules (e.g. binary assets) you can stub them out with the &quot;moduleNameMapper&quot; config option.
+
+    You&apos;ll find more details and examples of these config options in the docs:
+    https://jestjs.io/docs/configuration
+    For information about custom transformations, see:
+    https://jestjs.io/docs/code-transformation
+
+    Details:
+
+    C:\Users\Kylej\Documents\git\GameSite2\GameSiteClient\node_modules\@stomp\rx-stomp\esm6\index.js:1
+    ({&quot;Object.&lt;anonymous&gt;&quot;:function(module,exports,require,__dirname,__filename,jest){export * from &apos;./rx-stomp-config.js&apos;;
+                                                                                      ^^^^^^
+
+    SyntaxError: Unexpected token &apos;export&apos;
+
+      1 | import { Injectable } from &apos;@angular/core&apos;;
+    &gt; 2 | import { RxStomp, RxStompConfig } from &apos;@stomp/rx-stomp&apos;;
+        | ^
+      3 | import { Observable, Subject, first, map, takeUntil } from &apos;rxjs&apos;;
+      4 | import SockJS from &apos;sockjs-client&apos;;
+      5 | import { environment } from &apos;src/environments/environment&apos;;
+
+      at Runtime.createScriptFromCode (node_modules/jest-runtime/build/index.js:1505:14)
+      at Object.&lt;anonymous&gt; (src/app/shared/services/general-socket.service.ts:2:1)
+      at Object.&lt;anonymous&gt; (src/app/shared/services/game-socket.service.ts:2:1)
+      at Object.&lt;anonymous&gt; (src/app/shared/services/game-socket.service.spec.ts:3:1)
+</error>
+    </testcase>
+    <testcase classname="Test suite failed to run" name="src\app\shared\services\game-socket.service.spec.ts" time="0">
+      <failure>{}</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="src\app\shared\services\rest-api.service.spec.ts" errors="1" failures="0" skipped="0" timestamp="1970-01-01T00:00:00" time="0" tests="0">
+    <testcase classname="Test suite failed to run" name="src\app\shared\services\rest-api.service.spec.ts" time="0">
+      <error>  ● Test suite failed to run
+
+    Cannot find module &apos;src/environments/environment&apos; from &apos;src/app/shared/services/rest-api.service.ts&apos;
+
+    Require stack:
+      src/app/shared/services/rest-api.service.ts
+      src/app/shared/services/rest-api.service.spec.ts
+
+      33 | } from &apos;../models/rest-api.model&apos;;
+      34 | import { serializeGameTypeToNumber } from &apos;../models/system.model&apos;;
+    &gt; 35 | import { environment } from &apos;src/environments/environment&apos;;
+         | ^
+      36 | import { ConfigurationService } from &apos;./configuration.service&apos;;
+      37 |
+      38 | @Injectable({
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.&lt;anonymous&gt; (src/app/shared/services/rest-api.service.ts:35:1)
+      at Object.&lt;anonymous&gt; (src/app/shared/services/rest-api.service.spec.ts:3:1)
+</error>
+    </testcase>
+    <testcase classname="Test suite failed to run" name="src\app\shared\services\rest-api.service.spec.ts" time="0">
+      <failure>{&quot;code&quot;:&quot;MODULE_NOT_FOUND&quot;,&quot;hint&quot;:&quot;&quot;,&quot;requireStack&quot;:[&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\shared\\services\\rest-api.service.ts&quot;,&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\shared\\services\\rest-api.service.spec.ts&quot;],&quot;siblingWithSimilarExtensionFound&quot;:false,&quot;moduleName&quot;:&quot;src/environments/environment&quot;,&quot;_originalMessage&quot;:&quot;Cannot find module &apos;src/environments/environment&apos; from &apos;src/app/shared/services/rest-api.service.ts&apos;&quot;}</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="src\app\shared\services\dev-mode.service.spec.ts" errors="1" failures="0" skipped="0" timestamp="1970-01-01T00:00:00" time="0" tests="0">
+    <testcase classname="Test suite failed to run" name="src\app\shared\services\dev-mode.service.spec.ts" time="0">
+      <error>  ● Test suite failed to run
+
+    Cannot find module &apos;src/environments/environment&apos; from &apos;src/app/shared/services/rest-api.service.ts&apos;
+
+    Require stack:
+      src/app/shared/services/rest-api.service.ts
+      src/app/shared/services/dev-mode.service.ts
+      src/app/shared/services/dev-mode.service.spec.ts
+
+      33 | } from &apos;../models/rest-api.model&apos;;
+      34 | import { serializeGameTypeToNumber } from &apos;../models/system.model&apos;;
+    &gt; 35 | import { environment } from &apos;src/environments/environment&apos;;
+         | ^
+      36 | import { ConfigurationService } from &apos;./configuration.service&apos;;
+      37 |
+      38 | @Injectable({
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.&lt;anonymous&gt; (src/app/shared/services/rest-api.service.ts:35:1)
+      at Object.&lt;anonymous&gt; (src/app/shared/services/dev-mode.service.ts:3:1)
+      at Object.&lt;anonymous&gt; (src/app/shared/services/dev-mode.service.spec.ts:3:1)
+</error>
+    </testcase>
+    <testcase classname="Test suite failed to run" name="src\app\shared\services\dev-mode.service.spec.ts" time="0">
+      <failure>{&quot;code&quot;:&quot;MODULE_NOT_FOUND&quot;,&quot;hint&quot;:&quot;&quot;,&quot;requireStack&quot;:[&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\shared\\services\\rest-api.service.ts&quot;,&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\shared\\services\\dev-mode.service.ts&quot;,&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\shared\\services\\dev-mode.service.spec.ts&quot;],&quot;siblingWithSimilarExtensionFound&quot;:false,&quot;moduleName&quot;:&quot;src/environments/environment&quot;,&quot;_originalMessage&quot;:&quot;Cannot find module &apos;src/environments/environment&apos; from &apos;src/app/shared/services/rest-api.service.ts&apos;&quot;}</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="src\app\shared\services\storage.service.spec.ts" errors="1" failures="0" skipped="0" timestamp="1970-01-01T00:00:00" time="0" tests="0">
+    <testcase classname="Test suite failed to run" name="src\app\shared\services\storage.service.spec.ts" time="0">
+      <error>  ● Test suite failed to run
+
+    Cannot find module &apos;src/environments/environment&apos; from &apos;src/app/shared/services/storage.service.ts&apos;
+
+    Require stack:
+      src/app/shared/services/storage.service.ts
+      src/app/shared/services/storage.service.spec.ts
+
+      1 | import { Injectable } from &apos;@angular/core&apos;;
+    &gt; 2 | import { environment } from &apos;src/environments/environment&apos;;
+        | ^
+      3 |
+      4 | export enum StorageProperty {
+      5 |   CONFIG_USE_LIGHTMODE = &apos;gs-config-use-light&apos;,
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.&lt;anonymous&gt; (src/app/shared/services/storage.service.ts:2:1)
+      at Object.&lt;anonymous&gt; (src/app/shared/services/storage.service.spec.ts:3:1)
+</error>
+    </testcase>
+    <testcase classname="Test suite failed to run" name="src\app\shared\services\storage.service.spec.ts" time="0">
+      <failure>{&quot;code&quot;:&quot;MODULE_NOT_FOUND&quot;,&quot;hint&quot;:&quot;&quot;,&quot;requireStack&quot;:[&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\shared\\services\\storage.service.ts&quot;,&quot;C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\src\\app\\shared\\services\\storage.service.spec.ts&quot;],&quot;siblingWithSimilarExtensionFound&quot;:false,&quot;moduleName&quot;:&quot;src/environments/environment&quot;,&quot;_originalMessage&quot;:&quot;Cannot find module &apos;src/environments/environment&apos; from &apos;src/app/shared/services/storage.service.ts&apos;&quot;}</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="src\app\pages\play-game\player-settings-menu\player-settings-menu.component.spec.ts" errors="1" failures="0" skipped="0" timestamp="1970-01-01T00:00:00" time="0" tests="0">
+    <testcase classname="Test suite failed to run" name="src\app\pages\play-game\player-settings-menu\player-settings-menu.component.spec.ts" time="0">
+      <error>  ● Test suite failed to run
+
+    Your test suite must contain at least one test.
+
+      at onResult (node_modules/@jest/core/build/TestScheduler.js:133:18)
+      at node_modules/@jest/core/build/TestScheduler.js:254:19
+      at node_modules/emittery/index.js:363:13
+          at Array.map (&lt;anonymous&gt;)
+      at Emittery.emit (node_modules/emittery/index.js:361:23)
+</error>
+    </testcase>
+    <testcase classname="Test suite failed to run" name="src\app\pages\play-game\player-settings-menu\player-settings-menu.component.spec.ts" time="0">
+      <failure>{&quot;message&quot;:&quot;Your test suite must contain at least one test.&quot;,&quot;stack&quot;:&quot;Error: Your test suite must contain at least one test.\n    at onResult (C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\node_modules\\@jest\\core\\build\\TestScheduler.js:133:18)\n    at C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\node_modules\\@jest\\core\\build\\TestScheduler.js:254:19\n    at C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\node_modules\\emittery\\index.js:363:13\n    at Array.map (&lt;anonymous&gt;)\n    at Emittery.emit (C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\node_modules\\emittery\\index.js:361:23)&quot;}</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="src\app\pages\play-game\chat-menu\chat-menu.component.spec.ts" errors="1" failures="0" skipped="0" timestamp="1970-01-01T00:00:00" time="0" tests="0">
+    <testcase classname="Test suite failed to run" name="src\app\pages\play-game\chat-menu\chat-menu.component.spec.ts" time="0">
+      <error>  ● Test suite failed to run
+
+    Your test suite must contain at least one test.
+
+      at onResult (node_modules/@jest/core/build/TestScheduler.js:133:18)
+      at node_modules/@jest/core/build/TestScheduler.js:254:19
+      at node_modules/emittery/index.js:363:13
+          at Array.map (&lt;anonymous&gt;)
+      at Emittery.emit (node_modules/emittery/index.js:361:23)
+</error>
+    </testcase>
+    <testcase classname="Test suite failed to run" name="src\app\pages\play-game\chat-menu\chat-menu.component.spec.ts" time="0">
+      <failure>{&quot;message&quot;:&quot;Your test suite must contain at least one test.&quot;,&quot;stack&quot;:&quot;Error: Your test suite must contain at least one test.\n    at onResult (C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\node_modules\\@jest\\core\\build\\TestScheduler.js:133:18)\n    at C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\node_modules\\@jest\\core\\build\\TestScheduler.js:254:19\n    at C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\node_modules\\emittery\\index.js:363:13\n    at Array.map (&lt;anonymous&gt;)\n    at Emittery.emit (C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\node_modules\\emittery\\index.js:361:23)&quot;}</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="src\app\shared\components\join-select-dialog\join-select-dialog.component.spec.ts" errors="1" failures="0" skipped="0" timestamp="1970-01-01T00:00:00" time="0" tests="0">
+    <testcase classname="Test suite failed to run" name="src\app\shared\components\join-select-dialog\join-select-dialog.component.spec.ts" time="0">
+      <error>  ● Test suite failed to run
+
+    Your test suite must contain at least one test.
+
+      at onResult (node_modules/@jest/core/build/TestScheduler.js:133:18)
+      at node_modules/@jest/core/build/TestScheduler.js:254:19
+      at node_modules/emittery/index.js:363:13
+          at Array.map (&lt;anonymous&gt;)
+      at Emittery.emit (node_modules/emittery/index.js:361:23)
+</error>
+    </testcase>
+    <testcase classname="Test suite failed to run" name="src\app\shared\components\join-select-dialog\join-select-dialog.component.spec.ts" time="0">
+      <failure>{&quot;message&quot;:&quot;Your test suite must contain at least one test.&quot;,&quot;stack&quot;:&quot;Error: Your test suite must contain at least one test.\n    at onResult (C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\node_modules\\@jest\\core\\build\\TestScheduler.js:133:18)\n    at C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\node_modules\\@jest\\core\\build\\TestScheduler.js:254:19\n    at C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\node_modules\\emittery\\index.js:363:13\n    at Array.map (&lt;anonymous&gt;)\n    at Emittery.emit (C:\\Users\\Kylej\\Documents\\git\\GameSite2\\GameSiteClient\\node_modules\\emittery\\index.js:361:23)&quot;}</failure>
+    </testcase>
+  </testsuite>
+</testsuites>
