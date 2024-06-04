@@ -9,36 +9,38 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-/**
- * Configuration for websockets
- */
+/** Configuration for websockets */
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    @Autowired
-    private AppConfig config;
+  @Autowired private AppConfig config;
 
-    @Override
-    public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker(String.format("/%s/topic", config.getSocketEndpoint()), // endpoint for subscription of broadcast
-                                    "/queue");
-        registry.setApplicationDestinationPrefixes(String.format("/%s/app", config.getSocketEndpoint()));  // endpoint for client messages
-        registry.setUserDestinationPrefix(String.format("/%s/user", config.getSocketEndpoint()));         // user destination prefix
-    }
+  @Override
+  public void configureMessageBroker(MessageBrokerRegistry registry) {
+    registry.enableSimpleBroker(
+        String.format(
+            "/%s/topic", config.getSocketEndpoint()), // endpoint for subscription of broadcast
+        "/queue");
+    registry.setApplicationDestinationPrefixes(
+        String.format("/%s/app", config.getSocketEndpoint())); // endpoint for client messages
+    registry.setUserDestinationPrefix(
+        String.format("/%s/user", config.getSocketEndpoint())); // user destination prefix
+  }
 
-    @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint(String.format("/%s/%s", config.getSocketEndpoint(), config.getStompEndpoint()))
-                .setAllowedOriginPatterns("*");
-        registry.addEndpoint(String.format("/%s/%s", config.getSocketEndpoint(), config.getStompEndpoint()))
-                .setAllowedOriginPatterns("*")
-                .withSockJS();
-    }
+  @Override
+  public void registerStompEndpoints(StompEndpointRegistry registry) {
+    registry
+        .addEndpoint(String.format("/%s/%s", config.getSocketEndpoint(), config.getStompEndpoint()))
+        .setAllowedOriginPatterns("*");
+    registry
+        .addEndpoint(String.format("/%s/%s", config.getSocketEndpoint(), config.getStompEndpoint()))
+        .setAllowedOriginPatterns("*")
+        .withSockJS();
+  }
 
-    @Bean
-    public InMemoryHttpExchangeRepository createTraceRepo() {
-        return new InMemoryHttpExchangeRepository();
-    }
-
+  @Bean
+  public InMemoryHttpExchangeRepository createTraceRepo() {
+    return new InMemoryHttpExchangeRepository();
+  }
 }
