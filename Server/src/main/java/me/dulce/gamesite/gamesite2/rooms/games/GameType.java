@@ -2,7 +2,6 @@ package me.dulce.gamesite.gamesite2.rooms.games;
 
 import java.lang.reflect.Constructor;
 import java.util.UUID;
-
 import lombok.Getter;
 import me.dulce.gamesite.gamesite2.rooms.Room;
 import me.dulce.gamesite.gamesite2.rooms.games.common.testgame.TestGame;
@@ -18,8 +17,7 @@ public enum GameType {
     /** Game Type for testing purposes */
     TEST("TESTING", "Test", TestGame.class);
     private static final Logger LOGGER = LoggerFactory.getLogger(GameType.class);
-    @Getter
-    private final String id;
+    @Getter private final String id;
     private final String name;
     private final Class<? extends Room> attachedClass;
 

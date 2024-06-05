@@ -15,7 +15,8 @@ public class SpringSecurityTestConfiguration {
 
     public static final String BASIC_USER_UUID_STR = "e7623437-b3e1-406d-8456-b79c175d153c";
     public static final UUID BASIC_USER_UUID = UUID.fromString(BASIC_USER_UUID_STR);
-    public static final UserSecurityDetails BASIC_USER_DETAILS = new UserSecurityDetails("{noop}abc", "basicUser", BASIC_USER_UUID);
+    public static final UserSecurityDetails BASIC_USER_DETAILS =
+            new UserSecurityDetails("{noop}abc", "basicUser", BASIC_USER_UUID);
 
     @Bean
     @Primary

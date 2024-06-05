@@ -1,13 +1,12 @@
 package me.dulce.gamesite.gamesite2.transportcontroller;
 
-import static me.dulce.gamesite.gamesite2.testutils.TestUtils.*;
 import static me.dulce.gamesite.gamesite2.testutils.SpringSecurityTestConfiguration.*;
+import static me.dulce.gamesite.gamesite2.testutils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.*;
-
 import me.dulce.gamesite.gamesite2.configuration.AppConfig;
 import me.dulce.gamesite.gamesite2.rooms.Room;
 import me.dulce.gamesite.gamesite2.rooms.RoomManager;
@@ -53,17 +52,12 @@ public class RestWebControllerTest {
     private static final UUID fakeRoom1UUID = UUID.fromString(fakeRoomId);
     private static final UUID fakeRoom2UUID = UUID.fromString(fakeRoomId2);
 
+    @MockBean private RoomManager roomManager;
+    @MockBean private JwtSecurityCookieService jwtSecurityCookieService;
 
-    @MockBean
-    private RoomManager roomManager;
-    @MockBean
-    private JwtSecurityCookieService jwtSecurityCookieService;
+    @MockBean private AppConfig config;
 
-    @MockBean
-    private AppConfig config;
-
-    @Autowired
-    MockMvc mockMvc;
+    @Autowired MockMvc mockMvc;
 
     @AfterEach
     public void afterEachTest() {
@@ -85,7 +79,7 @@ public class RestWebControllerTest {
                         .gameStartTime(0)
                         .roomName("name")
                         .build();
-        when(roomManager.getAllRoomListings()).thenReturn(new Room.RoomListing[]{listing});
+        when(roomManager.getAllRoomListings()).thenReturn(new Room.RoomListing[] {listing});
 
         getRequest(mockMvc, ROOM_LIST_ENDPOINT, HttpStatus.OK)
                 .andExpect(content().json(objectAsArrayToString(listing)));
@@ -104,7 +98,8 @@ public class RestWebControllerTest {
         RoomJoinResponse expectedResponse = new RoomJoinResponse(true, false);
 
         when(roomManager.getRoomThatContainsUser(any())).thenReturn(null);
-        when(roomManager.processUserJoinRoomRequest(any(), eq(UUID.fromString(fakeRoomId)), eq(false)))
+        when(roomManager.processUserJoinRoomRequest(
+                        any(), eq(UUID.fromString(fakeRoomId)), eq(false)))
                 .thenReturn(true);
 
         postRequest(mockMvc, concatPaths(ROOM_JOIN_ENDPOINT, fakeRoomId), HttpStatus.OK)
@@ -143,7 +138,11 @@ public class RestWebControllerTest {
         when(roomManager.getRoomFromUUID(any())).thenReturn(fakeRoom1);
         when(fakeRoom1.getUsersJoinedList()).thenReturn(Collections.emptyList());
 
-        postRequest(mockMvc, concatPaths(ROOM_JOIN_ENDPOINT, fakeRoomId), getMVMapFromString("asSpectator=true"), HttpStatus.OK)
+        postRequest(
+                        mockMvc,
+                        concatPaths(ROOM_JOIN_ENDPOINT, fakeRoomId),
+                        getMVMapFromString("asSpectator=true"),
+                        HttpStatus.OK)
                 .andExpect(content().json(objectToString(expectedResponse)));
 
         verify(roomManager, never()).processUserLeaveRoomRequest(eq(basicUser), eq(fakeRoom1UUID));
@@ -200,127 +199,145 @@ public class RestWebControllerTest {
         when(roomManager.getRoomFromUUID(any())).thenReturn(fakeRoom1);
         when(fakeRoom1.getUsersJoinedList()).thenReturn(List.of(basicUser));
 
-        postRequest(mockMvc, concatPaths(ROOM_JOIN_ENDPOINT, fakeRoomId), getMVMapFromString("asSpectator=true"), HttpStatus.OK)
+        postRequest(
+                        mockMvc,
+                        concatPaths(ROOM_JOIN_ENDPOINT, fakeRoomId),
+                        getMVMapFromString("asSpectator=true"),
+                        HttpStatus.OK)
                 .andExpect(content().json(objectToString(expectedResponse)));
 
         verify(roomManager, times(1)).processUserLeaveRoomRequest(eq(basicUser), eq(fakeRoom1UUID));
     }
 
-      @Test
-      @WithBasicUser
-      public void postJoinRoom_nullResourceHandled_methodNoAllowed() throws Exception {
+    @Test
+    @WithBasicUser
+    public void postJoinRoom_nullResourceHandled_methodNoAllowed() throws Exception {
         postRequest(mockMvc, ROOM_JOIN_ENDPOINT, HttpStatus.METHOD_NOT_ALLOWED);
-      }
+    }
 
-      @Test
-      @WithBasicUser
-      public void postJoinRoom_badFormatUUIDRoomId_badRequestCode() throws Exception {
-          postRequest(mockMvc, concatPaths(ROOM_JOIN_ENDPOINT, "Bad UUID"), HttpStatus.BAD_REQUEST);
-      }
+    @Test
+    @WithBasicUser
+    public void postJoinRoom_badFormatUUIDRoomId_badRequestCode() throws Exception {
+        postRequest(mockMvc, concatPaths(ROOM_JOIN_ENDPOINT, "Bad UUID"), HttpStatus.BAD_REQUEST);
+    }
 
-      @Test
-      @WithAnonymousUser
-      public void postJoinRoom_unauthenticated_unauthorized() throws Exception {
+    @Test
+    @WithAnonymousUser
+    public void postJoinRoom_unauthenticated_unauthorized() throws Exception {
         postRequest(mockMvc, concatPaths(ROOM_JOIN_ENDPOINT, fakeRoomId), HttpStatus.UNAUTHORIZED);
         verify(roomManager, never()).processUserJoinRoomRequest(any(), any(), anyBoolean());
-      }
+    }
 
-      @Test
-      @WithBasicUser
-      public void postLeaveRoom_userLeaveSuccess() throws Exception {
-          User basicUser = User.getUserFromSecurityDetails(BASIC_USER_DETAILS);
+    @Test
+    @WithBasicUser
+    public void postLeaveRoom_userLeaveSuccess() throws Exception {
+        User basicUser = User.getUserFromSecurityDetails(BASIC_USER_DETAILS);
 
-          postRequest(mockMvc, concatPaths(ROOM_LEAVE_ENDPOINT, fakeRoomId), HttpStatus.OK);
+        postRequest(mockMvc, concatPaths(ROOM_LEAVE_ENDPOINT, fakeRoomId), HttpStatus.OK);
 
-          verify(roomManager, times(1)).processUserLeaveRoomRequest(eq(basicUser), eq(fakeRoom1UUID));
-      }
+        verify(roomManager, times(1)).processUserLeaveRoomRequest(eq(basicUser), eq(fakeRoom1UUID));
+    }
 
-      @Test
-      @WithAnonymousUser
-      public void postLeaveRoom_unAuthenticatedUser_unauthorized() throws Exception {
-          postRequest(mockMvc, concatPaths(ROOM_LEAVE_ENDPOINT, fakeRoomId), HttpStatus.UNAUTHORIZED);
-          verify(roomManager, never()).processUserLeaveRoomRequest(any(), any());
-      }
+    @Test
+    @WithAnonymousUser
+    public void postLeaveRoom_unAuthenticatedUser_unauthorized() throws Exception {
+        postRequest(mockMvc, concatPaths(ROOM_LEAVE_ENDPOINT, fakeRoomId), HttpStatus.UNAUTHORIZED);
+        verify(roomManager, never()).processUserLeaveRoomRequest(any(), any());
+    }
 
-      @Test
-      @WithBasicUser
-      public void postLeaveRoom_nullRequestHandled() throws Exception {
-          postRequest(mockMvc, ROOM_LEAVE_ENDPOINT, HttpStatus.METHOD_NOT_ALLOWED);
-      }
+    @Test
+    @WithBasicUser
+    public void postLeaveRoom_nullRequestHandled() throws Exception {
+        postRequest(mockMvc, ROOM_LEAVE_ENDPOINT, HttpStatus.METHOD_NOT_ALLOWED);
+    }
 
-      @Test
-      @WithBasicUser
-      public void postCreateRoom_roomCreateSuccess() throws Exception {
-          RoomCreateResponse expectedResponse = new RoomCreateResponse(true, fakeRoomId);
-          User basicUser = User.getUserFromSecurityDetails(BASIC_USER_DETAILS);
-          when(roomManager.createRoom(eq(GameType.TEST), eq(basicUser), eq(10), anyString()))
-                  .thenReturn(UUID.fromString(fakeRoomId));
+    @Test
+    @WithBasicUser
+    public void postCreateRoom_roomCreateSuccess() throws Exception {
+        RoomCreateResponse expectedResponse = new RoomCreateResponse(true, fakeRoomId);
+        User basicUser = User.getUserFromSecurityDetails(BASIC_USER_DETAILS);
+        when(roomManager.createRoom(eq(GameType.TEST), eq(basicUser), eq(10), anyString()))
+                .thenReturn(UUID.fromString(fakeRoomId));
 
-          postRequest(mockMvc, ROOM_CREATE_ENDPOINT,
-                  getMVMapFromString("maxLobbySize=10", "gameType=TESTING"),
-                  HttpStatus.OK)
-                  .andExpect(content().json(objectToString(expectedResponse)));
+        postRequest(
+                        mockMvc,
+                        ROOM_CREATE_ENDPOINT,
+                        getMVMapFromString("maxLobbySize=10", "gameType=TESTING"),
+                        HttpStatus.OK)
+                .andExpect(content().json(objectToString(expectedResponse)));
 
-          verify(roomManager, times(1)).createRoom(eq(GameType.TEST), eq(basicUser), eq(10),
-                  anyString());
-      }
+        verify(roomManager, times(1))
+                .createRoom(eq(GameType.TEST), eq(basicUser), eq(10), anyString());
+    }
 
-      @Test
-      @WithBasicUser
-      public void postCreateRoom_badRoomCreation_okResponseNotSuccess() throws Exception {
-          RoomCreateResponse expectedResponse = new RoomCreateResponse(false, null);
-          when(roomManager.createRoom(any(), any(), anyInt(), anyString())).thenReturn(null);
+    @Test
+    @WithBasicUser
+    public void postCreateRoom_badRoomCreation_okResponseNotSuccess() throws Exception {
+        RoomCreateResponse expectedResponse = new RoomCreateResponse(false, null);
+        when(roomManager.createRoom(any(), any(), anyInt(), anyString())).thenReturn(null);
 
-          postRequest(mockMvc, ROOM_CREATE_ENDPOINT,
-                  getMVMapFromString("maxLobbySize=10", "gameType=TESTING"),
-                  HttpStatus.OK)
-                  .andExpect(content().json(objectToString(expectedResponse)));
+        postRequest(
+                        mockMvc,
+                        ROOM_CREATE_ENDPOINT,
+                        getMVMapFromString("maxLobbySize=10", "gameType=TESTING"),
+                        HttpStatus.OK)
+                .andExpect(content().json(objectToString(expectedResponse)));
 
-          verify(roomManager, times(1))
-                  .createRoom(eq(GameType.TEST), any(), eq(10), anyString());
-      }
+        verify(roomManager, times(1)).createRoom(eq(GameType.TEST), any(), eq(10), anyString());
+    }
 
-      @Test
-      @WithBasicUser
-      public void postCreateRoom_badGameType_failCreation() throws Exception {
-          postRequest(mockMvc, ROOM_CREATE_ENDPOINT,
-                  getMVMapFromString("maxLobbySize=10", "gameType=BadGame"),
-                  HttpStatus.BAD_REQUEST);
-      }
+    @Test
+    @WithBasicUser
+    public void postCreateRoom_badGameType_failCreation() throws Exception {
+        postRequest(
+                mockMvc,
+                ROOM_CREATE_ENDPOINT,
+                getMVMapFromString("maxLobbySize=10", "gameType=BadGame"),
+                HttpStatus.BAD_REQUEST);
+    }
 
-      @Test
-      @WithAnonymousUser
-      public void postCreateRoom_unAuthorized_unauthorized() throws Exception {
-          postRequest(mockMvc, ROOM_CREATE_ENDPOINT,
-                  getMVMapFromString("maxLobbySize=10", "gameType=TESTING"),
-                  HttpStatus.UNAUTHORIZED);
+    @Test
+    @WithAnonymousUser
+    public void postCreateRoom_unAuthorized_unauthorized() throws Exception {
+        postRequest(
+                mockMvc,
+                ROOM_CREATE_ENDPOINT,
+                getMVMapFromString("maxLobbySize=10", "gameType=TESTING"),
+                HttpStatus.UNAUTHORIZED);
         verify(roomManager, never()).createRoom(any(), any(), anyInt(), anyString());
-      }
+    }
 
-      @Test
-      @WithBasicUser
-      public void postCreateRoom_LobbySizeLessThan0_failCreation() throws Exception {
-          postRequest(mockMvc, ROOM_CREATE_ENDPOINT,
-                  getMVMapFromString("maxLobbySize=-1", "gameType=TESTING"),
-                  HttpStatus.BAD_REQUEST);
-      }
+    @Test
+    @WithBasicUser
+    public void postCreateRoom_LobbySizeLessThan0_failCreation() throws Exception {
+        postRequest(
+                mockMvc,
+                ROOM_CREATE_ENDPOINT,
+                getMVMapFromString("maxLobbySize=-1", "gameType=TESTING"),
+                HttpStatus.BAD_REQUEST);
+    }
 
-      @Test
-      @WithBasicUser
-      public void postCreateRoom_nullRequest_failCreation() throws Exception {
-          postRequest(mockMvc, ROOM_CREATE_ENDPOINT,
-                  getMVMapFromString("gameType=TESTING"),
-                  HttpStatus.BAD_REQUEST);
-          postRequest(mockMvc, ROOM_CREATE_ENDPOINT,
-                  getMVMapFromString("maxLobbySize=10"),
-                  HttpStatus.BAD_REQUEST);
-      }
+    @Test
+    @WithBasicUser
+    public void postCreateRoom_nullRequest_failCreation() throws Exception {
+        postRequest(
+                mockMvc,
+                ROOM_CREATE_ENDPOINT,
+                getMVMapFromString("gameType=TESTING"),
+                HttpStatus.BAD_REQUEST);
+        postRequest(
+                mockMvc,
+                ROOM_CREATE_ENDPOINT,
+                getMVMapFromString("maxLobbySize=10"),
+                HttpStatus.BAD_REQUEST);
+    }
 
-      @Test
-      @WithBasicUser
-      public void getRoomInfo_success() throws Exception {
-          Room.RoomListing roomListing = new Room.RoomListing("id", 1, 2, 3, "TESTING", "host", true, 10, "name");
-          RoomInfoResponse expectedResponse = new RoomInfoResponse(roomListing, true, false, false);
+    @Test
+    @WithBasicUser
+    public void getRoomInfo_success() throws Exception {
+        Room.RoomListing roomListing =
+                new Room.RoomListing("id", 1, 2, 3, "TESTING", "host", true, 10, "name");
+        RoomInfoResponse expectedResponse = new RoomInfoResponse(roomListing, true, false, false);
 
         Room mockRoom = mock(Room.class);
         User mockUser = mock(User.class);
@@ -329,94 +346,95 @@ public class RestWebControllerTest {
         when(mockRoom.getHost()).thenReturn(mockUser);
         when(mockUser.equals(any())).thenReturn(true);
 
-          getRequest(mockMvc, concatPaths(ROOM_INFO_ENDPOINT, fakeRoomId), HttpStatus.OK)
-                  .andExpect(content().json(objectToString(expectedResponse)));
-      }
+        getRequest(mockMvc, concatPaths(ROOM_INFO_ENDPOINT, fakeRoomId), HttpStatus.OK)
+                .andExpect(content().json(objectToString(expectedResponse)));
+    }
 
-      @Test
-      @WithAnonymousUser
-      public void getRoomInfo_unauthenticatedUser_unAuthorized() throws Exception {
-          getRequest(mockMvc, concatPaths(ROOM_INFO_ENDPOINT, fakeRoomId), HttpStatus.UNAUTHORIZED);
-      }
+    @Test
+    @WithAnonymousUser
+    public void getRoomInfo_unauthenticatedUser_unAuthorized() throws Exception {
+        getRequest(mockMvc, concatPaths(ROOM_INFO_ENDPOINT, fakeRoomId), HttpStatus.UNAUTHORIZED);
+    }
 
-      @Test
-      @WithBasicUser
-      public void getRoomInfo_invalidUUID_badRequest() throws Exception {
-          getRequest(mockMvc, concatPaths(ROOM_INFO_ENDPOINT, "badUid"), HttpStatus.BAD_REQUEST);
-      }
+    @Test
+    @WithBasicUser
+    public void getRoomInfo_invalidUUID_badRequest() throws Exception {
+        getRequest(mockMvc, concatPaths(ROOM_INFO_ENDPOINT, "badUid"), HttpStatus.BAD_REQUEST);
+    }
 
-      @Test
-      @WithBasicUser
-      public void getRoomInfo_invalidRoom_badRequest() throws Exception {
+    @Test
+    @WithBasicUser
+    public void getRoomInfo_invalidRoom_badRequest() throws Exception {
         when(roomManager.getRoomFromUUID(any())).thenReturn(null);
-          getRequest(mockMvc, concatPaths(ROOM_INFO_ENDPOINT, fakeRoomId), HttpStatus.NOT_FOUND);
-      }
+        getRequest(mockMvc, concatPaths(ROOM_INFO_ENDPOINT, fakeRoomId), HttpStatus.NOT_FOUND);
+    }
 
-      @Test
-      @WithBasicUser
-      public void getRefreshToken_success() throws Exception {
+    @Test
+    @WithBasicUser
+    public void getRefreshToken_success() throws Exception {
 
-          String expectedCookieValue = "sessionId=abc";
-          ResponseCookie mockCookie = mock(ResponseCookie.class);
-          when(mockCookie.toString()).thenReturn(expectedCookieValue);
+        String expectedCookieValue = "sessionId=abc";
+        ResponseCookie mockCookie = mock(ResponseCookie.class);
+        when(mockCookie.toString()).thenReturn(expectedCookieValue);
 
-        when(jwtSecurityCookieService.generateNewResponseCookie(any()))
-                .thenReturn(mockCookie);
+        when(jwtSecurityCookieService.generateNewResponseCookie(any())).thenReturn(mockCookie);
 
-          getRequest(mockMvc, TOKEN_REFRESH_ENDPOINT, HttpStatus.OK)
-                  .andExpect(cookie().exists("sessionId"));
-      }
+        getRequest(mockMvc, TOKEN_REFRESH_ENDPOINT, HttpStatus.OK)
+                .andExpect(cookie().exists("sessionId"));
+    }
 
-      @Test
-      @WithAnonymousUser
-      public void getRefreshToken_unauthorized_unauthorizedResponse() throws Exception {
-          getRequest(mockMvc, TOKEN_REFRESH_ENDPOINT, HttpStatus.UNAUTHORIZED);
-          verify(jwtSecurityCookieService, never()).generateNewResponseCookie(any());
-      }
+    @Test
+    @WithAnonymousUser
+    public void getRefreshToken_unauthorized_unauthorizedResponse() throws Exception {
+        getRequest(mockMvc, TOKEN_REFRESH_ENDPOINT, HttpStatus.UNAUTHORIZED);
+        verify(jwtSecurityCookieService, never()).generateNewResponseCookie(any());
+    }
 
-      @Test
-      @WithAnonymousUser
-      public void postAuth_nullRequest_unauthorized() throws Exception {
-          postRequest(mockMvc, AUTH_ENDPOINT, HttpStatus.UNAUTHORIZED);
-
-        assertEquals(0, User.getCachedUsers().size());
-      }
-
-      @Test
-      @WithAnonymousUser
-      public void postAuth_badCreds_unauthorized() throws Exception {
-          UserAuthRequest request = new UserAuthRequest(BASIC_USER_DETAILS.getUsername(), "bad pass");
-          mockMvc.perform(MockMvcRequestBuilders.post(AUTH_ENDPOINT)
-                          .contentType(MediaType.APPLICATION_JSON)
-                          .content(objectToString(request))
-                          .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                  .andExpect(status().isUnauthorized());
+    @Test
+    @WithAnonymousUser
+    public void postAuth_nullRequest_unauthorized() throws Exception {
+        postRequest(mockMvc, AUTH_ENDPOINT, HttpStatus.UNAUTHORIZED);
 
         assertEquals(0, User.getCachedUsers().size());
-      }
+    }
 
-      @Test
-      @WithBasicUser
-      public void deleteAuthenticationToken_success() throws Exception {
+    @Test
+    @WithAnonymousUser
+    public void postAuth_badCreds_unauthorized() throws Exception {
+        UserAuthRequest request = new UserAuthRequest(BASIC_USER_DETAILS.getUsername(), "bad pass");
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post(AUTH_ENDPOINT)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectToString(request))
+                                .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(status().isUnauthorized());
 
-          String expectedCookieValue = "sessionId=abc";
-          ResponseCookie mockCookie = mock(ResponseCookie.class);
-          when(mockCookie.toString()).thenReturn(expectedCookieValue);
+        assertEquals(0, User.getCachedUsers().size());
+    }
 
-          when(jwtSecurityCookieService.getDeleteCookie(any()))
-                  .thenReturn(mockCookie);
+    @Test
+    @WithBasicUser
+    public void deleteAuthenticationToken_success() throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.delete(INVALIDATE_AUTH_ENDPOINT)
-                .with(SecurityMockMvcRequestPostProcessors.csrf()))
+        String expectedCookieValue = "sessionId=abc";
+        ResponseCookie mockCookie = mock(ResponseCookie.class);
+        when(mockCookie.toString()).thenReturn(expectedCookieValue);
+
+        when(jwtSecurityCookieService.getDeleteCookie(any())).thenReturn(mockCookie);
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.delete(INVALIDATE_AUTH_ENDPOINT)
+                                .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("sessionId"));
-      }
+    }
 
-      @Test
-      @WithAnonymousUser
-      public void deleteAuthenticationToken_unauthenticated_unauthorized() throws Exception {
-          mockMvc.perform(MockMvcRequestBuilders.delete(INVALIDATE_AUTH_ENDPOINT)
-                          .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                  .andExpect(status().isUnauthorized());
-      }
+    @Test
+    @WithAnonymousUser
+    public void deleteAuthenticationToken_unauthenticated_unauthorized() throws Exception {
+        mockMvc.perform(
+                        MockMvcRequestBuilders.delete(INVALIDATE_AUTH_ENDPOINT)
+                                .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(status().isUnauthorized());
+    }
 }
