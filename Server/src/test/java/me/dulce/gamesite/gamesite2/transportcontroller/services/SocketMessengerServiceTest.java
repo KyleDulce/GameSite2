@@ -19,24 +19,26 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ContextConfiguration(classes = {SocketMessengerService.class})
 class SocketMessengerServiceTest {
 
-  @MockBean private SimpMessagingTemplate simpMessagingTemplate;
+    @MockBean private SimpMessagingTemplate simpMessagingTemplate;
 
-  @Autowired private SocketMessengerService socketMessengerService;
+    @Autowired private SocketMessengerService socketMessengerService;
 
-  @Test
-  public void broadcastMessageToRoom_messageSentUsingMessagingTemplate() {
+    @Test
+    public void broadcastMessageToRoom_messageSentUsingMessagingTemplate() {
 
-    // assign
-    Room room = new TestGame(UUID.randomUUID(), 10, null, "test", socketMessengerService);
-    Object data =
-        new ChatMessageData(room.getRoomId(), "This is a test", "Bobby").parseObjectToDataMessage();
+        // assign
+        Room room = new TestGame(UUID.randomUUID(), 10, null, "test", socketMessengerService);
+        Object data =
+                new ChatMessageData(room.getRoomId(), "This is a test", "Bobby")
+                        .parseObjectToDataMessage();
 
-    // actual
-    socketMessengerService.broadcastMessageToRoom(room, data);
+        // actual
+        socketMessengerService.broadcastMessageToRoom(room, data);
 
-    // assert
-    verify(simpMessagingTemplate, times(1))
-        .convertAndSend(
-            SocketMessengerService.BROADCAST_DESTINATION + room.getRoomId().toString(), data);
-  }
+        // assert
+        verify(simpMessagingTemplate, times(1))
+                .convertAndSend(
+                        SocketMessengerService.BROADCAST_DESTINATION + room.getRoomId().toString(),
+                        data);
+    }
 }

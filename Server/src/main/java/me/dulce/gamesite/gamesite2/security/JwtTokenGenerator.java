@@ -18,33 +18,36 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class JwtTokenGenerator {
-  public static final String SESSION_ID_CLAIM = "sessionId";
+    public static final String SESSION_ID_CLAIM = "sessionId";
 
-  @Autowired private TimeService timeService;
-  @Autowired private AppConfig appConfig;
-  @Autowired private JwtEncoder jwtEncoder;
-  @Autowired private UserSessionManager userSessionManager;
+    @Autowired private TimeService timeService;
+    @Autowired private AppConfig appConfig;
+    @Autowired private JwtEncoder jwtEncoder;
+    @Autowired private UserSessionManager userSessionManager;
 
-  public String generateJwtToken(Authentication authentication) {
-    User user = GamesiteUtils.getUserSecurityDetailsFromPrincipal(authentication);
-    Instant now = timeService.getCurrentInstant();
-    String sessionId = userSessionManager.generateNewSession(user);
+    public String generateJwtToken(Authentication authentication) {
+        User user = GamesiteUtils.getUserSecurityDetailsFromPrincipal(authentication);
+        Instant now = timeService.getCurrentInstant();
+        String sessionId = userSessionManager.generateNewSession(user);
 
-    String authorities =
-        authentication.getAuthorities().stream()
-            .map(GrantedAuthority::getAuthority)
-            .collect(Collectors.joining(" "));
+        String authorities =
+                authentication.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.joining(" "));
 
-    JwtClaimsSet claimsSet =
-        JwtClaimsSet.builder()
-            .issuer("self")
-            .issuedAt(now)
-            .expiresAt(now.plus(appConfig.getUserActivityTimeoutSeconds(), ChronoUnit.SECONDS))
-            .subject(authentication.getName())
-            .claim("scope", authorities)
-            .claim(SESSION_ID_CLAIM, sessionId)
-            .build();
+        JwtClaimsSet claimsSet =
+                JwtClaimsSet.builder()
+                        .issuer("self")
+                        .issuedAt(now)
+                        .expiresAt(
+                                now.plus(
+                                        appConfig.getUserActivityTimeoutSeconds(),
+                                        ChronoUnit.SECONDS))
+                        .subject(authentication.getName())
+                        .claim("scope", authorities)
+                        .claim(SESSION_ID_CLAIM, sessionId)
+                        .build();
 
-    return jwtEncoder.encode(JwtEncoderParameters.from(claimsSet)).getTokenValue();
-  }
+        return jwtEncoder.encode(JwtEncoderParameters.from(claimsSet)).getTokenValue();
+    }
 }

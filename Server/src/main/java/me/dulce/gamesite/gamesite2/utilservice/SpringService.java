@@ -8,16 +8,16 @@ import org.springframework.stereotype.Service;
 /** Service that Wraps Static Spring Methods */
 @Service
 public class SpringService {
-  @Autowired private ConfigurableApplicationContext configurableApplicationContext;
+    @Autowired private ConfigurableApplicationContext configurableApplicationContext;
 
-  /**
-   * Exists app gracefully with a given exit code Runs SpringApplication.exit(context,
-   * exitCodeProvider)
-   *
-   * @param exitCode
-   * @return
-   */
-  public int springAppExit(int exitCode) {
-    return SpringApplication.exit(configurableApplicationContext, () -> exitCode);
-  }
+    /**
+     * Exists app gracefully with a given exit code Runs SpringApplication.exit(context,
+     * exitCodeProvider)
+     *
+     * @param exitCode
+     * @return
+     */
+    public int springAppExit(int exitCode) {
+        return SpringApplication.exit(configurableApplicationContext, () -> exitCode);
+    }
 }

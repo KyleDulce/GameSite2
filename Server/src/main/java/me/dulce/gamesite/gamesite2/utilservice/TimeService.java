@@ -4,5 +4,5 @@ import java.time.Instant;
 
 /** Wrapper service for getting time */
 public interface TimeService {
-  Instant getCurrentInstant();
+    Instant getCurrentInstant();
 }

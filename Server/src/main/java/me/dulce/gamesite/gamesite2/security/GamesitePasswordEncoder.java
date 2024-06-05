@@ -6,13 +6,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class GamesitePasswordEncoder implements PasswordEncoder {
-  @Override
-  public String encode(CharSequence rawPassword) {
-    return DigestUtils.sha512Hex(rawPassword.toString());
-  }
+    @Override
+    public String encode(CharSequence rawPassword) {
+        return DigestUtils.sha512Hex(rawPassword.toString());
+    }
 
-  @Override
-  public boolean matches(CharSequence rawPassword, String encodedPassword) {
-    return encodedPassword.equals(encode(rawPassword));
-  }
+    @Override
+    public boolean matches(CharSequence rawPassword, String encodedPassword) {
+        return encodedPassword.equals(encode(rawPassword));
+    }
 }

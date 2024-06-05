@@ -9,19 +9,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class GamesiteUserDetailsService implements UserDetailsService {
 
-  @Autowired private AuthFileService authFileService;
+    @Autowired private AuthFileService authFileService;
 
-  @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    if (username == null) {
-      throw new UsernameNotFoundException("Null Username");
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        if (username == null) {
+            throw new UsernameNotFoundException("Null Username");
+        }
+
+        UserSecurityDetails userSecurityDetails = authFileService.getUser(username);
+        if (userSecurityDetails == null) {
+            throw new UsernameNotFoundException(username);
+        }
+
+        return userSecurityDetails;
     }
-
-    UserSecurityDetails userSecurityDetails = authFileService.getUser(username);
-    if (userSecurityDetails == null) {
-      throw new UsernameNotFoundException(username);
-    }
-
-    return userSecurityDetails;
-  }
 }

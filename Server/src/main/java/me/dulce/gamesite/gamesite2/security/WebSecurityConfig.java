@@ -37,81 +37,92 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSocketSecurity
 public class WebSecurityConfig {
 
-  @Value("${auth.private_key}")
-  private RSAPrivateKey rsaPrivateKey;
+    @Value("${auth.private_key}")
+    private RSAPrivateKey rsaPrivateKey;
 
-  @Value("${auth.public_key}")
-  private RSAPublicKey rsaPublicKey;
+    @Value("${auth.public_key}")
+    private RSAPublicKey rsaPublicKey;
 
-  @Autowired private AppConfig config;
+    @Autowired private AppConfig config;
 
-  @Bean
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig)
-      throws Exception {
-    return authConfig.getAuthenticationManager();
-  }
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig)
+            throws Exception {
+        return authConfig.getAuthenticationManager();
+    }
 
-  @Bean
-  public SecurityFilterChain securityFilterChain(
-      HttpSecurity httpSecurity,
-      JwtSecurityCookieService jwtSecurityCookieService,
-      JwtAuthenticationConverter jwtAuthenticationConverter)
-      throws Exception {
-    return httpSecurity
-        .cors(Customizer.withDefaults())
-        .csrf(
-            csrf ->
-                csrf.ignoringRequestMatchers("/" + config.getStompEndpoint() + "/**")
-                    .ignoringRequestMatchers("/api/authenticate"))
-        .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
-        .oauth2ResourceServer(
-            config -> config.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)))
-        .addFilterBefore(
-            jwtSecurityCookieService.getCookieFilter(), UsernamePasswordAuthenticationFilter.class)
-        .authorizeHttpRequests(
-            auth -> {
-              auth
-                  // REST
-                  .requestMatchers(HttpMethod.OPTIONS, "**")
-                  .permitAll()
-                  .requestMatchers("/api/authenticate")
-                  .permitAll()
+    @Bean
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity httpSecurity,
+            JwtSecurityCookieService jwtSecurityCookieService,
+            JwtAuthenticationConverter jwtAuthenticationConverter)
+            throws Exception {
+        return httpSecurity
+                .cors(Customizer.withDefaults())
+                .csrf(
+                        csrf ->
+                                csrf.ignoringRequestMatchers(
+                                                "/" + config.getStompEndpoint() + "/**")
+                                        .ignoringRequestMatchers("/api/authenticate"))
+                .headers(
+                        headers ->
+                                headers.frameOptions(
+                                        HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+                .oauth2ResourceServer(
+                        config ->
+                                config.jwt(
+                                        jwt ->
+                                                jwt.jwtAuthenticationConverter(
+                                                        jwtAuthenticationConverter)))
+                .addFilterBefore(
+                        jwtSecurityCookieService.getCookieFilter(),
+                        UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(
+                        auth -> {
+                            auth
+                                    // REST
+                                    .requestMatchers(HttpMethod.OPTIONS, "**")
+                                    .permitAll()
+                                    .requestMatchers("/api/authenticate")
+                                    .permitAll()
 
-                  // END
-                  .anyRequest()
-                  .authenticated();
-            })
-        .logout(Customizer.withDefaults())
-        .build();
-  }
+                                    // END
+                                    .anyRequest()
+                                    .authenticated();
+                        })
+                .logout(Customizer.withDefaults())
+                .build();
+    }
 
-  @Bean
-  public JwtEncoder jwtEncoder() {
-    RSAKey key = new RSAKey.Builder(rsaPublicKey).privateKey(rsaPrivateKey).build();
-    JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<SecurityContext>(new JWKSet(key));
-    return new NimbusJwtEncoder(jwkSource);
-  }
+    @Bean
+    public JwtEncoder jwtEncoder() {
+        RSAKey key = new RSAKey.Builder(rsaPublicKey).privateKey(rsaPrivateKey).build();
+        JWKSource<SecurityContext> jwkSource =
+                new ImmutableJWKSet<SecurityContext>(new JWKSet(key));
+        return new NimbusJwtEncoder(jwkSource);
+    }
 
-  @Bean
-  public JwtDecoder jwtDecoder() {
-    return NimbusJwtDecoder.withPublicKey(rsaPublicKey).build();
-  }
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        return NimbusJwtDecoder.withPublicKey(rsaPublicKey).build();
+    }
 
-  @Bean
-  public JwtAuthenticationConverter jwtAuthenticationConverter() {
-    JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter =
-        new JwtGrantedAuthoritiesConverter();
-    jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter =
+                new JwtGrantedAuthoritiesConverter();
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
 
-    JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-    jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(
+                jwtGrantedAuthoritiesConverter);
 
-    return jwtAuthenticationConverter;
-  }
+        return jwtAuthenticationConverter;
+    }
 
-  @Bean
-  public AuthorizationManager<Message<?>> messageAuthorizationManager(
-      MessageMatcherDelegatingAuthorizationManager.Builder messages) {
-    return messages.anyMessage().authenticated().build();
-  }
+    @Bean
+    public AuthorizationManager<Message<?>> messageAuthorizationManager(
+            MessageMatcherDelegatingAuthorizationManager.Builder messages) {
+        return messages.anyMessage().authenticated().build();
+    }
 }

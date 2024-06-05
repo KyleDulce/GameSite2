@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GameDataMessage {
-  public String gameDataIdString;
-  public String roomId;
-  public Object data;
+    public String gameDataIdString;
+    public String roomId;
+    public Object data;
 }

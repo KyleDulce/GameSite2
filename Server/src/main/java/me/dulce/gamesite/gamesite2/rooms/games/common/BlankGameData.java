@@ -10,27 +10,27 @@ import me.dulce.gamesite.gamesite2.rooms.games.generic.GameDataType;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BlankGameData extends GameData {
-  public UUID roomId;
-  public GameDataType gameDataType;
+    public UUID roomId;
+    public GameDataType gameDataType;
 
-  @Override
-  public UUID roomId() {
-    return roomId;
-  }
+    @Override
+    public UUID roomId() {
+        return roomId;
+    }
 
-  @Override
-  public GameDataType gameDataType() {
-    return gameDataType;
-  }
+    @Override
+    public GameDataType gameDataType() {
+        return gameDataType;
+    }
 
-  @Override
-  public void setupFromGameDataMessage(GameDataMessage message) {
-    roomId = UUID.fromString(message.roomId);
-    gameDataType = GameDataType.getGameDataTypeFromString(message.gameDataIdString);
-  }
+    @Override
+    public void setupFromGameDataMessage(GameDataMessage message) {
+        roomId = UUID.fromString(message.roomId);
+        gameDataType = GameDataType.getGameDataTypeFromString(message.gameDataIdString);
+    }
 
-  @Override
-  public Object onGetParse() {
-    return null;
-  }
+    @Override
+    public Object onGetParse() {
+        return null;
+    }
 }

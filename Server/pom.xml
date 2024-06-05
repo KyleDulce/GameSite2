@@ -11,23 +11,27 @@
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
+
         <spring-boot.version>3.3.0</spring-boot.version>
         <spring-security.submodule.version>6.3.0</spring-security.submodule.version>
+
         <jackson.version>2.15.3</jackson.version>
         <lombok.version>1.18.30</lombok.version>
         <commons-codec.version>1.16.0</commons-codec.version>
         <commons-collections.version>4.4</commons-collections.version>
         <jetbrains-annotations.version>24.0.1</jetbrains-annotations.version>
 
-        <mockito.version>5.2.0</mockito.version>
+        <mockito.version>5.12.0</mockito.version>
+        <mockito-inline.version>5.2.0</mockito-inline.version>
 
-        <webjars-locator.version>0.53</webjars-locator.version>
+        <webjars-locator.version>0.58</webjars-locator.version>
         <sockjs.version>1.5.1</sockjs.version>
         <stomp.version>2.3.4</stomp.version>
         <bootstrap.version>5.3.2</bootstrap.version>
         <jquery.version>3.7.1</jquery.version>
         <slf4j-api.version>2.0.9</slf4j-api.version>
 
+        <maven-compiler.version>3.13.0</maven-compiler.version>
         <maven-assembly.version>3.7.1</maven-assembly.version>
         <spotless-maven-plugin>2.43.0</spotless-maven-plugin>
         <google-java-format.version>1.22.0</google-java-format.version>
@@ -150,6 +154,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <version>${spring-security.submodule.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>${mockito.version}</version>
@@ -164,13 +175,23 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-inline</artifactId>
-            <version>${mockito.version}</version>
+            <version>${mockito-inline.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler.version}</version>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>${maven-assembly.version}</version>
@@ -198,9 +219,13 @@
                 <version>${spotless-maven-plugin}</version>
                 <configuration>
                     <java>
+                        <indent>
+                            <spaces>true</spaces>
+                            <spacesPerTab>4</spacesPerTab>
+                        </indent>
                         <googleJavaFormat>
                             <version>${google-java-format.version}</version>
-                            <style>GOOGLE</style>
+                            <style>AOSP</style>
                             <reflowLongStrings>true</reflowLongStrings>
                             <formatJavadoc>true</formatJavadoc>
                         </googleJavaFormat>

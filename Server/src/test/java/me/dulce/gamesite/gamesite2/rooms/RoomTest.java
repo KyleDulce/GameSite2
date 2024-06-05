@@ -24,379 +24,396 @@ import org.junit.jupiter.api.Test;
 
 public class RoomTest {
 
-  private static final String roomUUID_str = "5eb7a634-22a1-43c0-9d35-8b0be08b7557";
-  private static final String user1UUID_str = "eb0f39e0-d108-4bc9-83cd-1e12d4b0c784";
-  private static final String user2UUID_str = "7095790b-7a45-462c-8fbd-9506ec6a727a";
-  private static final String user3UUID_str = "15b98a25-ba8c-44f0-a5fd-0e7788a1738e";
-  private static final String hostUserUUID_str = "3fac37e7-aff8-4a1f-879d-2e32eeb28ba6";
+    private static final String roomUUID_str = "5eb7a634-22a1-43c0-9d35-8b0be08b7557";
+    private static final String user1UUID_str = "eb0f39e0-d108-4bc9-83cd-1e12d4b0c784";
+    private static final String user2UUID_str = "7095790b-7a45-462c-8fbd-9506ec6a727a";
+    private static final String user3UUID_str = "15b98a25-ba8c-44f0-a5fd-0e7788a1738e";
+    private static final String hostUserUUID_str = "3fac37e7-aff8-4a1f-879d-2e32eeb28ba6";
 
-  private static UUID roomUUID;
-  private static UUID user1UUID;
-  private static UUID user2UUID;
-  private static UUID user3UUID;
-  private static UUID hostUserUUID;
+    private static UUID roomUUID;
+    private static UUID user1UUID;
+    private static UUID user2UUID;
+    private static UUID user3UUID;
+    private static UUID hostUserUUID;
 
-  private static int cookieBuffer = 3;
+    private static String hostName = "SomeHose";
+    private static String user1Name = "SomeUser1";
+    private static String user2Name = "SomeUser2";
+    private static String user3Name = "SomeUser3";
 
-  private SocketMessengerService socketMessengerServiceMock;
+    private static String hostSession = "SomeSessionHost";
+    private static String user1Session = "SomeSession1";
+    private static String user2Session = "SomeSession2";
+    private static String user3Session = "SomeSession3";
 
-  @BeforeAll
-  public static void beforeTests() {
-    roomUUID = UUID.fromString(roomUUID_str);
-    user1UUID = UUID.fromString(user1UUID_str);
-    user2UUID = UUID.fromString(user2UUID_str);
-    user3UUID = UUID.fromString(user3UUID_str);
-    hostUserUUID = UUID.fromString(hostUserUUID_str);
-  }
+    private static int cookieBuffer = 3;
 
-  @BeforeEach
-  public void beforeEachTest() {
-    socketMessengerServiceMock = mock(SocketMessengerService.class);
-  }
+    private SocketMessengerService socketMessengerServiceMock;
 
-  @AfterEach
-  public void afterEachTest() {
-    User.getCachedUsers().clear();
-  }
-
-  @Test
-  public void userJoin_userAddedToRoomSuccessfully() {
-    // assign
-    Room room = getTestRoom();
-    User user = User.createNewUser(user1UUID, cookieBuffer);
-
-    // actual
-    boolean actual = room.userJoin(user);
-
-    // assert
-    assertEquals(1, room.getUsersJoinedList().size());
-    assertTrue(actual);
-  }
-
-  @Test
-  public void userJoin_userBlockedFromRoomWhenFull_resultsFalse() {
-    // assign
-    Room room = getTestRoom();
-    User user1 = User.createNewUser(user1UUID, cookieBuffer);
-    User user2 = User.createNewUser(user2UUID, cookieBuffer);
-    User user3 = User.createNewUser(user3UUID, cookieBuffer);
-    room.userJoin(user1);
-    room.userJoin(user2);
-
-    // actual
-    boolean actual = room.userJoin(user3);
-
-    // assert
-    assertEquals(2, room.getUsersJoinedList().size());
-    assertFalse(actual);
-    verify(socketMessengerServiceMock, never()).sendMessageToUser(any(User.class), any(), any());
-  }
-
-  @Test
-  public void userJoin_userBlockedFromRoomWhenDuplicateUser_resultsFalse() {
-    // assign
-    Room room = getTestRoom();
-    User user = User.createNewUser(user1UUID, cookieBuffer);
-    room.userJoin(user);
-
-    // actual
-    boolean actual = room.userJoin(user);
-
-    // assert
-    assertEquals(1, room.getUsersJoinedList().size());
-    assertFalse(actual);
-    verify(socketMessengerServiceMock, never()).sendMessageToUser(any(User.class), any(), any());
-  }
-
-  @Test
-  public void userJoin_userBlockedFromRoomWhenInProgress_resultsFalse() {
-    // assign
-    class RoomChild extends Room {
-      RoomChild() {
-        super(roomUUID, 2, null, "test", null);
-        isInProgress = true;
-      }
-
-      @Override
-      public GameType getGameType() {
-        return null;
-      }
-
-      @Override
-      protected boolean processGameDataForGame(User user, GameData response) {
-        return false;
-      }
-
-      @Override
-      protected void onUserJoinEvent(User user) {}
-
-      @Override
-      protected void onSpectatorJoinEvent(User user) {}
-
-      @Override
-      protected void onUserLeaveEvent(User user) {}
+    @BeforeAll
+    public static void beforeTests() {
+        roomUUID = UUID.fromString(roomUUID_str);
+        user1UUID = UUID.fromString(user1UUID_str);
+        user2UUID = UUID.fromString(user2UUID_str);
+        user3UUID = UUID.fromString(user3UUID_str);
+        hostUserUUID = UUID.fromString(hostUserUUID_str);
     }
 
-    Room room = new RoomChild();
-    User user = User.createNewUser(user1UUID, cookieBuffer);
+    @BeforeEach
+    public void beforeEachTest() {
+        socketMessengerServiceMock = mock(SocketMessengerService.class);
+    }
 
-    // actual
-    boolean actual = room.userJoin(user);
+    @AfterEach
+    public void afterEachTest() {
+        User.getCachedUsers().clear();
+    }
 
-    // assert
-    assertEquals(0, room.getUsersJoinedList().size());
-    assertFalse(actual);
-    verify(socketMessengerServiceMock, never()).sendMessageToUser(any(User.class), any(), any());
-  }
+    @Test
+    public void userJoin_userAddedToRoomSuccessfully() {
+        // assign
+        Room room = getTestRoom();
+        User user = User.createNewUser(user1UUID, user1Name, user1Session);
 
-  @Test
-  public void spectatorJoin_userAddedToRoomSuccessfully() {
-    // assign
-    Room room = getTestRoom();
-    User user = User.createNewUser(user1UUID, cookieBuffer);
+        // actual
+        boolean actual = room.userJoin(user);
 
-    // actual
-    boolean actual = room.spectatorJoin(user);
+        // assert
+        assertEquals(1, room.getUsersJoinedList().size());
+        assertTrue(actual);
+    }
 
-    // assert
-    assertEquals(1, room.getSpectatorsJoinedList().size());
-    assertTrue(actual);
-  }
+    @Test
+    public void userJoin_userBlockedFromRoomWhenFull_resultsFalse() {
+        // assign
+        Room room = getTestRoom();
+        User user1 = User.createNewUser(user1UUID, user1Name, user1Session);
+        User user2 = User.createNewUser(user2UUID, user2Name, user2Session);
+        User user3 = User.createNewUser(user3UUID, user3Name, user3Session);
+        room.userJoin(user1);
+        room.userJoin(user2);
 
-  @Test
-  public void spectatorJoin_userBlockedFromRoomWhenDuplicateUser_resultsFalse() {
-    // assign
-    Room room = getTestRoom();
-    User user = User.createNewUser(user1UUID, cookieBuffer);
-    room.spectatorJoin(user);
+        // actual
+        boolean actual = room.userJoin(user3);
 
-    // actual
-    boolean actual = room.spectatorJoin(user);
+        // assert
+        assertEquals(2, room.getUsersJoinedList().size());
+        assertFalse(actual);
+        verify(socketMessengerServiceMock, never())
+                .sendMessageToUser(any(User.class), any(), any());
+    }
 
-    // assert
-    assertEquals(1, room.getSpectatorsJoinedList().size());
-    assertFalse(actual);
-  }
+    @Test
+    public void userJoin_userBlockedFromRoomWhenDuplicateUser_resultsFalse() {
+        // assign
+        Room room = getTestRoom();
+        User user = User.createNewUser(user1UUID, user1Name, user1Session);
+        room.userJoin(user);
 
-  @Test
-  public void userLeave_userRemovedFromRoomIfPlaying() {
-    // assign
-    Room room = getTestRoom();
-    User user = User.createNewUser(user1UUID, cookieBuffer);
-    room.userJoin(user);
+        // actual
+        boolean actual = room.userJoin(user);
 
-    // actual
-    room.userLeave(user);
+        // assert
+        assertEquals(1, room.getUsersJoinedList().size());
+        assertFalse(actual);
+        verify(socketMessengerServiceMock, never())
+                .sendMessageToUser(any(User.class), any(), any());
+    }
 
-    // assert
-    assertEquals(0, room.getSpectatorsJoinedList().size());
-  }
+    @Test
+    public void userJoin_userBlockedFromRoomWhenInProgress_resultsFalse() {
+        // assign
+        class RoomChild extends Room {
+            RoomChild() {
+                super(roomUUID, 2, null, "test", null);
+                isInProgress = true;
+            }
 
-  @Test
-  public void userLeave_userRemovedFromRoomIfSpectating() {
-    // assign
-    Room room = getTestRoom();
-    User user = User.createNewUser(user1UUID, cookieBuffer);
-    room.spectatorJoin(user);
+            @Override
+            public GameType getGameType() {
+                return null;
+            }
 
-    // actual
-    room.userLeave(user);
+            @Override
+            protected boolean processGameDataForGame(User user, GameData response) {
+                return false;
+            }
 
-    // assert
-    assertEquals(0, room.getSpectatorsJoinedList().size());
-    verify(socketMessengerServiceMock, never()).sendMessageToUser(any(User.class), any(), any());
-  }
+            @Override
+            protected void onUserJoinEvent(User user) {}
 
-  @Test
-  public void userLeave_newHostWhenHostRemoved() {
-    // assign
-    Room room = getTestRoom();
-    User host = User.createNewUser(hostUserUUID, cookieBuffer);
-    User user = User.createNewUser(user1UUID, cookieBuffer);
-    room.userJoin(host);
-    room.userJoin(user);
+            @Override
+            protected void onSpectatorJoinEvent(User user) {}
 
-    // actual
-    room.userLeave(host);
+            @Override
+            protected void onUserLeaveEvent(User user) {}
+        }
 
-    // assert
-    assertEquals(1, room.getUsersJoinedList().size());
-    assertEquals(user, room.host);
-    verify(socketMessengerServiceMock, times(1)).sendMessageToUser(any(User.class), any(), any());
-  }
+        Room room = new RoomChild();
+        User user = User.createNewUser(user1UUID, user1Name, user1Session);
 
-  @Test
-  public void getRoomListingObject_RoomListingContainsSameData() {
-    // assign
-    User user = User.createNewUser(user1UUID, cookieBuffer);
-    Room room =
-        new Room(roomUUID, 2, user, "test", null) {
-          @Override
-          public GameType getGameType() {
-            return GameType.NULL_GAME_TYPE;
-          }
+        // actual
+        boolean actual = room.userJoin(user);
 
-          @Override
-          protected boolean processGameDataForGame(User user, GameData response) {
-            return false;
-          }
+        // assert
+        assertEquals(0, room.getUsersJoinedList().size());
+        assertFalse(actual);
+        verify(socketMessengerServiceMock, never())
+                .sendMessageToUser(any(User.class), any(), any());
+    }
 
-          @Override
-          protected void onUserJoinEvent(User user) {}
+    @Test
+    public void spectatorJoin_userAddedToRoomSuccessfully() {
+        // assign
+        Room room = getTestRoom();
+        User user = User.createNewUser(user1UUID, user1Name, user1Session);
 
-          @Override
-          protected void onSpectatorJoinEvent(User user) {}
+        // actual
+        boolean actual = room.spectatorJoin(user);
 
-          @Override
-          protected void onUserLeaveEvent(User user) {}
+        // assert
+        assertEquals(1, room.getSpectatorsJoinedList().size());
+        assertTrue(actual);
+    }
+
+    @Test
+    public void spectatorJoin_userBlockedFromRoomWhenDuplicateUser_resultsFalse() {
+        // assign
+        Room room = getTestRoom();
+        User user = User.createNewUser(user1UUID, user1Name, user1Session);
+        room.spectatorJoin(user);
+
+        // actual
+        boolean actual = room.spectatorJoin(user);
+
+        // assert
+        assertEquals(1, room.getSpectatorsJoinedList().size());
+        assertFalse(actual);
+    }
+
+    @Test
+    public void userLeave_userRemovedFromRoomIfPlaying() {
+        // assign
+        Room room = getTestRoom();
+        User user = User.createNewUser(user1UUID, user1Name, user1Session);
+        room.userJoin(user);
+
+        // actual
+        room.userLeave(user);
+
+        // assert
+        assertEquals(0, room.getSpectatorsJoinedList().size());
+    }
+
+    @Test
+    public void userLeave_userRemovedFromRoomIfSpectating() {
+        // assign
+        Room room = getTestRoom();
+        User user = User.createNewUser(user1UUID, user1Name, user1Session);
+        room.spectatorJoin(user);
+
+        // actual
+        room.userLeave(user);
+
+        // assert
+        assertEquals(0, room.getSpectatorsJoinedList().size());
+        verify(socketMessengerServiceMock, never())
+                .sendMessageToUser(any(User.class), any(), any());
+    }
+
+    @Test
+    public void userLeave_newHostWhenHostRemoved() {
+        // assign
+        Room room = getTestRoom();
+        User host = User.createNewUser(hostUserUUID, hostName, hostSession);
+        User user = User.createNewUser(user1UUID, user1Name, user1Session);
+        room.userJoin(host);
+        room.userJoin(user);
+
+        // actual
+        room.userLeave(host);
+
+        // assert
+        assertEquals(1, room.getUsersJoinedList().size());
+        assertEquals(user, room.host);
+        verify(socketMessengerServiceMock, times(1))
+                .sendMessageToUser(any(User.class), any(), any());
+    }
+
+    @Test
+    public void getRoomListingObject_RoomListingContainsSameData() {
+        // assign
+        User user = User.createNewUser(user1UUID, user1Name, user1Session);
+        Room room =
+                new Room(roomUUID, 2, user, "test", null) {
+                    @Override
+                    public GameType getGameType() {
+                        return GameType.NULL_GAME_TYPE;
+                    }
+
+                    @Override
+                    protected boolean processGameDataForGame(User user, GameData response) {
+                        return false;
+                    }
+
+                    @Override
+                    protected void onUserJoinEvent(User user) {}
+
+                    @Override
+                    protected void onSpectatorJoinEvent(User user) {}
+
+                    @Override
+                    protected void onUserLeaveEvent(User user) {}
+                };
+        String expectedUuid = room.getRoomId().toString();
+        int expectedLobbySize = room.getUsersJoinedList().size();
+        int expectedMaxLobbySize = room.getMaxUsers();
+        int expectedSpectatorCount = room.getSpectatorsJoinedList().size();
+        String expectedGameType = room.getGameType().getId();
+        String expectedHostName = room.getHost().getName();
+        boolean expectedProgressState = room.isInProgress();
+        long expectedGameStartTime = room.getTimeStarted();
+
+        // actual
+        RoomListing actual = room.getRoomListingObject();
+
+        // assert
+        assertEquals(expectedUuid, actual.roomId);
+        assertEquals(expectedLobbySize, actual.lobbySize);
+        assertEquals(expectedMaxLobbySize, actual.maxLobbySize);
+        assertEquals(expectedSpectatorCount, actual.spectatorsAmount);
+        assertEquals(expectedGameType, actual.gameType);
+        assertEquals(expectedHostName, actual.hostName);
+        assertEquals(expectedProgressState, actual.inProgress);
+        assertEquals(expectedGameStartTime, actual.gameStartTime);
+    }
+
+    @Test
+    public void handleGameDataReceived_chatMessage_MessageIsBroadcast() {
+
+        // assign
+        SocketMessengerService messengerService = mock(SocketMessengerService.class);
+        User user = User.createNewUser(user1UUID, user1Name, user1Session);
+        Room testRoom = new TestGame(roomUUID, 2, null, "test", messengerService);
+        ChatMessageData sampleData =
+                new ChatMessageData(testRoom.getRoomId(), "This is a message", "Bobby");
+
+        // actual
+        testRoom.handleGameDataReceived(user, sampleData);
+
+        // assert
+        verify(messengerService, times(1)).broadcastMessageToRoom(eq(testRoom), any());
+    }
+
+    @Test
+    public void handleGameDataReceived_settingDataRequest_responseSent() {
+        // assign
+        SocketMessengerService messengerService = mock(SocketMessengerService.class);
+        User user = User.createNewUser(hostUserUUID, hostName, hostSession);
+        user.setSocketId("fakeId");
+        Room testRoom = new TestGame(roomUUID, 2, user, "test", messengerService);
+        BlankGameData blankGameData =
+                new BlankGameData(roomUUID, GameDataType.SETTINGS_DATA_REQUEST);
+
+        // actual
+        testRoom.handleGameDataReceived(user, blankGameData);
+
+        // assert
+        verify(messengerService, times(1)).sendMessageToUser(any(User.class), any(), any());
+    }
+
+    @Test
+    public void handleGameDataReceived_settingDataRequestNotHost_sendError() {
+        // assign
+        SocketMessengerService messengerService = mock(SocketMessengerService.class);
+        User user = User.createNewUser(user1UUID, user1Name, user1Session);
+        user.setSocketId("fakeId");
+        Room testRoom = new TestGame(roomUUID, 2, null, "test", messengerService);
+        BlankGameData blankGameData =
+                new BlankGameData(roomUUID, GameDataType.SETTINGS_DATA_REQUEST);
+
+        // actual
+        testRoom.handleGameDataReceived(user, blankGameData);
+
+        // assert
+        verify(messengerService, times(1))
+                .sendInvalidSocketMessageToUser(any(User.class), any(), anyInt(), anyString());
+    }
+
+    @Test
+    public void handleGameDataReceived_kickPlayerRequest_responseSent() {
+        // assign
+        SocketMessengerService messengerService = mock(SocketMessengerService.class);
+        User host = User.createNewUser(hostUserUUID, hostName, hostSession);
+        User user = User.createNewUser(user1UUID, user1Name, user1Session);
+        host.setSocketId("fakeId");
+        user.setSocketId("fakeId");
+        Room testRoom = new TestGame(roomUUID, 2, host, "test", messengerService);
+        testRoom.userJoin(host);
+        testRoom.userJoin(user);
+        KickPlayerData kickPlayerData = new KickPlayerData(roomUUID, user);
+
+        // actual
+        testRoom.handleGameDataReceived(host, kickPlayerData);
+
+        // assert
+        assertEquals(1, testRoom.getUsersJoinedList().size());
+        verify(messengerService, atLeastOnce()).sendMessageToUser(any(User.class), any(), any());
+    }
+
+    @Test
+    public void handleGameDataReceived_kickPlayerRequestNotHost_sendError() {
+        // assign
+        SocketMessengerService messengerService = mock(SocketMessengerService.class);
+        User host = User.createNewUser(hostUserUUID, hostName, hostSession);
+        User user = User.createNewUser(user1UUID, user1Name, user1Session);
+        host.setSocketId("fakeId");
+        user.setSocketId("fakeId");
+        Room testRoom = new TestGame(roomUUID, 2, null, "test", messengerService);
+        KickPlayerData kickPlayerData = new KickPlayerData(roomUUID, user);
+
+        // actual
+        testRoom.handleGameDataReceived(user, kickPlayerData);
+
+        // assert
+        verify(messengerService, times(1))
+                .sendInvalidSocketMessageToUser(any(User.class), any(), anyInt(), anyString());
+    }
+
+    @Test
+    public void handleGameDataReceived_other_MessageIsProcessed() {
+        SocketMessengerService messengerService = mock(SocketMessengerService.class);
+        Room testRoom = new TestGame(roomUUID, 2, null, "test", messengerService);
+        Room testRoomSpy = spy(testRoom);
+        TestMessageData testMessageData = new TestMessageData();
+
+        boolean actual = testRoomSpy.handleGameDataReceived(null, testMessageData);
+
+        assertTrue(actual);
+        verify(testRoomSpy, times(1)).processGameDataForGame(any(), any());
+    }
+
+    public Room getTestRoom() {
+        User hostUser = User.createNewUser(hostUserUUID, hostName, hostSession);
+        return new Room(roomUUID, 2, hostUser, "test", socketMessengerServiceMock) {
+            @Override
+            public GameType getGameType() {
+                return null;
+            }
+
+            @Override
+            protected boolean processGameDataForGame(User user, GameData response) {
+                return false;
+            }
+
+            @Override
+            protected void onUserJoinEvent(User user) {}
+
+            @Override
+            protected void onSpectatorJoinEvent(User user) {}
+
+            @Override
+            protected void onUserLeaveEvent(User user) {}
         };
-    String expectedUuid = room.getRoomId().toString();
-    int expectedLobbySize = room.getUsersJoinedList().size();
-    int expectedMaxLobbySize = room.getMaxUsers();
-    int expectedSpectatorCount = room.getSpectatorsJoinedList().size();
-    int expectedGameType = room.getGameType().getId();
-    String expectedHostName = room.getHost().getName();
-    boolean expectedProgressState = room.isInProgress();
-    long expectedGameStartTime = room.getTimeStarted();
-
-    // actual
-    RoomListing actual = room.getRoomListingObject();
-
-    // assert
-    assertEquals(expectedUuid, actual.roomId);
-    assertEquals(expectedLobbySize, actual.lobbySize);
-    assertEquals(expectedMaxLobbySize, actual.maxLobbySize);
-    assertEquals(expectedSpectatorCount, actual.spectatorsAmount);
-    assertEquals(expectedGameType, actual.gameType);
-    assertEquals(expectedHostName, actual.hostName);
-    assertEquals(expectedProgressState, actual.inProgress);
-    assertEquals(expectedGameStartTime, actual.gameStartTime);
-  }
-
-  @Test
-  public void handleGameDataReceived_chatMessage_MessageIsBroadcast() {
-
-    // assign
-    SocketMessengerService messengerService = mock(SocketMessengerService.class);
-    User user = User.createNewUser(user1UUID, cookieBuffer);
-    Room testRoom = new TestGame(roomUUID, 2, null, "test", messengerService);
-    ChatMessageData sampleData =
-        new ChatMessageData(testRoom.getRoomId(), "This is a message", "Bobby");
-
-    // actual
-    testRoom.handleGameDataReceived(user, sampleData);
-
-    // assert
-    verify(messengerService, times(1)).broadcastMessageToRoom(eq(testRoom), any());
-  }
-
-  @Test
-  public void handleGameDataReceived_settingDataRequest_responseSent() {
-    // assign
-    SocketMessengerService messengerService = mock(SocketMessengerService.class);
-    User user = User.createNewUser(hostUserUUID, cookieBuffer);
-    user.setSocketId("fakeId");
-    Room testRoom = new TestGame(roomUUID, 2, user, "test", messengerService);
-    BlankGameData blankGameData = new BlankGameData(roomUUID, GameDataType.SETTINGS_DATA_REQUEST);
-
-    // actual
-    testRoom.handleGameDataReceived(user, blankGameData);
-
-    // assert
-    verify(messengerService, times(1)).sendMessageToUser(any(User.class), any(), any());
-  }
-
-  @Test
-  public void handleGameDataReceived_settingDataRequestNotHost_sendError() {
-    // assign
-    SocketMessengerService messengerService = mock(SocketMessengerService.class);
-    User user = User.createNewUser(user1UUID, cookieBuffer);
-    user.setSocketId("fakeId");
-    Room testRoom = new TestGame(roomUUID, 2, null, "test", messengerService);
-    BlankGameData blankGameData = new BlankGameData(roomUUID, GameDataType.SETTINGS_DATA_REQUEST);
-
-    // actual
-    testRoom.handleGameDataReceived(user, blankGameData);
-
-    // assert
-    verify(messengerService, times(1))
-        .sendInvalidSocketMessageToUser(any(User.class), any(), anyInt(), anyString());
-  }
-
-  @Test
-  public void handleGameDataReceived_kickPlayerRequest_responseSent() {
-    // assign
-    SocketMessengerService messengerService = mock(SocketMessengerService.class);
-    User host = User.createNewUser(hostUserUUID, cookieBuffer);
-    User user = User.createNewUser(user1UUID, cookieBuffer);
-    host.setSocketId("fakeId");
-    user.setSocketId("fakeId");
-    Room testRoom = new TestGame(roomUUID, 2, host, "test", messengerService);
-    testRoom.userJoin(host);
-    testRoom.userJoin(user);
-    KickPlayerData kickPlayerData = new KickPlayerData(roomUUID, user);
-
-    // actual
-    testRoom.handleGameDataReceived(host, kickPlayerData);
-
-    // assert
-    assertEquals(1, testRoom.getUsersJoinedList().size());
-    verify(messengerService, atLeastOnce()).sendMessageToUser(any(User.class), any(), any());
-  }
-
-  @Test
-  public void handleGameDataReceived_kickPlayerRequestNotHost_sendError() {
-    // assign
-    SocketMessengerService messengerService = mock(SocketMessengerService.class);
-    User host = User.createNewUser(hostUserUUID, cookieBuffer);
-    User user = User.createNewUser(user1UUID, cookieBuffer);
-    host.setSocketId("fakeId");
-    user.setSocketId("fakeId");
-    Room testRoom = new TestGame(roomUUID, 2, null, "test", messengerService);
-    KickPlayerData kickPlayerData = new KickPlayerData(roomUUID, user);
-
-    // actual
-    testRoom.handleGameDataReceived(user, kickPlayerData);
-
-    // assert
-    verify(messengerService, times(1))
-        .sendInvalidSocketMessageToUser(any(User.class), any(), anyInt(), anyString());
-  }
-
-  @Test
-  public void handleGameDataReceived_other_MessageIsProcessed() {
-    SocketMessengerService messengerService = mock(SocketMessengerService.class);
-    Room testRoom = new TestGame(roomUUID, 2, null, "test", messengerService);
-    Room testRoomSpy = spy(testRoom);
-    TestMessageData testMessageData = new TestMessageData();
-
-    boolean actual = testRoomSpy.handleGameDataReceived(null, testMessageData);
-
-    assertTrue(actual);
-    verify(testRoomSpy, times(1)).processGameDataForGame(any(), any());
-  }
-
-  public Room getTestRoom() {
-    User hostUser = User.createNewUser(hostUserUUID, cookieBuffer);
-    return new Room(roomUUID, 2, hostUser, "test", socketMessengerServiceMock) {
-      @Override
-      public GameType getGameType() {
-        return null;
-      }
-
-      @Override
-      protected boolean processGameDataForGame(User user, GameData response) {
-        return false;
-      }
-
-      @Override
-      protected void onUserJoinEvent(User user) {}
-
-      @Override
-      protected void onSpectatorJoinEvent(User user) {}
-
-      @Override
-      protected void onUserLeaveEvent(User user) {}
-    };
-  }
+    }
 }
