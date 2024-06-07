@@ -38,6 +38,9 @@ public class AppConfig {
     @Value("${auth.allowed-users-file}")
     private String usersFile;
 
+    @Value("${server.exposeOpenApiEndpoints}")
+    private boolean exposeOpenApiEndpoints;
+
     public String[] getAllowedOriginsAsArray() {
         return allowedOrigins.toArray(new String[0]);
     }

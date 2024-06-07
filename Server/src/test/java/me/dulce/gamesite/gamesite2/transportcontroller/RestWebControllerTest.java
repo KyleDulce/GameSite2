@@ -67,8 +67,8 @@ public class RestWebControllerTest {
     @Test
     @WithBasicUser
     public void getRoomLists_getsRooms() throws Exception {
-        Room.RoomListing listing =
-                Room.RoomListing.builder()
+        RoomListing listing =
+                RoomListing.builder()
                         .roomId("id1")
                         .lobbySize(1)
                         .maxLobbySize(5)
@@ -79,7 +79,7 @@ public class RestWebControllerTest {
                         .gameStartTime(0)
                         .roomName("name")
                         .build();
-        when(roomManager.getAllRoomListings()).thenReturn(new Room.RoomListing[] {listing});
+        when(roomManager.getAllRoomListings()).thenReturn(new RoomListing[] {listing});
 
         getRequest(mockMvc, ROOM_LIST_ENDPOINT, HttpStatus.OK)
                 .andExpect(content().json(objectAsArrayToString(listing)));
@@ -335,8 +335,8 @@ public class RestWebControllerTest {
     @Test
     @WithBasicUser
     public void getRoomInfo_success() throws Exception {
-        Room.RoomListing roomListing =
-                new Room.RoomListing("id", 1, 2, 3, "TESTING", "host", true, 10, "name");
+        RoomListing roomListing =
+                new RoomListing("id", 1, 2, 3, "TESTING", "host", true, 10, "name");
         RoomInfoResponse expectedResponse = new RoomInfoResponse(roomListing, true, false, false);
 
         Room mockRoom = mock(Room.class);

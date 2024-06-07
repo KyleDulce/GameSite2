@@ -9,6 +9,7 @@ server:
   error:
     whitelabel:
       enabled: false
+  exposeOpenApiEndpoints: ${ENABLE_OPENAPI:true}
 
   allowedOrigins: ${ALLOWED_ORIGINS:#{'http://localhost:8080, http://localhost:4200, null, http://localhost:3000'}}
 
@@ -23,11 +24,11 @@ management:
     recording:
       enabled: true
 
-logging:
-  level:
-    org:
-      springframework:
-        security: DEBUG
+springdoc:
+  api-docs:
+    enabled: ${ENABLE_OPENAPI:true}
+  swagger-ui:
+    enabled: ${ENABLE_OPENAPI:true}
 
 endpoints:
   socket: socket

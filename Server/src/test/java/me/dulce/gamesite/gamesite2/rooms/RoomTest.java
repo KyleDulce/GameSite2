@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 import java.util.UUID;
-import me.dulce.gamesite.gamesite2.rooms.Room.RoomListing;
 import me.dulce.gamesite.gamesite2.rooms.games.GameType;
 import me.dulce.gamesite.gamesite2.rooms.games.common.BlankGameData;
 import me.dulce.gamesite.gamesite2.rooms.games.common.chatmessage.ChatMessageData;
@@ -15,6 +14,7 @@ import me.dulce.gamesite.gamesite2.rooms.games.common.testgame.TestGame;
 import me.dulce.gamesite.gamesite2.rooms.games.common.testgame.TestMessageData;
 import me.dulce.gamesite.gamesite2.rooms.games.generic.GameData;
 import me.dulce.gamesite.gamesite2.rooms.games.generic.GameDataType;
+import me.dulce.gamesite.gamesite2.transportcontroller.messaging.RoomListing;
 import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
 import me.dulce.gamesite.gamesite2.user.User;
 import org.junit.jupiter.api.AfterEach;

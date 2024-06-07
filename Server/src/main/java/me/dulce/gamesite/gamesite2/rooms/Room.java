@@ -12,6 +12,7 @@ import me.dulce.gamesite.gamesite2.rooms.games.common.settings.KickPlayerData;
 import me.dulce.gamesite.gamesite2.rooms.games.common.settings.SettingsDataResponse;
 import me.dulce.gamesite.gamesite2.rooms.games.generic.GameData;
 import me.dulce.gamesite.gamesite2.rooms.games.generic.GameDataType;
+import me.dulce.gamesite.gamesite2.transportcontroller.messaging.RoomListing;
 import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
 import me.dulce.gamesite.gamesite2.user.User;
 import me.dulce.gamesite.gamesite2.utilservice.GamesiteUtils;
@@ -245,22 +246,5 @@ public abstract class Room {
      */
     public boolean isEmpty() {
         return usersJoinedList.isEmpty();
-    }
-
-    /** Serializable representation of a room */
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @EqualsAndHashCode
-    public static class RoomListing {
-        public String roomId;
-        public int lobbySize;
-        public int maxLobbySize;
-        public int spectatorsAmount;
-        public String gameType;
-        public String hostName;
-        public boolean inProgress;
-        public long gameStartTime;
-        public String roomName;
     }
 }

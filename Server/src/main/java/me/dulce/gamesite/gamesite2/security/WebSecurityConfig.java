@@ -79,6 +79,11 @@ public class WebSecurityConfig {
                         UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(
                         auth -> {
+                            if(config.isExposeOpenApiEndpoints()) {
+                                auth.requestMatchers("/swagger-ui/**").permitAll()
+                                        .requestMatchers("/v3/api-docs").permitAll()
+                                        .requestMatchers("/v3/api-docs/**").permitAll();
+                            }
                             auth
                                     // REST
                                     .requestMatchers(HttpMethod.OPTIONS, "**")

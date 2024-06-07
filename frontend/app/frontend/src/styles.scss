@@ -1,0 +1,267 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+@include mat.core();
+
+$GameSiteClient-primary-palette: (
+  300: #3D74D5,
+  500: #053893,
+  700: #09398E,
+  D300: #3D74D5,
+  D500: #0d52cb,
+  D700: #09398E,
+  contrast: (
+    300: #ffffff,
+    500: #ffffff,
+    700: #ffffff,
+    D300: #ffffff,
+    D500: #ffffff,
+    D700: #ffffff,
+  )
+);
+
+$GameSiteClient-light-primary: mat.define-palette($GameSiteClient-primary-palette, 500, 300, 700);
+$GameSiteClient-dark-primary: mat.define-palette($GameSiteClient-primary-palette, D500, D300, D700);
+
+$GameSiteClient-secondary-palette: (
+  300: #D6AE3E,
+  500: #cc9a0e,
+  700: #8E6B09,
+  contrast: (
+    300: rgba(0, 0, 0, 0.87),
+    500: rgba(0, 0, 0, 0.87),
+    700: rgba(0, 0, 0, 0.87),
+  )
+);
+
+$GameSiteClient-light-secondary: mat.define-palette($GameSiteClient-secondary-palette, 500, 300, 700);
+$GameSiteClient-dark-secondary: mat.define-palette($GameSiteClient-secondary-palette, 500, 300, 700);
+
+$GameSiteClient-error-palette: (
+  300: #D73333,
+  500: #CE0000,
+  700: #900000,
+  D300: #D73333,
+  D500: #CE0000,
+  D700: #900000,
+  contrast: (
+    300: #ffffff,
+    500: #ffffff,
+    700: #ffffff,
+    D300: #000000,
+    D500: #000000,
+    D700: #000000,
+  )
+);
+
+$GameSiteClient-light-error: mat.define-palette($GameSiteClient-error-palette, 500, 300, 700);
+$GameSiteClient-dark-error: mat.define-palette($GameSiteClient-error-palette, 500, 300, 700);
+
+$GameSiteClient-warn-palette: (
+  300: #EF8933,
+  500: #ec6c00,
+  700: #A54B00,
+  contrast: (
+    300: #ffffff,
+    500: #ffffff,
+    700: #ffffff,
+  )
+);
+
+$GameSiteClient-light-warn: mat.define-palette($GameSiteClient-warn-palette, 500, 300, 700);
+$GameSiteClient-dark-warn: mat.define-palette($GameSiteClient-warn-palette, 500, 300, 700);
+
+$GameSiteClient-info-palette: (
+  300: #3797A8,
+  500: #057d93,
+  700: #035766,
+  contrast: (
+    300: #ffffff,
+    500: #ffffff,
+    700: #ffffff,
+  )
+);
+
+$GameSiteClient-light-info: mat.define-palette($GameSiteClient-info-palette, 500, 300, 700);
+$GameSiteClient-dark-info: mat.define-palette($GameSiteClient-info-palette, 500, 300, 700);
+
+$GameSiteClient-success-palette: (
+  300: #338D34,
+  500: #02a805,
+  700: #004F01,
+  D300: #03fc07,
+  D500: #02e306,
+  D700: #02a805,
+  contrast: (
+    300: #ffffff,
+    500: #ffffff,
+    700: #ffffff,
+    D300: #ffffff,
+    D500: #ffffff,
+    D700: #ffffff,
+  )
+);
+
+$GameSiteClient-light-success: mat.define-palette($GameSiteClient-success-palette, 500, 300, 700);
+$GameSiteClient-dark-success: mat.define-palette($GameSiteClient-success-palette, D500, D300, D700);
+
+$fontConfig: mat.define-typography-config(
+  $headline-1: mat.define-typography-level(112px, 112px, 300, 'Roboto', -0.0134em),
+  $headline-2: mat.define-typography-level(56px, 56px, 400, 'Roboto', -0.0089em),
+  $headline-3: mat.define-typography-level(45px, 48px, 400, 'Roboto', 0.0000em),
+  $headline-4: mat.define-typography-level(34px, 40px, 400, 'Roboto', 0.0074em),
+  $headline-5: mat.define-typography-level(24px, 32px, 400, 'Roboto', 0.0000em),
+  $headline-6: mat.define-typography-level(20px, 32px, 500, 'Roboto', 0.0075em),
+  $subtitle-1: mat.define-typography-level(16px, 28px, 400, 'Roboto', 0.0094em),
+  $subtitle-2: mat.define-typography-level(15px, 24px, 500, 'Roboto', 0.0067em),
+  $body-2: mat.define-typography-level(14px, 24px, 500, 'Roboto', 0.0179em),
+  $body-1: mat.define-typography-level(14px, 20px, 400, 'Roboto', 0.0179em),
+  $button: mat.define-typography-level(14px, 14px, 500, 'Roboto', 0.0893em),
+  $caption: mat.define-typography-level(12px, 20px, 400, 'Roboto', 0.0333em),
+);
+
+$GameSiteClient-light-theme: mat.define-light-theme((
+  color: (
+    primary: $GameSiteClient-light-primary,
+    accent: $GameSiteClient-light-secondary,
+    warn: $GameSiteClient-light-error,
+  ),
+  typography: $fontConfig,
+));
+
+$GameSiteClient-dark-theme: mat.define-dark-theme((
+  color: (
+    primary: $GameSiteClient-dark-primary,
+    accent: $GameSiteClient-dark-secondary,
+    warn: $GameSiteClient-dark-error,
+  ),
+  typography: $fontConfig,
+));
+
+html:not([darkmode="true"]) {
+  @include mat.all-component-themes($GameSiteClient-light-theme);
+
+  --primary-color: #{mat.get-color-from-palette($GameSiteClient-light-primary, default)};
+  --primary-contrast: #{mat.get-color-from-palette($GameSiteClient-light-primary, default-contrast)};
+  --error-color: #{mat.get-color-from-palette($GameSiteClient-light-error, default)};
+  --error-contrast: #{mat.get-color-from-palette($GameSiteClient-light-error, default-contrast)};
+  --info-color: #{mat.get-color-from-palette($GameSiteClient-light-info, default)};
+  --info-contrast: #{mat.get-color-from-palette($GameSiteClient-light-info, default-contrast)};
+  --success-color: #{mat.get-color-from-palette($GameSiteClient-light-success, default)};
+  --success-contrast: #{mat.get-color-from-palette($GameSiteClient-light-success, default-contrast)};
+  --warn-color: #{mat.get-color-from-palette($GameSiteClient-light-warn, default)};
+  --warn-contrast: #{mat.get-color-from-palette($GameSiteClient-light-warn, default-contrast)};
+
+  //Exported
+  --divider: rgba(0, 0, 0, 0.12);
+  --background-default:#ffffff;
+  --background-paper: #f5f5f5;
+  --text-primary: rgba(0, 0, 0, 0.87);
+  --text-disabled: rgba(0, 0, 0, 0.38);
+}
+
+html[darkmode="true"] {
+  @include mat.all-component-themes($GameSiteClient-dark-theme);
+
+  --primary-color: #{mat.get-color-from-palette($GameSiteClient-dark-primary, default)};
+  --primary-contrast: #{mat.get-color-from-palette($GameSiteClient-dark-primary, default-contrast)};
+  --error-color: #{mat.get-color-from-palette($GameSiteClient-dark-error, default)};
+  --error-contrast: #{mat.get-color-from-palette($GameSiteClient-dark-error, default-contrast)};
+  --info-color: #{mat.get-color-from-palette($GameSiteClient-dark-info, default)};
+  --info-contrast: #{mat.get-color-from-palette($GameSiteClient-dark-info, default-contrast)};
+  --success-color: #{mat.get-color-from-palette($GameSiteClient-dark-success, default)};
+  --success-contrast: #{mat.get-color-from-palette($GameSiteClient-dark-success, default-contrast)};
+  --warn-color: #{mat.get-color-from-palette($GameSiteClient-dark-warn, default)};
+  --warn-contrast: #{mat.get-color-from-palette($GameSiteClient-dark-warn, default-contrast)};
+
+  //Exported
+  --divider: rgba(255, 255, 255, 0.12);
+  --background-default:#121212;
+  --background-paper: #272727;
+  --text-primary: #ffffff;
+  --text-disabled: rgba(255, 255, 255, 0.5);
+}
+
+html, body, app-root, .app-frame {
+  overflow: hidden;
+  margin: 0;
+  height: 100%;
+  box-sizing: border-box;
+  background-color: var(--background-default) !important;
+  color: var(--text-primary) !important;
+  font-family: 'Roboto';
+  font-weight: 400;
+}
+
+// customs
+.mat-primary-background {
+  background-color: var(--primary-color);
+  color: var(--primary-contrast);
+}
+
+.mat-success {
+  background-color: var(--success-color) !important;
+  color: var(--success-contrast) !important;
+}
+
+.mat-success-text {
+  color: var(--success-color) !important;
+}
+
+.mat-info {
+  background-color: var(--info-color) !important;
+  color: var(--info-contrast) !important;
+}
+
+.mat-info-text {
+  color: var(--info-color) !important;
+}
+
+.mat-warning {
+  background-color: var(--warn-color) !important;
+  color: var(--warn-contrast) !important;
+}
+
+.mat-warning-text {
+  color: var(--warn-color) !important;
+}
+
+.mat-error-text {
+  color: var(--error-color) !important;
+}
+
+// usefuls
+.gs-divider {
+  border-color: var(--divider);
+}
+
+.gs-paper {
+  background-color: var(--background-paper);
+  color: var(--text-primary);
+}
+
+.disabled-color {
+  color: var(--text-disabled);
+}
+
+.disabled-background {
+  background-color: var(--text-disabled);
+}
+
+// Overrides
+.mat-mdc-table, 
+.mdc-data-table__header-cell, 
+.mat-drawer-content, 
+.mat-drawer {
+  background-color: var(--background-paper) !important;
+}
+
+.mdc-data-table__header-cell {
+  border-bottom-color: var(--divider);
+}
+
+
+hr {
+  border-color: var(--divider);
+}

@@ -5,9 +5,17 @@ import static me.dulce.gamesite.gamesite2.utilservice.GamesiteUtils.getUUIDFromS
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import me.dulce.gamesite.gamesite2.configuration.AppConfig;
 import me.dulce.gamesite.gamesite2.rooms.Room;
-import me.dulce.gamesite.gamesite2.rooms.Room.RoomListing;
 import me.dulce.gamesite.gamesite2.rooms.RoomManager;
 import me.dulce.gamesite.gamesite2.rooms.games.GameType;
 import me.dulce.gamesite.gamesite2.security.JwtSecurityCookieService;
@@ -26,6 +34,7 @@ import org.springframework.web.bind.annotation.*;
 
 /** Controller that handles rest requests */
 @RestController
+@RequestMapping("/api")
 public class RestWebController {
 
     @Autowired private RoomManager roomManager;
@@ -38,7 +47,14 @@ public class RestWebController {
 
     private final Random random = new Random();
 
-    @GetMapping("/api/getRoomLists")
+    @GetMapping("/getRoomLists")
+    @Operation(summary = "Get a list of available rooms")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved rooms", content = @Content(
+                    mediaType = "application.json", array = @ArraySchema(schema = @Schema(implementation = RoomListing.class))
+            )),
+            @ApiResponse(responseCode = "401", description = "Authentication is required", content = @Content)
+    })
     public ResponseEntity<RoomListing[]> getRoomLists() {
 
         User user = getUserFromAuthentication();
@@ -46,10 +62,16 @@ public class RestWebController {
         return ResponseEntity.ok(roomManager.getAllRoomListings());
     }
 
-    @PostMapping("/api/joinRoom/{roomId}")
+    @PostMapping("/joinRoom/{roomId}")
+    @Operation(summary = "Joins a room. Returns whether or not action was successful")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successfully joined room", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "401", description = "Authentication is required", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Not allowed to join the room", content = @Content),
+    })
     public ResponseEntity<RoomJoinResponse> postJoinRoom(
-            @PathVariable String roomId,
-            @RequestParam(defaultValue = "false") boolean asSpectator) {
+            @Parameter(description = "The id of the room", required = true) @PathVariable String roomId,
+            @Parameter(description = "Whether player should join as a spectator") @RequestParam(defaultValue = "false") boolean asSpectator) {
 
         Optional<UUID> roomUid = getUUIDFromString(roomId);
         if (roomUid.isEmpty()) {
@@ -87,8 +109,16 @@ public class RestWebController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/leaveRoom/{roomId}")
-    public ResponseEntity<?> postLeaveRoom(@PathVariable String roomId) {
+    @PostMapping("/leaveRoom/{roomId}")
+    @Operation(summary = "Leaves a room")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successfully joined room", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Authentication is required", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Tried to leave a room that the given player is not part of", content = @Content),
+    })
+    public ResponseEntity<?> postLeaveRoom(
+            @Parameter(description = "The id of the room to lave")
+            @PathVariable String roomId) {
 
         Optional<UUID> roomIdOptional = getUUIDFromString(roomId);
         if (roomIdOptional.isEmpty()) {
@@ -100,15 +130,21 @@ public class RestWebController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/api/createRoom")
-    public ResponseEntity<RoomCreateResponse> postCreateRoom(
+    @PostMapping("/createRoom")
+    @Operation(summary = "Creates a room")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successfully creates a room", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RoomCreateResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Authentication is required", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid request. Read body", content = @Content(mediaType = "text/plain")),
+    })
+    public ResponseEntity<?> postCreateRoom(
             @RequestParam int maxLobbySize,
             @RequestParam String gameType,
             @RequestParam(required = false) String roomName) {
 
         RoomCreateResponse response = new RoomCreateResponse();
         if (maxLobbySize <= 0) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("Cannot create lobby of size <= 0");
         }
 
         if (GamesiteUtils.isBlank(roomName)) {
@@ -124,7 +160,7 @@ public class RestWebController {
 
         GameType gameTypeObj = GameType.getGameTypeFromId(gameType);
         if (gameTypeObj == null) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("Invalid game type");
         }
 
         UUID roomId = roomManager.createRoom(gameTypeObj, user, maxLobbySize, roomName);
@@ -138,11 +174,18 @@ public class RestWebController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/roomInfo/{roomId}")
-    public ResponseEntity<RoomInfoResponse> getRoomInfo(@PathVariable String roomId) {
+    @GetMapping("/roomInfo/{roomId}")
+    @Operation(summary = "Gets information about a room")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successful on getting room information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RoomInfoResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Authentication is required", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid request. Read body", content = @Content(mediaType = "text/plain")),
+            @ApiResponse(responseCode = "404", description = "Room Id does not exist", content = @Content),
+    })
+    public ResponseEntity<?> getRoomInfo(@PathVariable String roomId) {
         Optional<UUID> uuid = getUUIDFromString(roomId);
         if (uuid.isEmpty()) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("Invalid roomId format. Must be a UUID");
         }
 
         Room room = roomManager.getRoomFromUUID(uuid.get());
@@ -160,7 +203,12 @@ public class RestWebController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/refreshToken")
+    @GetMapping("/refreshToken")
+    @Operation(summary = "Refreshes the authentication cookie")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successful", content = @Content, headers = @Header(name = "Set-Cookie")),
+            @ApiResponse(responseCode = "401", description = "Authentication is required", content = @Content)
+    })
     public ResponseEntity<?> getRefreshToken() {
         return createSuccessResponseEntity(
                 jwtSecurityCookieService
@@ -169,7 +217,13 @@ public class RestWebController {
                         .toString());
     }
 
-    @PostMapping("/api/authenticate")
+    @PostMapping("/authenticate")
+    @Operation(summary = "Authenticates the user")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successful", content = @Content, headers = @Header(name = "Set-Cookie")),
+            @ApiResponse(responseCode = "400", description = "Authentication information was not provided", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Bad login or password", content = @Content)
+    })
     public ResponseEntity<?> postAuth(@RequestBody UserAuthRequest userAuthRequest) {
         if (userAuthRequest == null) {
             return ResponseEntity.badRequest().build();
@@ -191,7 +245,12 @@ public class RestWebController {
                 jwtSecurityCookieService.generateNewResponseCookie(authentication).toString());
     }
 
-    @DeleteMapping("/api/invalidateAuthentication")
+    @DeleteMapping("/invalidateAuthentication")
+    @Operation(summary = "Invalidates token and session")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successful", content = @Content, headers = @Header(name = "Set-Cookie")),
+            @ApiResponse(responseCode = "401", description = "Authentication is required", content = @Content)
+    })
     public ResponseEntity<?> deleteAuthenticationToken() {
         User user = getUserFromAuthentication();
         return createSuccessResponseEntity(

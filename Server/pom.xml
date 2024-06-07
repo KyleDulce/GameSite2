@@ -20,6 +20,7 @@
         <commons-codec.version>1.16.0</commons-codec.version>
         <commons-collections.version>4.4</commons-collections.version>
         <jetbrains-annotations.version>24.0.1</jetbrains-annotations.version>
+        <openapi.version>2.5.0</openapi.version>
 
         <mockito.version>5.12.0</mockito.version>
         <mockito-inline.version>5.2.0</mockito-inline.version>
@@ -35,6 +36,7 @@
         <maven-assembly.version>3.7.1</maven-assembly.version>
         <spotless-maven-plugin>2.43.0</spotless-maven-plugin>
         <google-java-format.version>1.22.0</google-java-format.version>
+        <openapi-maven-plugin.version>1.4</openapi-maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -145,6 +147,14 @@
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j-api.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-api -->
+        <!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${openapi.version}</version>
+        </dependency>
+
 
         <!-- Testing -->
         <dependency>
@@ -230,6 +240,14 @@
                             <formatJavadoc>true</formatJavadoc>
                         </googleJavaFormat>
                     </java>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-maven-plugin</artifactId>
+                <version>${openapi-maven-plugin.version}</version>
+                <configuration>
+                    <outputDir>${project.basedir}</outputDir>
                 </configuration>
             </plugin>
         </plugins>
