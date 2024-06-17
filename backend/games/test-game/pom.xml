@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>test-game</artifactId>
+    <packaging>jar</packaging>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

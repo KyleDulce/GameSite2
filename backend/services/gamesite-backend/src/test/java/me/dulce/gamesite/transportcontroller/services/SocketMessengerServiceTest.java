@@ -1,8 +1,12 @@
 package me.dulce.gamesite.transportcontroller.services;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import me.dulce.commongames.Room;
 import me.dulce.commongames.gamemessage.common.ChatMessageMessage;
 import me.dulce.game.testgame.TestGameRoom;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -13,9 +17,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.UUID;
-
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith({MockitoExtension.class, SpringExtension.class})
 @ContextConfiguration(classes = {SocketMessengerService.class})

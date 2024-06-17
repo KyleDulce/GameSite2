@@ -9,6 +9,7 @@ import me.dulce.commongames.gamemessage.GameSerializableMessage;
 import me.dulce.commongames.gamemessage.InitialGameMessageHandler;
 import me.dulce.commongames.messaging.RoomListing;
 import me.dulce.gamesite.transportcontroller.services.SocketMessengerService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +27,11 @@ public class RoomManager {
 
     private final HashMap<UUID, Room> activeRooms = new HashMap<>();
 
-    @Autowired
-    private SocketMessengerService messengerService;
+    @Autowired private SocketMessengerService messengerService;
 
-    @Autowired
-    private GameResolver gameResolver;
+    @Autowired private GameResolver gameResolver;
 
-    @Autowired
-    private InitialGameMessageHandler initialGameMessageHandler;
+    @Autowired private InitialGameMessageHandler initialGameMessageHandler;
 
     /**
      * Gets all room instances as serialized listings
@@ -113,13 +111,17 @@ public class RoomManager {
     public UUID createRoom(User host, int maxPlayers, String roomName, String gameId) {
         UUID uuid = UUID.randomUUID();
 
-        Optional<GameServiceManager> gameServiceManager = gameResolver.getGameServiceManagerFromId(gameId);
+        Optional<GameServiceManager> gameServiceManager =
+                gameResolver.getGameServiceManagerFromId(gameId);
 
-        if(gameServiceManager.isEmpty()) {
+        if (gameServiceManager.isEmpty()) {
             return null;
         }
 
-        Room room = gameServiceManager.get().createRoom(uuid, maxPlayers, host, roomName, messengerService);
+        Room room =
+                gameServiceManager
+                        .get()
+                        .createRoom(uuid, maxPlayers, host, roomName, messengerService);
 
         activeRooms.put(uuid, room);
         room.userJoin(host);
@@ -163,7 +165,7 @@ public class RoomManager {
      */
     public boolean handleIncomingRoomData(User sender, GameSerializableMessage data) {
         Room room = activeRooms.get(UUID.fromString(data.roomId));
-        if(room == null) {
+        if (room == null) {
             return false;
         }
 

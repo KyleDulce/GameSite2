@@ -1,5 +1,12 @@
 package me.dulce.gamesite.transportcontroller;
 
+import static me.dulce.gamesite.testutils.SpringSecurityTestConfiguration.*;
+import static me.dulce.gamesite.testutils.TestUtils.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import me.dulce.commongames.Room;
 import me.dulce.commongames.User;
 import me.dulce.commongames.messaging.RoomListing;
@@ -10,6 +17,7 @@ import me.dulce.gamesite.security.JwtSecurityCookieService;
 import me.dulce.gamesite.testutils.SpringSecurityTestConfiguration;
 import me.dulce.gamesite.transportcontroller.messaging.*;
 import me.dulce.gamesite.utilservice.UserSecurityUtils;
+
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -28,12 +36,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-
-import static me.dulce.gamesite.testutils.SpringSecurityTestConfiguration.*;
-import static me.dulce.gamesite.testutils.TestUtils.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @WebMvcTest(RestWebController.class)
 @ContextConfiguration(classes = {SpringSecurityTestConfiguration.class})
@@ -276,13 +278,15 @@ public class RestWebControllerTest {
     public void postCreateRoom_roomCreateSuccess() throws Exception {
         RoomCreateResponse expectedResponse = new RoomCreateResponse(true, fakeRoomId);
         User basicUser = UserSecurityUtils.getUserFromSecurityDetails(BASIC_USER_DETAILS);
-        when(roomManager.createRoom(eq(basicUser), eq(10), anyString(), eq(TestGameServiceManager.GAME_ID)))
+        when(roomManager.createRoom(
+                        eq(basicUser), eq(10), anyString(), eq(TestGameServiceManager.GAME_ID)))
                 .thenReturn(UUID.fromString(fakeRoomId));
 
         postRequest(
                         mockMvc,
                         ROOM_CREATE_ENDPOINT,
-                        getMVMapFromString("maxLobbySize=10", "gameId=" + TestGameServiceManager.GAME_ID),
+                        getMVMapFromString(
+                                "maxLobbySize=10", "gameId=" + TestGameServiceManager.GAME_ID),
                         HttpStatus.OK)
                 .andExpect(content().json(objectToString(expectedResponse)));
 
@@ -299,11 +303,13 @@ public class RestWebControllerTest {
         postRequest(
                         mockMvc,
                         ROOM_CREATE_ENDPOINT,
-                        getMVMapFromString("maxLobbySize=10", "gameId=" + TestGameServiceManager.GAME_ID),
+                        getMVMapFromString(
+                                "maxLobbySize=10", "gameId=" + TestGameServiceManager.GAME_ID),
                         HttpStatus.OK)
                 .andExpect(content().json(objectToString(expectedResponse)));
 
-        verify(roomManager, times(1)).createRoom(any(), eq(10), anyString(), eq(TestGameServiceManager.GAME_ID));
+        verify(roomManager, times(1))
+                .createRoom(any(), eq(10), anyString(), eq(TestGameServiceManager.GAME_ID));
     }
 
     @Test

@@ -1,5 +1,8 @@
 package me.dulce.gamesite.rooms;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import me.dulce.commongames.CommonGamesReference;
 import me.dulce.commongames.Room;
 import me.dulce.commongames.User;
@@ -7,6 +10,7 @@ import me.dulce.commongames.game.GameResolver;
 import me.dulce.commongames.gamemessage.InitialGameMessageHandler;
 import me.dulce.game.testgame.TestGameServiceManager;
 import me.dulce.gamesite.transportcontroller.services.SocketMessengerService;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,14 +20,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.eq;
 
 @SpringBootTest
 @Import(CommonGamesReference.class)

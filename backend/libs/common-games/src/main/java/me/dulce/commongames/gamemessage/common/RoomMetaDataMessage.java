@@ -1,10 +1,13 @@
 package me.dulce.commongames.gamemessage.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.*;
+
 import me.dulce.commongames.User;
 import me.dulce.commongames.gamemessage.GameMessage;
 import me.dulce.commongames.gamemessage.GameSerializableMessage;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
@@ -21,21 +24,24 @@ public class RoomMetaDataMessage extends GameMessage {
     public List<User> players;
     public String gameID;
 
-    @Nullable
-    public User host;
+    @Nullable public User host;
 
     public RoomMetaDataMessage(GameSerializableMessage gameSerializableMessage) {
         roomId = UUID.fromString(gameSerializableMessage.roomId);
         ObjectMapper objectMapper = new ObjectMapper();
-        RoomMetaDataMessageSerializable serializableMessage = objectMapper.convertValue(gameSerializableMessage.data,
-                RoomMetaDataMessageSerializable.class);
+        RoomMetaDataMessageSerializable serializableMessage =
+                objectMapper.convertValue(
+                        gameSerializableMessage.data, RoomMetaDataMessageSerializable.class);
 
-        players = Stream.of(serializableMessage.players)
-                .map(user -> User.getUserFromUUID(user.uuid))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .toList();
-        Optional<User> hostOptional = User.getUserFromUUID(serializableMessage.host != null ? serializableMessage.host.uuid : null);
+        players =
+                Stream.of(serializableMessage.players)
+                        .map(user -> User.getUserFromUUID(user.uuid))
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .toList();
+        Optional<User> hostOptional =
+                User.getUserFromUUID(
+                        serializableMessage.host != null ? serializableMessage.host.uuid : null);
         hostOptional.ifPresent(user -> host = user);
         gameID = serializableMessage.gameID;
     }
@@ -53,9 +59,10 @@ public class RoomMetaDataMessage extends GameMessage {
     @Override
     public Serializable onParseData() {
         return RoomMetaDataMessageSerializable.builder()
-                .players(players.stream()
-                        .map(User::toMessageableObject)
-                        .toArray(User.UserMessage[]::new))
+                .players(
+                        players.stream()
+                                .map(User::toMessageableObject)
+                                .toArray(User.UserMessage[]::new))
                 .gameID(gameID)
                 .host(host != null ? host.toMessageableObject() : null)
                 .build();

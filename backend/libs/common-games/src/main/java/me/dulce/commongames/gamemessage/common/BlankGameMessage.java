@@ -2,6 +2,7 @@ package me.dulce.commongames.gamemessage.common;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+
 import me.dulce.commongames.gamemessage.GameMessage;
 
 import java.io.Serializable;

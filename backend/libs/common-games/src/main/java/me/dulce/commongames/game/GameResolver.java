@@ -16,8 +16,9 @@ public class GameResolver {
 
     @Autowired
     public GameResolver(GameServiceManager[] gameServiceManagers) {
-        this.gameServiceManagerMap = Arrays.stream(gameServiceManagers)
-                .collect(Collectors.toMap(GameServiceManager::getGameId, item -> item));
+        this.gameServiceManagerMap =
+                Arrays.stream(gameServiceManagers)
+                        .collect(Collectors.toMap(GameServiceManager::getGameId, item -> item));
     }
 
     public Optional<GameServiceManager> getGameServiceManagerFromId(String gameId) {
@@ -25,9 +26,12 @@ public class GameResolver {
     }
 
     public List<GameListing> getGameList() {
-        return gameServiceManagerMap.values()
-                .stream()
-                .map(gameServiceManager -> new GameListing(gameServiceManager.getGameId(), gameServiceManager.getGameDisplayName()))
+        return gameServiceManagerMap.values().stream()
+                .map(
+                        gameServiceManager ->
+                                new GameListing(
+                                        gameServiceManager.getGameId(),
+                                        gameServiceManager.getGameDisplayName()))
                 .toList();
     }
 }

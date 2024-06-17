@@ -1,10 +1,11 @@
 package me.dulce.gamesite.security;
 
-import me.dulce.gamesite.configuration.AppConfig;
 import me.dulce.commongames.User;
+import me.dulce.gamesite.configuration.AppConfig;
 import me.dulce.gamesite.user.UserSessionManager;
-import me.dulce.gamesite.utilservice.UserSecurityUtils;
 import me.dulce.gamesite.utilservice.TimeService;
+import me.dulce.gamesite.utilservice.UserSecurityUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

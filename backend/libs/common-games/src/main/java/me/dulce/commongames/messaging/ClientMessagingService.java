@@ -1,7 +1,7 @@
 package me.dulce.commongames.messaging;
 
-import me.dulce.commongames.User;
 import me.dulce.commongames.Room;
+import me.dulce.commongames.User;
 
 public interface ClientMessagingService {
     /**
@@ -38,7 +38,8 @@ public interface ClientMessagingService {
      * @param code
      * @param message
      */
-    void sendInvalidSocketMessageToUser(User user, SocketDestinations destination, int code, String message);
+    void sendInvalidSocketMessageToUser(
+            User user, SocketDestinations destination, int code, String message);
 
     /**
      * sends message to user regarding invalid message
@@ -48,7 +49,8 @@ public interface ClientMessagingService {
      * @param code
      * @param message
      */
-    void sendInvalidSocketMessageToUser(String sessionId, SocketDestinations destination, int code, String message);
+    void sendInvalidSocketMessageToUser(
+            String sessionId, SocketDestinations destination, int code, String message);
 
     /**
      * creates invalid message for socket

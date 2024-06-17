@@ -1,6 +1,7 @@
 package me.dulce.commongames;
 
 import lombok.*;
+
 import org.jetbrains.annotations.TestOnly;
 
 import java.io.Serializable;

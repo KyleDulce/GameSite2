@@ -2,6 +2,7 @@ package me.dulce.commongames.gamemessage.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -27,8 +28,9 @@ public enum CommonGameDataType {
     FORCE_KICK("ForceKickData"),
     ;
 
-    private static final Map<String, CommonGameDataType> commonGameDataMapping = Stream.of(CommonGameDataType.values())
-            .collect(Collectors.toMap(CommonGameDataType::getDataId, item -> item));
+    private static final Map<String, CommonGameDataType> commonGameDataMapping =
+            Stream.of(CommonGameDataType.values())
+                    .collect(Collectors.toMap(CommonGameDataType::getDataId, item -> item));
 
     private final String dataId;
 

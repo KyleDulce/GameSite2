@@ -2,11 +2,13 @@ package me.dulce.commongames;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+
 import me.dulce.commongames.gamemessage.common.*;
 import me.dulce.commongames.messaging.ClientMessagingService;
 import me.dulce.commongames.messaging.RoomListing;
 import me.dulce.commongames.messaging.SocketDestinations;
 import me.dulce.commonutils.StringUtils;
+
 import org.jetbrains.annotations.TestOnly;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +57,7 @@ public abstract class Room {
     }
 
     public abstract String getGameId();
+
     protected abstract void onUserJoinEvent(User user);
 
     protected abstract void onSpectatorJoinEvent(User user);

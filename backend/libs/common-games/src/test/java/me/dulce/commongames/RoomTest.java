@@ -1,16 +1,17 @@
 package me.dulce.commongames;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import me.dulce.commongames.messaging.ClientMessagingService;
 import me.dulce.commongames.messaging.RoomListing;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 public class RoomTest {
 
@@ -93,8 +94,7 @@ public class RoomTest {
         // assert
         assertEquals(2, room.getUsersJoinedList().size());
         assertFalse(actual);
-        verify(clientMessagingService, times(2))
-                .sendMessageToUser(any(User.class), any(), any());
+        verify(clientMessagingService, times(2)).sendMessageToUser(any(User.class), any(), any());
     }
 
     @Test
@@ -118,7 +118,8 @@ public class RoomTest {
     @Test
     public void userJoin_userBlockedFromRoomWhenInProgress_resultsFalse() {
         // assign
-        Room room =getRoom(roomUUID, 2, User.createNewUser(roomUUID, "name", "session"), "test", null);
+        Room room =
+                getRoom(roomUUID, 2, User.createNewUser(roomUUID, "name", "session"), "test", null);
         User user = User.createNewUser(user1UUID, user1Name, user1Session);
         room.setInProgress();
 
@@ -128,8 +129,7 @@ public class RoomTest {
         // assert
         assertEquals(0, room.getUsersJoinedList().size());
         assertFalse(actual);
-        verify(clientMessagingService, never())
-                .sendMessageToUser(any(User.class), any(), any());
+        verify(clientMessagingService, never()).sendMessageToUser(any(User.class), any(), any());
     }
 
     @Test
@@ -191,8 +191,7 @@ public class RoomTest {
 
         // assert
         assertEquals(0, room.getSpectatorsJoinedList().size());
-        verify(clientMessagingService, never())
-                .sendMessageToUser(any(User.class), any(), any());
+        verify(clientMessagingService, never()).sendMessageToUser(any(User.class), any(), any());
     }
 
     @Test
@@ -210,8 +209,7 @@ public class RoomTest {
         // assert
         assertEquals(1, room.getUsersJoinedList().size());
         assertEquals(user, room.host);
-        verify(clientMessagingService, times(4))
-                .sendMessageToUser(any(User.class), any(), any());
+        verify(clientMessagingService, times(4)).sendMessageToUser(any(User.class), any(), any());
     }
 
     @Test
@@ -241,7 +239,12 @@ public class RoomTest {
         assertEquals(expectedGameStartTime, actual.gameStartTime);
     }
 
-    private Room getRoom(UUID roomID, int maxUserCount, User user, String name, ClientMessagingService messengerService) {
+    private Room getRoom(
+            UUID roomID,
+            int maxUserCount,
+            User user,
+            String name,
+            ClientMessagingService messengerService) {
         return new Room(roomID, maxUserCount, user, name, messengerService) {
             @Override
             public String getGameId() {
@@ -249,19 +252,13 @@ public class RoomTest {
             }
 
             @Override
-            protected void onUserJoinEvent(User user) {
-
-            }
+            protected void onUserJoinEvent(User user) {}
 
             @Override
-            protected void onSpectatorJoinEvent(User user) {
-
-            }
+            protected void onSpectatorJoinEvent(User user) {}
 
             @Override
-            protected void onUserLeaveEvent(User user) {
-
-            }
+            protected void onUserLeaveEvent(User user) {}
         };
     }
 }

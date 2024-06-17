@@ -7,6 +7,7 @@ import me.dulce.commonutils.StringUtils;
 import me.dulce.gamesite.rooms.RoomManager;
 import me.dulce.gamesite.transportcontroller.services.SocketMessengerService;
 import me.dulce.gamesite.utilservice.UserSecurityUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,8 @@ public class SocketController {
 
     @MessageMapping("/game")
     public void game(
-            @Payload GameSerializableMessage payload, @Header("simpSessionId") String socketSessionId) {
+            @Payload GameSerializableMessage payload,
+            @Header("simpSessionId") String socketSessionId) {
         User user =
                 UserSecurityUtils.getUserSecurityDetailsFromPrincipal(
                         SecurityContextHolder.getContext().getAuthentication());
@@ -41,13 +43,12 @@ public class SocketController {
 
         Optional<UUID> roomId = StringUtils.getUUIDFromString(payload.roomId);
 
-        if(roomId.isEmpty()) {
+        if (roomId.isEmpty()) {
             socketMessengerService.sendInvalidSocketMessageToUser(
                     socketSessionId,
                     SocketDestinations.GAMEDATA,
                     HttpStatus.BAD_REQUEST.value(),
-                    "Invalid Room ID"
-            );
+                    "Invalid Room ID");
             return;
         }
 

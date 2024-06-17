@@ -1,12 +1,13 @@
 package me.dulce.commongames.gamemessage;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import me.dulce.commongames.User;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /** Since most GameData classes will have the same tests, this allows them to be flexible */
 public abstract class GameMessageTestParent {

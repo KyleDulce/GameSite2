@@ -6,5 +6,4 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ComponentScan("me.dulce.commongames")
 @ComponentScan("me.dulce.game")
-public class CommonGamesReference {
-}
+public class CommonGamesReference {}

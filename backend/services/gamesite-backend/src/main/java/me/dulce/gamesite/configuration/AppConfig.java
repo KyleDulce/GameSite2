@@ -1,7 +1,9 @@
 package me.dulce.gamesite.configuration;
 
 import lombok.Getter;
+
 import me.dulce.gamesite.utilservice.TimeService;
+
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

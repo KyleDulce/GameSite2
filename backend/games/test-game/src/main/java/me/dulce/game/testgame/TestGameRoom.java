@@ -1,17 +1,22 @@
 package me.dulce.game.testgame;
 
+import static me.dulce.game.testgame.TestGameServiceManager.GAME_ID;
+
 import me.dulce.commongames.Room;
 import me.dulce.commongames.User;
 import me.dulce.commongames.messaging.ClientMessagingService;
 
 import java.util.UUID;
 
-import static me.dulce.game.testgame.TestGameServiceManager.GAME_ID;
-
 /** Gametype for testing purposes */
 public class TestGameRoom extends Room {
 
-    public TestGameRoom(UUID roomId, int maxUserCount, User host, String roomName, ClientMessagingService messengerService) {
+    public TestGameRoom(
+            UUID roomId,
+            int maxUserCount,
+            User host,
+            String roomName,
+            ClientMessagingService messengerService) {
         super(roomId, maxUserCount, host, roomName, messengerService);
     }
 

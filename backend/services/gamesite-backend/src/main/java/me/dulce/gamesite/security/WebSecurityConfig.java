@@ -5,7 +5,9 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+
 import me.dulce.gamesite.configuration.AppConfig;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -80,10 +82,13 @@ public class WebSecurityConfig {
                         UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(
                         auth -> {
-                            if(config.isExposeOpenApiEndpoints()) {
-                                auth.requestMatchers("/swagger-ui/**").permitAll()
-                                        .requestMatchers("/v3/api-docs").permitAll()
-                                        .requestMatchers("/v3/api-docs/**").permitAll();
+                            if (config.isExposeOpenApiEndpoints()) {
+                                auth.requestMatchers("/swagger-ui/**")
+                                        .permitAll()
+                                        .requestMatchers("/v3/api-docs")
+                                        .permitAll()
+                                        .requestMatchers("/v3/api-docs/**")
+                                        .permitAll();
                             }
                             auth
                                     // REST

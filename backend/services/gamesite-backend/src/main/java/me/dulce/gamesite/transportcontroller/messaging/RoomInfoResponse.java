@@ -2,6 +2,7 @@ package me.dulce.gamesite.transportcontroller.messaging;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+
 import me.dulce.commongames.messaging.RoomListing;
 
 @AllArgsConstructor

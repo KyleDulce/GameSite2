@@ -5,6 +5,7 @@ import me.dulce.commonutils.DateUtils;
 import me.dulce.gamesite.configuration.AppConfig;
 import me.dulce.gamesite.rooms.RoomManager;
 import me.dulce.gamesite.utilservice.TimeService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,6 @@ import java.time.Instant;
 import java.util.*;
 
 @Service
-
 public class UserSessionManager {
 
     private final TimeService timeService;

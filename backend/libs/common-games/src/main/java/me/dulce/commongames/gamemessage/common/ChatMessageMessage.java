@@ -1,7 +1,9 @@
 package me.dulce.commongames.gamemessage.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.*;
+
 import me.dulce.commongames.gamemessage.GameMessage;
 import me.dulce.commongames.gamemessage.GameSerializableMessage;
 

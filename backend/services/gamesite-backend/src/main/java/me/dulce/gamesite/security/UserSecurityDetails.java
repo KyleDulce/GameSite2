@@ -2,7 +2,9 @@ package me.dulce.gamesite.security;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
 import me.dulce.commongames.User;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -58,8 +60,7 @@ public class UserSecurityDetails implements UserDetails {
         return user.orElseGet(
                 () ->
                         User.createNewUser(
-                                userId,
-                                "", // TODO
+                                userId, "", // TODO
                                 null));
     }
 }

@@ -10,13 +10,14 @@ public abstract class GameMessage {
      * @return the id of the current room
      */
     public abstract UUID roomId();
+
     public abstract String getDataIdString();
 
     /**
      * Converts message to an object that can be serialized and sent
+     *
      * @return Serializable objct
      */
-
     public abstract Serializable onParseData();
 
     public GameSerializableMessage parseToSerializableObject() {

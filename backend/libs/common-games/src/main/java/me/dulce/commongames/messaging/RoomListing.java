@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import me.dulce.commongames.Room;
 
 @Builder
 @NoArgsConstructor
