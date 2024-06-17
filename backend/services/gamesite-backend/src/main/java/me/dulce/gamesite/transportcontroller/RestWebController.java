@@ -2,9 +2,11 @@ package me.dulce.gamesite.transportcontroller;
 
 import static me.dulce.commonutils.StringUtils.getUUIDFromString;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,6 +40,12 @@ import java.util.Random;
 import java.util.UUID;
 
 /** Controller that handles rest requests */
+@OpenAPIDefinition(
+        info =
+                @Info(
+                        title = "Gamesite Backend",
+                        version = "2.0",
+                        description = "Gamesite backend rest api"))
 @RestController
 @RequestMapping("/api")
 public class RestWebController {
@@ -176,7 +184,8 @@ public class RestWebController {
                 content = @Content),
     })
     public ResponseEntity<?> postLeaveRoom(
-            @Parameter(description = "The id of the room to lave") @PathVariable String roomId) {
+            @Parameter(description = "The id of the room to leave", required = true) @PathVariable
+                    String roomId) {
 
         Optional<UUID> roomIdOptional = getUUIDFromString(roomId);
         if (roomIdOptional.isEmpty()) {
@@ -208,9 +217,9 @@ public class RestWebController {
                 content = @Content(mediaType = "text/plain")),
     })
     public ResponseEntity<?> postCreateRoom(
-            @RequestParam int maxLobbySize,
-            @RequestParam String gameId,
-            @RequestParam(required = false) String roomName) {
+            @Parameter(required = true) @RequestParam int maxLobbySize,
+            @Parameter(required = true) @RequestParam String gameId,
+            @Parameter @RequestParam(required = false) String roomName) {
 
         RoomCreateResponse response = new RoomCreateResponse();
         if (maxLobbySize <= 0) {
@@ -267,7 +276,7 @@ public class RestWebController {
                 description = "Room Id does not exist",
                 content = @Content),
     })
-    public ResponseEntity<?> getRoomInfo(@PathVariable String roomId) {
+    public ResponseEntity<?> getRoomInfo(@Parameter(required = true) @PathVariable String roomId) {
         Optional<UUID> uuid = getUUIDFromString(roomId);
         if (uuid.isEmpty()) {
             return ResponseEntity.badRequest().body("Invalid roomId format. Must be a UUID");

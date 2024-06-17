@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
 import java.util.UUID;
 
 public class RoomTest {
@@ -224,7 +225,7 @@ public class RoomTest {
 
         String expectedHostName = room.getHost().getName();
         boolean expectedProgressState = room.isInProgress();
-        long expectedGameStartTime = room.getTimeStarted();
+        Instant expectedGameStartTime = room.getTimeStarted();
 
         // actual
         RoomListing actual = room.getRoomListingObject();

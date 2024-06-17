@@ -33,6 +33,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -95,10 +96,10 @@ public class RestWebControllerTest {
                         .lobbySize(1)
                         .maxLobbySize(5)
                         .spectatorsAmount(0)
-                        .gameType("TESTING")
+                        .gameId("TESTING")
                         .hostName("name")
                         .inProgress(false)
-                        .gameStartTime(0)
+                        .gameStartTime(Instant.EPOCH)
                         .roomName("name")
                         .build();
         when(roomManager.getAllRoomListings()).thenReturn(new RoomListing[] {listing});
@@ -362,7 +363,8 @@ public class RestWebControllerTest {
     @WithBasicUser
     public void getRoomInfo_success() throws Exception {
         RoomListing roomListing =
-                new RoomListing("id", 1, 2, 3, "TESTING", "host", true, 10, "name");
+                new RoomListing(
+                        "id", 1, 2, 3, "TESTING", "host", true, Instant.ofEpochMilli(10), "name");
         RoomInfoResponse expectedResponse = new RoomInfoResponse(roomListing, true, false, false);
 
         Room mockRoom = mock(Room.class);

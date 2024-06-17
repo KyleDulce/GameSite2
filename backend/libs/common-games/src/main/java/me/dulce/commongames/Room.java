@@ -13,6 +13,7 @@ import org.jetbrains.annotations.TestOnly;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -33,7 +34,7 @@ public abstract class Room {
 
     private final int maxUsers;
     protected boolean isInProgress = false;
-    protected final long timeStarted = -1;
+    protected Instant timeStarted;
 
     @Getter(AccessLevel.NONE)
     protected final ClientMessagingService messengerService;
@@ -191,7 +192,7 @@ public abstract class Room {
         result.lobbySize = usersJoinedList.size();
         result.maxLobbySize = maxUsers;
         result.spectatorsAmount = spectatorsJoinedList.size();
-        result.gameType = getGameId();
+        result.gameId = getGameId();
         result.hostName = host.getName();
         result.inProgress = isInProgress;
         result.gameStartTime = timeStarted;
