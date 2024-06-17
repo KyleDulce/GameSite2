@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: GameSite
+
+server:
+  port: ${SERVER_PORT:8080}
+  compression:
+    enabled: true
+  error:
+    whitelabel:
+      enabled: false
+  exposeOpenApiEndpoints: ${ENABLE_OPENAPI:true}
+
+  allowedOrigins: ${ALLOWED_ORIGINS:#{'http://localhost:8080, http://localhost:4200, null, http://localhost:3000'}}
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include:
+          - httptrace
+  httpexchanges:
+    recording:
+      enabled: true
+
+springdoc:
+  api-docs:
+    enabled: ${ENABLE_OPENAPI:true}
+  swagger-ui:
+    enabled: ${ENABLE_OPENAPI:true}
+
+endpoints:
+  socket: socket
+  stomp: stomp
+
+auth:
+  userActivityTimeoutSeconds: ${USER_TIMEOUT_SECONDS:86400}
+  cacheClearIntervalSeconds: ${CACHE_CLEAR_SECONDS:21600}
+
+  private_key: ${PRIVATE_KEY:classpath:/exclude-from-build/privatekey.key}
+  public_key: ${PUBLIC_KEY:classpath:/exclude-from-build/publickey.crt}
+  allowed-users-file: ${USERS_FILE_LOCATION:classpath:/exclude-from-build/UsersFile-dev.json}
