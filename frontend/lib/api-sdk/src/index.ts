@@ -1,1 +1,1 @@
-export * from './lib/api-sdk/api-sdk.component';
+export * from './lib/sdk/index';
