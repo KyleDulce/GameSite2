@@ -13,6 +13,7 @@ import java.util.UUID;
 @Service
 public class TestGameServiceManager implements GameServiceManager {
     public static String GAME_ID = "Test-TestGame";
+    public static String GAME_DISPLAY = "Testing Game";
 
     @Autowired
     private TestGameMessageHandler testGameMessageHandler;
@@ -20,6 +21,11 @@ public class TestGameServiceManager implements GameServiceManager {
     @Override
     public String getGameId() {
         return GAME_ID;
+    }
+
+    @Override
+    public String getGameDisplayName() {
+        return GAME_DISPLAY;
     }
 
     @Override

@@ -10,6 +10,7 @@ import java.util.UUID;
 public interface GameServiceManager {
 
     String getGameId();
+    String getGameDisplayName();
 
     Room createRoom(UUID roomId,
                     int maxUserCount,

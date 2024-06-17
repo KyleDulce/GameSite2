@@ -2,6 +2,7 @@ package me.dulce.gamesite.rooms;
 
 import me.dulce.commongames.Room;
 import me.dulce.commongames.User;
+import me.dulce.commongames.game.GameListing;
 import me.dulce.commongames.game.GameResolver;
 import me.dulce.commongames.game.GameServiceManager;
 import me.dulce.commongames.gamemessage.GameSerializableMessage;
@@ -14,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /** Manager that manages room instances */
 @Service
@@ -190,5 +188,9 @@ public class RoomManager {
      */
     public boolean doesRoomExist(UUID uuid) {
         return activeRooms.containsKey(uuid);
+    }
+
+    public List<GameListing> getAvailableGames() {
+        return gameResolver.getGameList();
     }
 }

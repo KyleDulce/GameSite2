@@ -24,9 +24,10 @@ public class GameResolver {
         return Optional.of(gameServiceManagerMap.get(gameId));
     }
 
-    public List<String> getGameList() {
-        return gameServiceManagerMap.keySet()
+    public List<GameListing> getGameList() {
+        return gameServiceManagerMap.values()
                 .stream()
+                .map(gameServiceManager -> new GameListing(gameServiceManager.getGameId(), gameServiceManager.getGameDisplayName()))
                 .toList();
     }
 }

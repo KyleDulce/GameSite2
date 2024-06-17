@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import me.dulce.commongames.Room;
+import me.dulce.commongames.game.GameListing;
 import me.dulce.commongames.messaging.RoomListing;
 import me.dulce.commonutils.StringUtils;
 import me.dulce.gamesite.configuration.AppConfig;
@@ -27,6 +28,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
@@ -48,6 +50,18 @@ public class RestWebController {
 
     private final Random random = new Random();
 
+    @GetMapping("/getGames")
+    @Operation(summary = "Get a list of available games")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved games", content = @Content(
+                    mediaType = "application.json", array = @ArraySchema(schema = @Schema(implementation = RoomListing.class))
+            )),
+            @ApiResponse(responseCode = "401", description = "Authentication is required", content = @Content)
+    })
+    public ResponseEntity<List<GameListing>> getGameList() {
+        return ResponseEntity.ok(roomManager.getAvailableGames());
+    }
+
     @GetMapping("/getRoomLists")
     @Operation(summary = "Get a list of available rooms")
     @ApiResponses({
@@ -57,9 +71,6 @@ public class RestWebController {
             @ApiResponse(responseCode = "401", description = "Authentication is required", content = @Content)
     })
     public ResponseEntity<RoomListing[]> getRoomLists() {
-
-        User user = getUserFromAuthentication();
-
         return ResponseEntity.ok(roomManager.getAllRoomListings());
     }
 

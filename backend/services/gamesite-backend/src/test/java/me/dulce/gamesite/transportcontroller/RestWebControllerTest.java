@@ -10,6 +10,7 @@ import me.dulce.gamesite.security.JwtSecurityCookieService;
 import me.dulce.gamesite.testutils.SpringSecurityTestConfiguration;
 import me.dulce.gamesite.transportcontroller.messaging.*;
 import me.dulce.gamesite.utilservice.UserSecurityUtils;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ContextConfiguration(classes = {SpringSecurityTestConfiguration.class})
 public class RestWebControllerTest {
 
+    private static final String GAME_LIST_ENDPOINT = "/api/getGames";
     private static final String ROOM_LIST_ENDPOINT = "/api/getRoomLists";
     private static final String ROOM_JOIN_ENDPOINT = "/api/joinRoom";
     private static final String ROOM_LEAVE_ENDPOINT = "/api/leaveRoom";
@@ -67,6 +69,19 @@ public class RestWebControllerTest {
     @AfterEach
     public void afterEachTest() {
         User.getCachedUsers().clear();
+    }
+
+    @Test
+    @WithBasicUser
+    public void getGameList_getsGames() throws Exception {
+        getRequest(mockMvc, GAME_LIST_ENDPOINT, HttpStatus.OK)
+                .andExpect(jsonPath("$", Matchers.not(Matchers.emptyArray())));
+    }
+
+    @Test
+    @WithAnonymousUser
+    public void getGameList_unauthorizedUser_unauthorized() throws Exception {
+        getRequest(mockMvc, GAME_LIST_ENDPOINT, HttpStatus.UNAUTHORIZED);
     }
 
     @Test
