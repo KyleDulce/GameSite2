@@ -3,18 +3,14 @@ package me.dulce.gamesite.gamesite2.user;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.UUID;
-
+import me.dulce.gamesite.gamesite2.user.User.UserMessage;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import me.dulce.gamesite.gamesite2.user.User.UserMessage;
 
 public class UserTest {
 
     private static final String user1UUID_str = "eb0f39e0-d108-4bc9-83cd-1e12d4b0c784";
     private static UUID user1UUID;
-    private static int cookieBuffer = 3;
 
     @BeforeAll
     public static void beforeTests() {
@@ -23,14 +19,15 @@ public class UserTest {
 
     @Test
     public void toMessageableObject_userObjectConvertsToUserMessageObject_expectSameData() {
-        //assign
+        // assign
         String expectedName = "SomeName";
-        User userObj = User.createNewUser(user1UUID, expectedName, cookieBuffer);
+        String expectedSession = "SomeSession";
+        User userObj = User.createNewUser(user1UUID, expectedName, expectedSession);
 
-        //actual
+        // actual
         UserMessage actual = userObj.toMessageableObject();
-        
-        //assert
+
+        // assert
         assertEquals(user1UUID_str, actual.uuid);
         assertEquals(expectedName, actual.name);
     }

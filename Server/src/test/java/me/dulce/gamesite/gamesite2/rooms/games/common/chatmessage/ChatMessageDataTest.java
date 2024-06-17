@@ -1,9 +1,9 @@
 package me.dulce.gamesite.gamesite2.rooms.games.common.chatmessage;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import me.dulce.gamesite.gamesite2.rooms.games.common.GameDataTestParent;
 import me.dulce.gamesite.gamesite2.rooms.games.generic.GameData;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ChatMessageDataTest extends GameDataTestParent {
 

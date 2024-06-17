@@ -3,22 +3,18 @@ package me.dulce.gamesite.gamesite2.rooms;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.UUID;
-
+import me.dulce.gamesite.gamesite2.rooms.games.GameType;
 import me.dulce.gamesite.gamesite2.rooms.games.generic.GameData;
+import me.dulce.gamesite.gamesite2.transportcontroller.messaging.RoomListing;
 import me.dulce.gamesite.gamesite2.transportcontroller.services.SocketMessengerService;
+import me.dulce.gamesite.gamesite2.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import me.dulce.gamesite.gamesite2.rooms.Room.RoomListing;
-import me.dulce.gamesite.gamesite2.rooms.games.GameType;
-import me.dulce.gamesite.gamesite2.user.User;
-
-/**
- * Manager that manages room instances
- */
+/** Manager that manages room instances */
 @Service
 @Scope("singleton")
 public class RoomManager {
@@ -30,18 +26,19 @@ public class RoomManager {
     private final SocketMessengerService messengerService;
 
     @Autowired
-    public RoomManager(SocketMessengerService messengerService){
+    public RoomManager(SocketMessengerService messengerService) {
         this.messengerService = messengerService;
     }
 
     /**
      * Gets all room instances as serialized listings
+     *
      * @return Array containing serialized Rooms
      */
     public RoomListing[] getAllRoomListings() {
         LinkedList<RoomListing> result = new LinkedList<>();
 
-        for(Room room : activeRooms.values()) {
+        for (Room room : activeRooms.values()) {
             result.add(room.getRoomListingObject());
         }
 
@@ -50,24 +47,25 @@ public class RoomManager {
 
     /**
      * Processes a request to join the room
+     *
      * @param user the user making the request
      * @param roomId the room to join
      * @param isSpectator if user is a spectator
      * @return success state, true if successful
      */
     public boolean processUserJoinRoomRequest(User user, UUID roomId, boolean isSpectator) {
-        if(user == null || roomId == null) {
+        if (user == null || roomId == null) {
             LOGGER.warn("Attempted to join user using null user or roomId credentials");
             return false;
         }
 
         Room room = activeRooms.get(roomId);
-        if(room == null) {
+        if (room == null) {
             LOGGER.warn("Attempted to join user with room that does not exist");
             return false;
         }
 
-        if(isSpectator) {
+        if (isSpectator) {
             return room.spectatorJoin(user);
         } else {
             return room.userJoin(user);
@@ -76,30 +74,32 @@ public class RoomManager {
 
     /**
      * Processes request to leave room
+     *
      * @param user user making the request
      * @param roomId the room to leave
      */
     public void processUserLeaveRoomRequest(User user, UUID roomId) {
-        if(user == null || roomId == null) {
+        if (user == null || roomId == null) {
             LOGGER.warn("Attempted to leave user using null user or roomId credentials");
             return;
         }
 
         Room room = activeRooms.get(roomId);
-        if(room == null) {
+        if (room == null) {
             LOGGER.warn("Attempted to leave user with room that does not exist");
             return;
         }
 
         room.userLeave(user);
 
-        if(room.isEmpty()) {
+        if (room.isEmpty()) {
             activeRooms.remove(room.getRoomId());
         }
     }
 
     /**
      * Creates a room
+     *
      * @param type the type of game the room will play
      * @param host the user who is hosting the gam
      * @param maxPlayers the maximum number of players allowed
@@ -111,7 +111,7 @@ public class RoomManager {
 
         Room room = type.createRoomInstance(uuid, host, maxPlayers, roomName, messengerService);
 
-        if(room == null) {
+        if (room == null) {
             return null;
         }
 
@@ -122,12 +122,14 @@ public class RoomManager {
 
     /**
      * Finds room id that contains the given user
+     *
      * @param user the user to search
      * @return the id of the room containing the user. Null otherwise
      */
     public UUID getRoomThatContainsUser(User user) {
-        for(Room room : activeRooms.values()) {
-            if(room.getUsersJoinedList().contains(user) || room.getSpectatorsJoinedList().contains(user)) {
+        for (Room room : activeRooms.values()) {
+            if (room.getUsersJoinedList().contains(user)
+                    || room.getSpectatorsJoinedList().contains(user)) {
                 return room.getRoomId();
             }
         }
@@ -136,16 +138,19 @@ public class RoomManager {
 
     /**
      * Returns true if user is within the room
+     *
      * @param user the user to search
      * @param room the room to check
      * @return true if user is in the specified room
      */
     public boolean isUserInRoom(User user, Room room) {
-        return room.getUsersJoinedList().contains(user) || room.getSpectatorsJoinedList().contains(user);
+        return room.getUsersJoinedList().contains(user)
+                || room.getSpectatorsJoinedList().contains(user);
     }
 
     /**
      * Handles Game Data updates for a given user
+     *
      * @param user the user making the request
      * @param data the data provided
      * @return true if successful, false otherwise
@@ -156,6 +161,7 @@ public class RoomManager {
 
     /**
      * Finds a given room from Id
+     *
      * @param uuid the uuid of the room to search
      * @return the room object found, null otherwise
      */
@@ -165,6 +171,7 @@ public class RoomManager {
 
     /**
      * Checks if room exists in manager
+     *
      * @param uuid the uuid to check
      * @return true if room exists, false otherwise
      */

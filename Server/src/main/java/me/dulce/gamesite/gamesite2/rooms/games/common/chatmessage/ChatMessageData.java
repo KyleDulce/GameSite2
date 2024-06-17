@@ -1,17 +1,14 @@
 package me.dulce.gamesite.gamesite2.rooms.games.common.chatmessage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import me.dulce.gamesite.gamesite2.rooms.games.generic.GameData;
 import me.dulce.gamesite.gamesite2.rooms.games.generic.GameDataMessage;
 import me.dulce.gamesite.gamesite2.rooms.games.generic.GameDataType;
 
-import java.util.UUID;
-
-/**
- * Chat Message Data for chat messages incoming or outgoing
- */
+/** Chat Message Data for chat messages incoming or outgoing */
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatMessageData extends GameData {
@@ -32,7 +29,8 @@ public class ChatMessageData extends GameData {
 
     @Override
     public void setupFromGameDataMessage(GameDataMessage message) {
-        ChatMessage parsedMessage = new ObjectMapper().convertValue(message.data, ChatMessage.class);
+        ChatMessage parsedMessage =
+                new ObjectMapper().convertValue(message.data, ChatMessage.class);
         roomId = UUID.fromString(message.roomId);
         messageText = parsedMessage.message;
         senderName = parsedMessage.senderName;
@@ -46,7 +44,7 @@ public class ChatMessageData extends GameData {
         return result;
     }
 
-    public static class ChatMessage{
+    public static class ChatMessage {
         public String message;
         public String senderName;
     }

@@ -1,9 +1,9 @@
 package me.dulce.gamesite.gamesite2.rooms.games.common;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import me.dulce.gamesite.gamesite2.rooms.games.generic.GameData;
 import me.dulce.gamesite.gamesite2.rooms.games.generic.GameDataType;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class BlankGameDataTest extends GameDataTestParent {
     @Override

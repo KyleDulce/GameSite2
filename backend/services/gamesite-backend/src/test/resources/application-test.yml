@@ -1,0 +1,16 @@
+
+server:
+  allowedOrigins: http://localhost:8080, http://localhost:4200, null
+
+endpoints:
+  frontendPrefix: ""
+  socket: socket
+  stomp: stomp
+
+auth:
+  userActivityTimeoutSeconds: 30
+  cacheClearIntervalSeconds: 1800
+
+  private_key: classpath:/keys/privatekey.key
+  public_key: classpath:/keys/publickey.crt
+  allowed-users-file: classpath:/json/UsersFile-test.json

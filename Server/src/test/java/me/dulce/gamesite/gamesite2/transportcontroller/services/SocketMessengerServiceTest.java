@@ -1,8 +1,11 @@
 package me.dulce.gamesite.gamesite2.transportcontroller.services;
 
+import static org.mockito.Mockito.*;
+
+import java.util.UUID;
 import me.dulce.gamesite.gamesite2.rooms.Room;
-import me.dulce.gamesite.gamesite2.rooms.games.common.testgame.TestGame;
 import me.dulce.gamesite.gamesite2.rooms.games.common.chatmessage.ChatMessageData;
+import me.dulce.gamesite.gamesite2.rooms.games.common.testgame.TestGame;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -12,36 +15,30 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.UUID;
-
-import static org.mockito.Mockito.*;
-
 @ExtendWith({MockitoExtension.class, SpringExtension.class})
 @ContextConfiguration(classes = {SocketMessengerService.class})
 class SocketMessengerServiceTest {
 
-    @MockBean
-    private SimpMessagingTemplate simpMessagingTemplate;
+    @MockBean private SimpMessagingTemplate simpMessagingTemplate;
 
-    @Autowired
-    private SocketMessengerService socketMessengerService;
+    @Autowired private SocketMessengerService socketMessengerService;
 
     @Test
-    public void broadcastMessageToRoom_messageSentUsingMessagingTemplate(){
+    public void broadcastMessageToRoom_messageSentUsingMessagingTemplate() {
 
-        //assign
+        // assign
         Room room = new TestGame(UUID.randomUUID(), 10, null, "test", socketMessengerService);
-        Object data = new ChatMessageData(room.getRoomId(), "This is a test", "Bobby")
-                .parseObjectToDataMessage();
+        Object data =
+                new ChatMessageData(room.getRoomId(), "This is a test", "Bobby")
+                        .parseObjectToDataMessage();
 
-        //actual
+        // actual
         socketMessengerService.broadcastMessageToRoom(room, data);
 
-        //assert
-        verify(simpMessagingTemplate, times(1)).convertAndSend(
-                SocketMessengerService.BROADCAST_DESTINATION + room.getRoomId().toString(),
-                data);
-
+        // assert
+        verify(simpMessagingTemplate, times(1))
+                .convertAndSend(
+                        SocketMessengerService.BROADCAST_DESTINATION + room.getRoomId().toString(),
+                        data);
     }
-
 }

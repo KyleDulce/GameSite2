@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-/**
- * Serializable Object for Game Data
- */
+/** Serializable Object for Game Data */
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

@@ -1,10 +1,7 @@
-import { Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { Router, RoutesRecognized } from '@angular/router';
-import { SHA256 } from 'crypto-js';
-import { filter, map, pairwise, take } from 'rxjs';
+import { Router } from '@angular/router';
 import { ErrorDialogComponent } from 'src/app/shared/components/error-dialog/error-dialog.component';
 import { RestError, RestStatusCode } from 'src/app/shared/models/rest-api.model';
 import { ConfigurationService } from 'src/app/shared/services/configuration.service';
@@ -41,13 +38,10 @@ export class LoginComponent {
     }
 
     this.isLoading = true;
-    const hashedPassword = SHA256(
-      this.loginFormGroup.controls['password'].value)
-      .toString();
 
     this.restApiService.postAuth({
       login: this.loginFormGroup.controls['username'].value,
-      passHash: hashedPassword
+      passHash: this.loginFormGroup.controls['password'].value
     }).subscribe({
       next: response => {
         if(response.data.success === true && response.statusCode === RestStatusCode.OK) {

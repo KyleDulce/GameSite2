@@ -1,12 +1,11 @@
 package me.dulce.gamesite.gamesite2.rooms.games.common;
 
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import me.dulce.gamesite.gamesite2.rooms.games.generic.GameData;
 import me.dulce.gamesite.gamesite2.rooms.games.generic.GameDataMessage;
 import me.dulce.gamesite.gamesite2.rooms.games.generic.GameDataType;
-
-import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor

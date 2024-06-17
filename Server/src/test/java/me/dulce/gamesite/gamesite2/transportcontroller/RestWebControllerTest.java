@@ -1,67 +1,63 @@
 package me.dulce.gamesite.gamesite2.transportcontroller;
 
+import static me.dulce.gamesite.gamesite2.testutils.SpringSecurityTestConfiguration.*;
+import static me.dulce.gamesite.gamesite2.testutils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
-import me.dulce.gamesite.gamesite2.configuration.AppConfig;
-import me.dulce.gamesite.gamesite2.rooms.RoomManager;
-import me.dulce.gamesite.gamesite2.rooms.Room;
-import me.dulce.gamesite.gamesite2.rooms.games.GameType;
-import me.dulce.gamesite.gamesite2.transportcontroller.messaging.*;
-import me.dulce.gamesite.gamesite2.transportcontroller.services.AuthService;
-import me.dulce.gamesite.gamesite2.transportcontroller.services.CookieService;
-import me.dulce.gamesite.gamesite2.user.User;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.*;
+import me.dulce.gamesite.gamesite2.configuration.AppConfig;
+import me.dulce.gamesite.gamesite2.rooms.Room;
+import me.dulce.gamesite.gamesite2.rooms.RoomManager;
+import me.dulce.gamesite.gamesite2.rooms.games.GameType;
+import me.dulce.gamesite.gamesite2.security.JwtSecurityCookieService;
+import me.dulce.gamesite.gamesite2.testutils.SpringSecurityTestConfiguration;
+import me.dulce.gamesite.gamesite2.transportcontroller.messaging.*;
+import me.dulce.gamesite.gamesite2.user.User;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-@ExtendWith({MockitoExtension.class, SpringExtension.class})
-@ContextConfiguration(classes = {RestWebController.class})
+@WebMvcTest(RestWebController.class)
+@ContextConfiguration(classes = {SpringSecurityTestConfiguration.class})
 public class RestWebControllerTest {
+
+    private static final String ROOM_LIST_ENDPOINT = "/api/getRoomLists";
+    private static final String ROOM_JOIN_ENDPOINT = "/api/joinRoom";
+    private static final String ROOM_LEAVE_ENDPOINT = "/api/leaveRoom";
+    private static final String ROOM_CREATE_ENDPOINT = "/api/createRoom";
+    private static final String ROOM_INFO_ENDPOINT = "/api/roomInfo";
+    private static final String TOKEN_REFRESH_ENDPOINT = "/api/refreshToken";
+    private static final String AUTH_ENDPOINT = "/api/authenticate";
+    private static final String INVALIDATE_AUTH_ENDPOINT = "/api/invalidateAuthentication";
 
     private static final String user1UUID_str = "eb0f39e0-d108-4bc9-83cd-1e12d4b0c784";
     private static final String user2UUID_str = "7095790b-7a45-462c-8fbd-9506ec6a727a";
-    private static final String fakeJwtToken = "fakeToken";
     private static final String fakeRoomId = "6e6f8345-82ec-4c23-934f-aa798bf5c6de";
     private static final String fakeRoomId2 = "9812340d-36ff-4f83-8e0b-a9e3f4728aed";
 
-    private static UUID user1UUID;
-    private static UUID user2UUID;
+    private static final UUID user1UUID = UUID.fromString(user1UUID_str);
+    private static final UUID user2UUID = UUID.fromString(user2UUID_str);
+    private static final UUID fakeRoom1UUID = UUID.fromString(fakeRoomId);
+    private static final UUID fakeRoom2UUID = UUID.fromString(fakeRoomId2);
 
-    private static int cookieBuffer = 3;
+    @MockBean private RoomManager roomManager;
+    @MockBean private JwtSecurityCookieService jwtSecurityCookieService;
 
-    @MockBean
-    private RoomManager roomManager;
+    @MockBean private AppConfig config;
 
-    @MockBean
-    private AppConfig config;
-
-    @MockBean
-    private AuthService authService;
-
-    @MockBean
-    private CookieService cookieService;
-
-    @Autowired
-    private RestWebController webController;
-
-    @BeforeAll
-    public static void beforeTests() {
-        user1UUID = UUID.fromString(user1UUID_str);
-        user2UUID = UUID.fromString(user2UUID_str);
-    }
+    @Autowired MockMvc mockMvc;
 
     @AfterEach
     public void afterEachTest() {
@@ -69,717 +65,376 @@ public class RestWebControllerTest {
     }
 
     @Test
-    public void getRoomLists_getsRooms() {
-        setupFullMockCookie();
-        Room.RoomListing listing = Room.RoomListing.builder()
-                .roomId("id1")
-                .lobbySize(1)
-                .maxLobbySize(5)
-                .spectatorsAmount(0)
-                .gameType(-1)
-                .hostName("name")
-                .inProgress(false)
-                .gameStartTime(0)
-                .roomName("name")
-                .build();
-        when(roomManager.getAllRoomListings())
-                .thenReturn(new Room.RoomListing[] {
-                   listing
-                });
+    @WithBasicUser
+    public void getRoomLists_getsRooms() throws Exception {
+        RoomListing listing =
+                RoomListing.builder()
+                        .roomId("id1")
+                        .lobbySize(1)
+                        .maxLobbySize(5)
+                        .spectatorsAmount(0)
+                        .gameType("TESTING")
+                        .hostName("name")
+                        .inProgress(false)
+                        .gameStartTime(0)
+                        .roomName("name")
+                        .build();
+        when(roomManager.getAllRoomListings()).thenReturn(new RoomListing[] {listing});
 
-        ResponseEntity<Room.RoomListing[]> actual = webController.getRoomLists(fakeJwtToken);
-
-        assertEquals(1, actual.getBody().length);
-        assertEquals(listing, actual.getBody()[0]);
+        getRequest(mockMvc, ROOM_LIST_ENDPOINT, HttpStatus.OK)
+                .andExpect(content().json(objectAsArrayToString(listing)));
     }
 
     @Test
-    public void getRoomLists_unauthorizedUser_unauthorized() {
-        when(cookieService.validateUserCookie(anyString()))
-                .thenReturn(Optional.empty());
-
-        ResponseEntity<Room.RoomListing[]> actual = webController.getRoomLists(fakeJwtToken);
-
-        assertEquals(HttpStatus.UNAUTHORIZED, actual.getStatusCode());
+    @WithAnonymousUser
+    public void getRoomLists_unauthorizedUser_unauthorized() throws Exception {
+        getRequest(mockMvc, ROOM_LIST_ENDPOINT, HttpStatus.UNAUTHORIZED);
     }
 
     @Test
-    public void postJoinRoom_userJoinSuccess() {
-        //assign
-        setupFullMockCookie();
-        User user = User.createNewUser(user1UUID, cookieBuffer);
-        RoomJoinRequest request = new RoomJoinRequest();
-        request.asSpectator = false;
-        request.roomId = fakeRoomId;
-        when(roomManager.getRoomThatContainsUser(any()))
-                .thenReturn(null);
-        when(roomManager.processUserJoinRoomRequest(any(), eq(UUID.fromString(fakeRoomId)), eq(false)))
+    @WithBasicUser
+    public void postJoinRoom_userJoinSuccess() throws Exception {
+
+        RoomJoinResponse expectedResponse = new RoomJoinResponse(true, false);
+
+        when(roomManager.getRoomThatContainsUser(any())).thenReturn(null);
+        when(roomManager.processUserJoinRoomRequest(
+                        any(), eq(UUID.fromString(fakeRoomId)), eq(false)))
                 .thenReturn(true);
 
-        //actual
-        ResponseEntity<RoomJoinResponse> actual = webController.postJoinRoom(fakeJwtToken, request);
+        postRequest(mockMvc, concatPaths(ROOM_JOIN_ENDPOINT, fakeRoomId), HttpStatus.OK)
+                .andExpect(content().json(objectToString(expectedResponse)));
 
-        //assert
-        assertEquals(HttpStatus.OK, actual.getStatusCode());
-        assertTrue(actual.hasBody());
-        assertTrue(actual.getBody().success);
-        verify(roomManager,times(1))
+        verify(roomManager, times(1))
                 .processUserJoinRoomRequest(any(), eq(UUID.fromString(fakeRoomId)), eq(false));
     }
 
     @Test
-    public void postJoinRoom_userAlreadyInRoom_leaveOldRoom() {
-        //assign
-        setupFullMockCookie();
-        UUID fakeRoom1UUID = UUID.fromString(fakeRoomId);
-        UUID fakeRoom2UUID = UUID.fromString(fakeRoomId2);
-        User user = User.createNewUser(user1UUID, cookieBuffer);
-        RoomJoinRequest request = new RoomJoinRequest();
-        request.asSpectator = false;
-        request.roomId = fakeRoomId;
-        when(roomManager.getRoomThatContainsUser(any()))
-                .thenReturn(fakeRoom2UUID);
-        when(roomManager.processUserJoinRoomRequest(eq(user), eq(fakeRoom1UUID), anyBoolean()))
+    @WithBasicUser
+    public void postJoinRoom_userAlreadyInRoom_leaveOldRoom() throws Exception {
+        RoomJoinResponse expectedResponse = new RoomJoinResponse(true, false);
+
+        User basicUser = User.getUserFromSecurityDetails(BASIC_USER_DETAILS);
+        when(roomManager.getRoomThatContainsUser(any())).thenReturn(fakeRoom2UUID);
+        when(roomManager.processUserJoinRoomRequest(eq(basicUser), eq(fakeRoom1UUID), anyBoolean()))
                 .thenReturn(true);
 
-        //actual
-        ResponseEntity<RoomJoinResponse> actual = webController.postJoinRoom(fakeJwtToken, request);
+        postRequest(mockMvc, concatPaths(ROOM_JOIN_ENDPOINT, fakeRoomId), HttpStatus.OK)
+                .andExpect(content().json(objectToString(expectedResponse)));
 
-        //assert
-        assertEquals(HttpStatus.OK, actual.getStatusCode());
-        assertTrue(actual.hasBody());
-        assertTrue(actual.getBody().success);
-        verify(roomManager, times(1))
-                .processUserLeaveRoomRequest(eq(user), eq(fakeRoom2UUID));
+        verify(roomManager, times(1)).processUserLeaveRoomRequest(eq(basicUser), eq(fakeRoom2UUID));
     }
 
     @Test
-    public void postJoinRoom_userAlreadyInSameRoomAsSpec_doNothingSuccess() {
-        //assign
-        setupFullMockCookie();
-        UUID fakeRoom1UUID = UUID.fromString(fakeRoomId);
+    @WithBasicUser
+    public void postJoinRoom_userAlreadyInSameRoomAsSpec_doNothingSuccess() throws Exception {
+        User basicUser = User.getUserFromSecurityDetails(BASIC_USER_DETAILS);
+        RoomJoinResponse expectedResponse = new RoomJoinResponse(true, false);
+
         Room fakeRoom1 = mock(Room.class);
-        User user = User.createNewUser(user1UUID, cookieBuffer);
-        RoomJoinRequest request = new RoomJoinRequest();
-        request.asSpectator = true;
-        request.roomId = fakeRoomId;
-        when(roomManager.getRoomThatContainsUser(any()))
-                .thenReturn(fakeRoom1UUID);
-        when(roomManager.processUserJoinRoomRequest(eq(user), eq(fakeRoom1UUID), anyBoolean()))
+        when(roomManager.getRoomThatContainsUser(any())).thenReturn(fakeRoom1UUID);
+        when(roomManager.processUserJoinRoomRequest(eq(basicUser), eq(fakeRoom1UUID), anyBoolean()))
                 .thenReturn(true);
-        when(roomManager.getRoomFromUUID(any()))
-                .thenReturn(fakeRoom1);
-        when(fakeRoom1.getUsersJoinedList())
-                .thenReturn(Collections.emptyList());
+        when(roomManager.getRoomFromUUID(any())).thenReturn(fakeRoom1);
+        when(fakeRoom1.getUsersJoinedList()).thenReturn(Collections.emptyList());
 
-        //actual
-        ResponseEntity<RoomJoinResponse> actual = webController.postJoinRoom(fakeJwtToken, request);
+        postRequest(
+                        mockMvc,
+                        concatPaths(ROOM_JOIN_ENDPOINT, fakeRoomId),
+                        getMVMapFromString("asSpectator=true"),
+                        HttpStatus.OK)
+                .andExpect(content().json(objectToString(expectedResponse)));
 
-        //assert
-        assertEquals(HttpStatus.OK, actual.getStatusCode());
-        assertTrue(actual.hasBody());
-        assertTrue(actual.getBody().success);
-        verify(roomManager, never())
-                .processUserLeaveRoomRequest(eq(user), eq(fakeRoom1UUID));
+        verify(roomManager, never()).processUserLeaveRoomRequest(eq(basicUser), eq(fakeRoom1UUID));
     }
 
     @Test
-    public void postJoinRoom_userAlreadyInSameRoomAsJoined_doNothingSuccess() {
-        //assign
-        setupFullMockCookie();
-        UUID fakeRoom1UUID = UUID.fromString(fakeRoomId);
+    @WithBasicUser
+    public void postJoinRoom_userAlreadyInSameRoomAsJoined_doNothingSuccess() throws Exception {
+        User basicUser = User.getUserFromSecurityDetails(BASIC_USER_DETAILS);
         Room fakeRoom1 = mock(Room.class);
-        User user = User.createNewUser(user1UUID, cookieBuffer);
-        RoomJoinRequest request = new RoomJoinRequest();
-        request.asSpectator = false;
-        request.roomId = fakeRoomId;
-        when(roomManager.getRoomThatContainsUser(any()))
-                .thenReturn(fakeRoom1UUID);
-        when(roomManager.processUserJoinRoomRequest(eq(user), eq(fakeRoom1UUID), anyBoolean()))
+        RoomJoinResponse expectedResponse = new RoomJoinResponse(true, false);
+
+        when(roomManager.getRoomThatContainsUser(any())).thenReturn(fakeRoom1UUID);
+        when(roomManager.processUserJoinRoomRequest(eq(basicUser), eq(fakeRoom1UUID), anyBoolean()))
                 .thenReturn(true);
-        when(roomManager.getRoomFromUUID(any()))
-                .thenReturn(fakeRoom1);
-        when(fakeRoom1.getSpectatorsJoinedList())
-                .thenReturn(Collections.emptyList());
+        when(roomManager.getRoomFromUUID(any())).thenReturn(fakeRoom1);
+        when(fakeRoom1.getSpectatorsJoinedList()).thenReturn(Collections.emptyList());
 
-        //actual
-        ResponseEntity<RoomJoinResponse> actual = webController.postJoinRoom(fakeJwtToken, request);
+        postRequest(mockMvc, concatPaths(ROOM_JOIN_ENDPOINT, fakeRoomId), HttpStatus.OK)
+                .andExpect(content().json(objectToString(expectedResponse)));
 
-        //assert
-        assertEquals(HttpStatus.OK, actual.getStatusCode());
-        assertTrue(actual.hasBody());
-        assertTrue(actual.getBody().success);
-        verify(roomManager, never())
-                .processUserLeaveRoomRequest(eq(user), eq(fakeRoom1UUID));
+        verify(roomManager, never()).processUserLeaveRoomRequest(eq(basicUser), eq(fakeRoom1UUID));
     }
 
     @Test
-    public void postJoinRoom_userRequestSpecAlreadyJoined_leaveRejoinSuccess() {
-        //assign
-        setupFullMockCookie();
-        UUID fakeRoom1UUID = UUID.fromString(fakeRoomId);
+    @WithBasicUser
+    public void postJoinRoom_userRequestSpecAlreadyJoined_leaveRejoinSuccess() throws Exception {
+        User basicUser = User.getUserFromSecurityDetails(BASIC_USER_DETAILS);
         Room fakeRoom1 = mock(Room.class);
-        User user = User.createNewUser(user1UUID, cookieBuffer);
-        RoomJoinRequest request = new RoomJoinRequest();
-        request.asSpectator = false;
-        request.roomId = fakeRoomId;
-        when(roomManager.getRoomThatContainsUser(any()))
-                .thenReturn(fakeRoom1UUID);
-        when(roomManager.processUserJoinRoomRequest(eq(user), eq(fakeRoom1UUID), anyBoolean()))
+        RoomJoinResponse expectedResponse = new RoomJoinResponse(true, false);
+
+        when(roomManager.getRoomThatContainsUser(any())).thenReturn(fakeRoom1UUID);
+        when(roomManager.processUserJoinRoomRequest(eq(basicUser), eq(fakeRoom1UUID), anyBoolean()))
                 .thenReturn(true);
-        when(roomManager.getRoomFromUUID(any()))
-                .thenReturn(fakeRoom1);
-        when(fakeRoom1.getSpectatorsJoinedList())
-                .thenReturn(List.of(user));
+        when(roomManager.getRoomFromUUID(any())).thenReturn(fakeRoom1);
+        when(fakeRoom1.getSpectatorsJoinedList()).thenReturn(List.of(basicUser));
 
-        //actual
-        ResponseEntity<RoomJoinResponse> actual = webController.postJoinRoom(fakeJwtToken, request);
+        postRequest(mockMvc, concatPaths(ROOM_JOIN_ENDPOINT, fakeRoomId), HttpStatus.OK)
+                .andExpect(content().json(objectToString(expectedResponse)));
 
-        //assert
-        assertEquals(HttpStatus.OK, actual.getStatusCode());
-        assertTrue(actual.hasBody());
-        assertTrue(actual.getBody().success);
-        verify(roomManager, times(1))
-                .processUserLeaveRoomRequest(eq(user), eq(fakeRoom1UUID));
+        verify(roomManager, times(1)).processUserLeaveRoomRequest(eq(basicUser), eq(fakeRoom1UUID));
     }
 
     @Test
-    public void postJoinRoom_userRequestJoinAlreadySpec_leaveRejoinSuccess() {
-        //assign
-        setupFullMockCookie();
-        UUID fakeRoom1UUID = UUID.fromString(fakeRoomId);
+    @WithBasicUser
+    public void postJoinRoom_userRequestJoinAlreadySpec_leaveRejoinSuccess() throws Exception {
+        User basicUser = User.getUserFromSecurityDetails(BASIC_USER_DETAILS);
         Room fakeRoom1 = mock(Room.class);
-        User user = User.createNewUser(user1UUID, cookieBuffer);
-        RoomJoinRequest request = new RoomJoinRequest();
-        request.asSpectator = true;
-        request.roomId = fakeRoomId;
-        when(roomManager.getRoomThatContainsUser(any()))
-                .thenReturn(fakeRoom1UUID);
-        when(roomManager.processUserJoinRoomRequest(eq(user), eq(fakeRoom1UUID), anyBoolean()))
+        RoomJoinResponse expectedResponse = new RoomJoinResponse(true, false);
+
+        when(roomManager.getRoomThatContainsUser(any())).thenReturn(fakeRoom1UUID);
+        when(roomManager.processUserJoinRoomRequest(eq(basicUser), eq(fakeRoom1UUID), anyBoolean()))
                 .thenReturn(true);
-        when(roomManager.getRoomFromUUID(any()))
-                .thenReturn(fakeRoom1);
-        when(fakeRoom1.getUsersJoinedList())
-                .thenReturn(List.of(user));
+        when(roomManager.getRoomFromUUID(any())).thenReturn(fakeRoom1);
+        when(fakeRoom1.getUsersJoinedList()).thenReturn(List.of(basicUser));
 
-        //actual
-        ResponseEntity<RoomJoinResponse> actual = webController.postJoinRoom(fakeJwtToken, request);
+        postRequest(
+                        mockMvc,
+                        concatPaths(ROOM_JOIN_ENDPOINT, fakeRoomId),
+                        getMVMapFromString("asSpectator=true"),
+                        HttpStatus.OK)
+                .andExpect(content().json(objectToString(expectedResponse)));
 
-        //assert
-        assertEquals(HttpStatus.OK, actual.getStatusCode());
-        assertTrue(actual.hasBody());
-        assertTrue(actual.getBody().success);
-        verify(roomManager, times(1))
-                .processUserLeaveRoomRequest(eq(user), eq(fakeRoom1UUID));
+        verify(roomManager, times(1)).processUserLeaveRoomRequest(eq(basicUser), eq(fakeRoom1UUID));
     }
 
     @Test
-    public void postJoinRoom_nullResourceHandled_badRequestCode() {
-        //assign
-        setupMockCookie();
-
-        //actual
-        ResponseEntity<RoomJoinResponse> actual = webController.postJoinRoom(fakeJwtToken,null);
-
-        //assert
-        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode());
-        assertTrue(actual.hasBody());
-        assertFalse(actual.getBody().success);
+    @WithBasicUser
+    public void postJoinRoom_nullResourceHandled_methodNoAllowed() throws Exception {
+        postRequest(mockMvc, ROOM_JOIN_ENDPOINT, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     @Test
-    public void postJoinRoom_nullRoomIdHandled_badRequestCode() {
-        //assign
-        setupMockCookie();
-        RoomJoinRequest request = new RoomJoinRequest();
-        User userObj = User.createNewUser(user1UUID, cookieBuffer);
-
-        //actual
-        ResponseEntity<RoomJoinResponse> actual = webController.postJoinRoom(fakeJwtToken, request);
-
-        //assert
-        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode());
-        assertTrue(actual.hasBody());
-        assertFalse(actual.getBody().success);
+    @WithBasicUser
+    public void postJoinRoom_badFormatUUIDRoomId_badRequestCode() throws Exception {
+        postRequest(mockMvc, concatPaths(ROOM_JOIN_ENDPOINT, "Bad UUID"), HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    public void postJoinRoom_badFormatUUIDRoomId_badRequestCode() {
-        //assign
-        setupMockCookie();
-        RoomJoinRequest request = new RoomJoinRequest();
-        request.roomId = "Bad UUID";
-        User userObj = User.createNewUser(user1UUID, cookieBuffer);
-
-        //actual
-        ResponseEntity<RoomJoinResponse> actual = webController.postJoinRoom(fakeJwtToken, request);
-
-        //assert
-        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode());
-        assertTrue(actual.hasBody());
-        assertFalse(actual.getBody().success);
+    @WithAnonymousUser
+    public void postJoinRoom_unauthenticated_unauthorized() throws Exception {
+        postRequest(mockMvc, concatPaths(ROOM_JOIN_ENDPOINT, fakeRoomId), HttpStatus.UNAUTHORIZED);
+        verify(roomManager, never()).processUserJoinRoomRequest(any(), any(), anyBoolean());
     }
 
     @Test
-    public void postJoinRoom_unauthenticated_unauthorized() {
-        when(cookieService.validateUserCookie(fakeJwtToken))
-                .thenReturn(Optional.empty());
-        RoomJoinRequest request = new RoomJoinRequest();
-        request.roomId = "Bad UUID";
-        User userObj = User.createNewUser(user1UUID, cookieBuffer);
+    @WithBasicUser
+    public void postLeaveRoom_userLeaveSuccess() throws Exception {
+        User basicUser = User.getUserFromSecurityDetails(BASIC_USER_DETAILS);
 
-        ResponseEntity<RoomJoinResponse> actual = webController.postJoinRoom(fakeJwtToken, request);
+        postRequest(mockMvc, concatPaths(ROOM_LEAVE_ENDPOINT, fakeRoomId), HttpStatus.OK);
 
-        assertEquals(HttpStatus.UNAUTHORIZED, actual.getStatusCode());
-        verify(roomManager, never())
-                .processUserJoinRoomRequest(any(), any(), anyBoolean());
+        verify(roomManager, times(1)).processUserLeaveRoomRequest(eq(basicUser), eq(fakeRoom1UUID));
     }
 
     @Test
-    public void postLeaveRoom_userLeaveSuccess() {
-        //assign
-        setupFullMockCookie();
-        UUID roomId = UUID.fromString(fakeRoomId);
-        User user = User.createNewUser(user1UUID, cookieBuffer);
-        RoomLeaveRequest request = new RoomLeaveRequest();
-        request.roomId = fakeRoomId;
-
-        //actual
-        ResponseEntity<Object> actual = webController.postLeaveRoom(fakeJwtToken, request);
-
-        //assert
-        assertEquals(HttpStatus.OK, actual.getStatusCode());
-        verify(roomManager, times(1))
-                .processUserLeaveRoomRequest(eq(user), eq(roomId));
+    @WithAnonymousUser
+    public void postLeaveRoom_unAuthenticatedUser_unauthorized() throws Exception {
+        postRequest(mockMvc, concatPaths(ROOM_LEAVE_ENDPOINT, fakeRoomId), HttpStatus.UNAUTHORIZED);
+        verify(roomManager, never()).processUserLeaveRoomRequest(any(), any());
     }
 
     @Test
-    public void postLeaveRoom_unAuthenticatedUser_unauthorized() {
-        //assign
-        when(cookieService.validateUserCookie(fakeJwtToken))
-                .thenReturn(Optional.empty());
-        RoomLeaveRequest request = new RoomLeaveRequest();
-        request.roomId = fakeRoomId;
-
-        //actual
-        ResponseEntity<Object> actual = webController.postLeaveRoom(fakeJwtToken, request);
-
-        //assert
-        assertEquals(HttpStatus.UNAUTHORIZED, actual.getStatusCode());
-        verify(roomManager, never())
-                .processUserLeaveRoomRequest(any(), any());
+    @WithBasicUser
+    public void postLeaveRoom_nullRequestHandled() throws Exception {
+        postRequest(mockMvc, ROOM_LEAVE_ENDPOINT, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     @Test
-    public void postLeaveRoom_nullRequestHandled() {
-        //assign
-        setupMockCookie();
-
-        //actual
-        ResponseEntity<Object> actual = webController.postLeaveRoom(fakeJwtToken, null);
-
-        //assert
-        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode());
-    }
-
-    @Test
-    public void postLeaveRoom_nullRoomIdHandled() {
-        //assign
-        setupMockCookie();
-        User user = User.createNewUser(user1UUID, cookieBuffer);
-        RoomLeaveRequest request = new RoomLeaveRequest();
-        request.roomId = null;
-
-        //actual
-        ResponseEntity<Object> actual = webController.postLeaveRoom(fakeJwtToken, request);
-
-        //assert
-        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode());
-    }
-
-    @Test
-    public void postCreateRoom_roomCreateSuccess() {
-        //assign
-        setupFullMockCookie();
-        User user = User.createNewUser(user1UUID, cookieBuffer);
-        RoomCreateRequest request = new RoomCreateRequest();
-        request.gameType = GameType.TEST.getId();
-        request.maxLobbySize = 10;
-        when(roomManager.createRoom(eq(GameType.TEST), eq(user), eq(10), anyString()))
+    @WithBasicUser
+    public void postCreateRoom_roomCreateSuccess() throws Exception {
+        RoomCreateResponse expectedResponse = new RoomCreateResponse(true, fakeRoomId);
+        User basicUser = User.getUserFromSecurityDetails(BASIC_USER_DETAILS);
+        when(roomManager.createRoom(eq(GameType.TEST), eq(basicUser), eq(10), anyString()))
                 .thenReturn(UUID.fromString(fakeRoomId));
 
-        //actual
-        ResponseEntity<RoomCreateResponse> actual = webController.postCreateRoom(fakeJwtToken, request);
+        postRequest(
+                        mockMvc,
+                        ROOM_CREATE_ENDPOINT,
+                        getMVMapFromString("maxLobbySize=10", "gameType=TESTING"),
+                        HttpStatus.OK)
+                .andExpect(content().json(objectToString(expectedResponse)));
 
-        //assert
-        assertEquals(HttpStatus.OK, actual.getStatusCode());
-        assertTrue(actual.hasBody());
-        assertTrue(actual.getBody().success);
-        assertEquals(fakeRoomId, actual.getBody().roomId);
         verify(roomManager, times(1))
-                .createRoom(eq(GameType.TEST), eq(user), eq(10), anyString());
+                .createRoom(eq(GameType.TEST), eq(basicUser), eq(10), anyString());
     }
 
     @Test
-    public void postCreateRoom_badRoomCreation_okResponseNotSuccess() {
-        //assign
-        setupFullMockCookie();
-        RoomCreateRequest request = new RoomCreateRequest();
-        request.gameType = -1;
-        request.maxLobbySize = 10;
-        when(roomManager.createRoom(any(), any(), anyInt(), anyString()))
-                .thenReturn(null);
+    @WithBasicUser
+    public void postCreateRoom_badRoomCreation_okResponseNotSuccess() throws Exception {
+        RoomCreateResponse expectedResponse = new RoomCreateResponse(false, null);
+        when(roomManager.createRoom(any(), any(), anyInt(), anyString())).thenReturn(null);
 
-        //actual
-        ResponseEntity<RoomCreateResponse> actual = webController.postCreateRoom(fakeJwtToken, request);
+        postRequest(
+                        mockMvc,
+                        ROOM_CREATE_ENDPOINT,
+                        getMVMapFromString("maxLobbySize=10", "gameType=TESTING"),
+                        HttpStatus.OK)
+                .andExpect(content().json(objectToString(expectedResponse)));
 
-        //assert
-        assertEquals(HttpStatus.OK, actual.getStatusCode());
-        assertTrue(actual.hasBody());
-        assertFalse(actual.getBody().success);
-        verify(roomManager, times(1))
-                .createRoom(eq(GameType.NULL_GAME_TYPE), any(), eq(10), anyString());
+        verify(roomManager, times(1)).createRoom(eq(GameType.TEST), any(), eq(10), anyString());
     }
 
     @Test
-    public void postCreateRoom_badGameType_failCreation() {
-        //assign
-        setupMockCookie();
-        RoomCreateRequest request = new RoomCreateRequest();
-        request.gameType = -100;
-        request.maxLobbySize = 10;
-
-        //actual
-        ResponseEntity<RoomCreateResponse> actual = webController.postCreateRoom(fakeJwtToken, request);
-
-        //assert
-        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode());
-        assertTrue(actual.hasBody());
-        assertFalse(actual.getBody().success);
+    @WithBasicUser
+    public void postCreateRoom_badGameType_failCreation() throws Exception {
+        postRequest(
+                mockMvc,
+                ROOM_CREATE_ENDPOINT,
+                getMVMapFromString("maxLobbySize=10", "gameType=BadGame"),
+                HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    public void postCreateRoom_unAuthorized_unauthorized() {
-        //assign
-        when(cookieService.validateUserCookie(anyString()))
-                .thenReturn(Optional.empty());
-        RoomCreateRequest request = new RoomCreateRequest();
-        request.gameType = -2;
-        request.maxLobbySize = 10;
-
-        //actual
-        ResponseEntity<RoomCreateResponse> actual = webController.postCreateRoom(fakeJwtToken, request);
-
-        //assert
-        assertEquals(HttpStatus.UNAUTHORIZED, actual.getStatusCode());
-        assertTrue(actual.hasBody());
-        assertFalse(actual.getBody().success);
-        verify(roomManager, never())
-                .createRoom(any(), any(), anyInt(), anyString());
+    @WithAnonymousUser
+    public void postCreateRoom_unAuthorized_unauthorized() throws Exception {
+        postRequest(
+                mockMvc,
+                ROOM_CREATE_ENDPOINT,
+                getMVMapFromString("maxLobbySize=10", "gameType=TESTING"),
+                HttpStatus.UNAUTHORIZED);
+        verify(roomManager, never()).createRoom(any(), any(), anyInt(), anyString());
     }
 
     @Test
-    public void postCreateRoom_LobbySizeLessThan0_failCreation() {
-        //assign
-        setupMockCookie();
-        RoomCreateRequest request = new RoomCreateRequest();
-        request.gameType = -2;
-        request.maxLobbySize = -1;
-
-        //actual
-        ResponseEntity<RoomCreateResponse> actual = webController.postCreateRoom(fakeJwtToken, request);
-
-        //assert
-        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode());
-        assertTrue(actual.hasBody());
-        assertFalse(actual.getBody().success);
+    @WithBasicUser
+    public void postCreateRoom_LobbySizeLessThan0_failCreation() throws Exception {
+        postRequest(
+                mockMvc,
+                ROOM_CREATE_ENDPOINT,
+                getMVMapFromString("maxLobbySize=-1", "gameType=TESTING"),
+                HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    public void postCreateRoom_nullRequest_failCreation() {
-        //assign
-        setupMockCookie();
-
-        //actual
-        ResponseEntity<RoomCreateResponse> actual = webController.postCreateRoom(fakeJwtToken, null);
-
-        //assert
-        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode());
-        assertTrue(actual.hasBody());
-        assertFalse(actual.getBody().success);
+    @WithBasicUser
+    public void postCreateRoom_nullRequest_failCreation() throws Exception {
+        postRequest(
+                mockMvc,
+                ROOM_CREATE_ENDPOINT,
+                getMVMapFromString("gameType=TESTING"),
+                HttpStatus.BAD_REQUEST);
+        postRequest(
+                mockMvc,
+                ROOM_CREATE_ENDPOINT,
+                getMVMapFromString("maxLobbySize=10"),
+                HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    public void getRoomInfo_success() {
-        setupFullMockCookie();
+    @WithBasicUser
+    public void getRoomInfo_success() throws Exception {
+        RoomListing roomListing =
+                new RoomListing("id", 1, 2, 3, "TESTING", "host", true, 10, "name");
+        RoomInfoResponse expectedResponse = new RoomInfoResponse(roomListing, true, false, false);
+
         Room mockRoom = mock(Room.class);
-        Room.RoomListing mockRoomListing = mock(Room.RoomListing.class);
         User mockUser = mock(User.class);
-        when(roomManager.getRoomFromUUID(any()))
-                .thenReturn(mockRoom);
-        when(mockRoom.getRoomListingObject())
-                .thenReturn(mockRoomListing);
-        when(mockRoom.getHost())
-                .thenReturn(mockUser);
-        when(mockUser.equals(any()))
-                .thenReturn(true);
+        when(roomManager.getRoomFromUUID(any())).thenReturn(mockRoom);
+        when(mockRoom.getRoomListingObject()).thenReturn(roomListing);
+        when(mockRoom.getHost()).thenReturn(mockUser);
+        when(mockUser.equals(any())).thenReturn(true);
 
-        ResponseEntity<RoomInfoResponse> actual = webController.getRoomInfo(fakeJwtToken, fakeRoomId);
-
-        assertEquals(HttpStatus.OK, actual.getStatusCode());
-        assertEquals(mockRoomListing, actual.getBody().room);
-        assertTrue(actual.getBody().isHost);
+        getRequest(mockMvc, concatPaths(ROOM_INFO_ENDPOINT, fakeRoomId), HttpStatus.OK)
+                .andExpect(content().json(objectToString(expectedResponse)));
     }
 
     @Test
-    public void getRoomInfo_unauthenticatedUser_unAuthorized() {
-        setupMockCookie();
-        when(cookieService.validateUserCookie(anyString()))
-                .thenReturn(Optional.empty());
-
-        ResponseEntity<RoomInfoResponse> actual = webController.getRoomInfo(fakeJwtToken, fakeRoomId);
-
-        assertEquals(HttpStatus.UNAUTHORIZED, actual.getStatusCode());
-        assertFalse(actual.hasBody());
+    @WithAnonymousUser
+    public void getRoomInfo_unauthenticatedUser_unAuthorized() throws Exception {
+        getRequest(mockMvc, concatPaths(ROOM_INFO_ENDPOINT, fakeRoomId), HttpStatus.UNAUTHORIZED);
     }
 
     @Test
-    public void getRoomInfo_invalidUUID_badRequest() {
-        setupMockCookie();
-
-        ResponseEntity<RoomInfoResponse> actual = webController.getRoomInfo(fakeJwtToken, "Bad uid");
-
-        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode());
-        assertFalse(actual.hasBody());
+    @WithBasicUser
+    public void getRoomInfo_invalidUUID_badRequest() throws Exception {
+        getRequest(mockMvc, concatPaths(ROOM_INFO_ENDPOINT, "badUid"), HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    public void getRoomInfo_invalidRoom_badRequest() {
-        setupMockCookie();
-        when(roomManager.getRoomFromUUID(any()))
-                .thenReturn(null);
-
-        ResponseEntity<RoomInfoResponse> actual = webController.getRoomInfo(fakeJwtToken, fakeRoomId);
-
-        assertEquals(HttpStatus.NOT_FOUND, actual.getStatusCode());
-        assertFalse(actual.hasBody());
+    @WithBasicUser
+    public void getRoomInfo_invalidRoom_badRequest() throws Exception {
+        when(roomManager.getRoomFromUUID(any())).thenReturn(null);
+        getRequest(mockMvc, concatPaths(ROOM_INFO_ENDPOINT, fakeRoomId), HttpStatus.NOT_FOUND);
     }
 
     @Test
-    public void postUpdateUser_success() {
-        String expectedName = "A specific Name";
-        User user = User.createNewUser(user1UUID, cookieBuffer);
-        when(cookieService.validateUserCookie(fakeJwtToken))
-                .thenReturn(Optional.of(user));
-        setupMockCookieResponse("");
-        UserUpdateRequest request = new UserUpdateRequest();
-        request.name = expectedName;
+    @WithBasicUser
+    public void getRefreshToken_success() throws Exception {
 
-        ResponseEntity<UserUpdateResponse> actual = webController.postUpdateUser(fakeJwtToken, request);
+        String expectedCookieValue = "sessionId=abc";
+        ResponseCookie mockCookie = mock(ResponseCookie.class);
+        when(mockCookie.toString()).thenReturn(expectedCookieValue);
 
-        assertEquals(HttpStatus.OK, actual.getStatusCode());
-        assertTrue(actual.getBody().success);
-        assertEquals(expectedName, user.getName());
+        when(jwtSecurityCookieService.generateNewResponseCookie(any())).thenReturn(mockCookie);
+
+        getRequest(mockMvc, TOKEN_REFRESH_ENDPOINT, HttpStatus.OK)
+                .andExpect(cookie().exists("sessionId"));
     }
 
     @Test
-    public void postUpdateUser_blankName_failedRequest() {
-        String requestedName = "   ";
-        String expectedName = "This is a name";
-        User user = User.createNewUser(user1UUID, expectedName, cookieBuffer);
-        when(cookieService.validateUserCookie(fakeJwtToken))
-                .thenReturn(Optional.of(user));
-        UserUpdateRequest request = new UserUpdateRequest();
-        request.name = requestedName;
-
-        ResponseEntity<UserUpdateResponse> actual = webController.postUpdateUser(fakeJwtToken, request);
-
-        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode());
-        assertFalse(actual.getBody().success);
-        assertEquals(expectedName, user.getName());
+    @WithAnonymousUser
+    public void getRefreshToken_unauthorized_unauthorizedResponse() throws Exception {
+        getRequest(mockMvc, TOKEN_REFRESH_ENDPOINT, HttpStatus.UNAUTHORIZED);
+        verify(jwtSecurityCookieService, never()).generateNewResponseCookie(any());
     }
 
     @Test
-    public void postUpdateUser_unauthorized_unauthorizedResponse() {
-        String requestedName = "This is a name";
-        String expectedName = "This is another name";
-        User user = User.createNewUser(user1UUID, expectedName, cookieBuffer);
-        when(cookieService.validateUserCookie(fakeJwtToken))
-                .thenReturn(Optional.empty());
-        UserUpdateRequest request = new UserUpdateRequest();
-        request.name = requestedName;
+    @WithAnonymousUser
+    public void postAuth_nullRequest_unauthorized() throws Exception {
+        postRequest(mockMvc, AUTH_ENDPOINT, HttpStatus.UNAUTHORIZED);
 
-        ResponseEntity<UserUpdateResponse> actual = webController.postUpdateUser(fakeJwtToken, request);
-
-        assertEquals(HttpStatus.UNAUTHORIZED, actual.getStatusCode());
-        assertFalse(actual.getBody().success);
-        assertEquals(expectedName, user.getName());
-    }
-
-    @Test
-    public void getRefreshToken_success() {
-        String expectedCookieValue = "Some value";
-        setupMockCookie();
-        setupMockCookieResponse(expectedCookieValue);
-
-        ResponseEntity<?> actual = webController.getRefreshToken(fakeJwtToken);
-
-        assertEquals(HttpStatus.OK, actual.getStatusCode());
-        assertEquals(expectedCookieValue, actual
-                .getHeaders()
-                .get(HttpHeaders.SET_COOKIE)
-                .get(0));
-    }
-
-    @Test
-    public void getRefreshToken_unauthorized_unauthorizedResponse() {
-        when(cookieService.validateUserCookie(anyString()))
-                .thenReturn(Optional.empty());
-
-        ResponseEntity<?> actual = webController.getRefreshToken(fakeJwtToken);
-
-        assertEquals(HttpStatus.UNAUTHORIZED, actual.getStatusCode());
-        verify(cookieService, never())
-                .getUserCookie(any());
-    }
-
-    @Test
-    public void postAuth_noPreviousCookie_success() {
-        when(cookieService.getNameFromCookie(anyString()))
-                .thenReturn(Optional.empty());
-        when(config.getCookieIdBuffer())
-                .thenReturn(3);
-        String samplePassword = "SomePass";
-        String sampleLogin = "SomeLogin";
-        UserAuthRequest request = new UserAuthRequest();
-        request.login = sampleLogin;
-        request.passHash = samplePassword;
-        when(authService.validateAuthCreds(eq(sampleLogin), eq(samplePassword)))
-                .thenReturn(Optional.of(user1UUID));
-        setupMockCookieResponse(fakeJwtToken);
-
-        ResponseEntity<UserAuthResponse> actual = webController.postAuth("bad-token", request);
-
-        assertEquals(HttpStatus.OK, actual.getStatusCode());
-        assertTrue(actual.getBody().success);
-        assertEquals(fakeJwtToken, actual
-                .getHeaders()
-                .get(HttpHeaders.SET_COOKIE)
-                .get(0));
-        assertEquals(1, User.getCachedUsers().size());
-
-        User.clearCache();
-    }
-
-    @Test
-    public void postAuth_hasPreviousCookie_successAndChangeName() {
-        String expectedName = "SomeName";
-        when(cookieService.getNameFromCookie(anyString()))
-                .thenReturn(Optional.of(expectedName));
-        when(config.getCookieIdBuffer())
-                .thenReturn(3);
-        String samplePassword = "SomePass";
-        String sampleLogin = "SomeLogin";
-        UserAuthRequest request = new UserAuthRequest();
-        request.login = sampleLogin;
-        request.passHash = samplePassword;
-        when(authService.validateAuthCreds(eq(sampleLogin), eq(samplePassword)))
-                .thenReturn(Optional.of(user1UUID));
-        setupMockCookieResponse(fakeJwtToken);
-
-        ResponseEntity<UserAuthResponse> actual = webController.postAuth("good-token", request);
-
-        assertEquals(HttpStatus.OK, actual.getStatusCode());
-        assertTrue(actual.getBody().success);
-        assertEquals(fakeJwtToken, actual
-                .getHeaders()
-                .get(HttpHeaders.SET_COOKIE)
-                .get(0));
-        assertEquals(1, User.getCachedUsers().size());
-        assertEquals(expectedName, User.getCachedUsers()
-                .get(user1UUID)
-                .getName());
-
-        User.clearCache();
-    }
-
-    @Test
-    public void postAuth_nullRequest_badRequest() {
-
-        ResponseEntity<UserAuthResponse> actual = webController.postAuth("bad-token", null);
-
-        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode());
-        assertFalse(actual.getBody().success);
         assertEquals(0, User.getCachedUsers().size());
-
-        User.clearCache();
     }
 
     @Test
-    public void postAuth_badCreds_unauthorized() {
-        when(cookieService.getNameFromCookie(anyString()))
-                .thenReturn(Optional.empty());
-        String samplePassword = "SomePass";
-        String sampleLogin = "SomeLogin";
-        UserAuthRequest request = new UserAuthRequest();
-        request.login = sampleLogin;
-        request.passHash = samplePassword;
-        when(authService.validateAuthCreds(eq(sampleLogin), eq(samplePassword)))
-                .thenReturn(Optional.empty());
+    @WithAnonymousUser
+    public void postAuth_badCreds_unauthorized() throws Exception {
+        UserAuthRequest request = new UserAuthRequest(BASIC_USER_DETAILS.getUsername(), "bad pass");
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post(AUTH_ENDPOINT)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectToString(request))
+                                .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(status().isUnauthorized());
 
-        ResponseEntity<UserAuthResponse> actual = webController.postAuth("bad-token", request);
-
-        assertEquals(HttpStatus.UNAUTHORIZED, actual.getStatusCode());
-        assertFalse(actual.getBody().success);
         assertEquals(0, User.getCachedUsers().size());
-
-        User.clearCache();
     }
 
     @Test
-    public void deleteAuthenticationToken_success() {
-        String responseCookie = "deleteCookie";
-        when(cookieService.validateUserCookie(eq(fakeJwtToken)))
-                .thenReturn(Optional.of(User.createNewUser(user1UUID, cookieBuffer)));
-        ResponseCookie responseCookieMock = mock(ResponseCookie.class);
-        when(responseCookieMock.toString())
-                .thenReturn(responseCookie);
-        when(cookieService.getDeleteCookie(any()))
-                .thenReturn(responseCookieMock);
+    @WithBasicUser
+    public void deleteAuthenticationToken_success() throws Exception {
 
-        ResponseEntity<?> actual = webController.deleteAuthenticationToken(fakeJwtToken);
+        String expectedCookieValue = "sessionId=abc";
+        ResponseCookie mockCookie = mock(ResponseCookie.class);
+        when(mockCookie.toString()).thenReturn(expectedCookieValue);
 
-        assertEquals(HttpStatus.OK, actual.getStatusCode());
-        assertEquals(responseCookie, actual.getHeaders()
-                .get(HttpHeaders.SET_COOKIE)
-                .get(0));
+        when(jwtSecurityCookieService.getDeleteCookie(any())).thenReturn(mockCookie);
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.delete(INVALIDATE_AUTH_ENDPOINT)
+                                .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(status().isOk())
+                .andExpect(cookie().exists("sessionId"));
     }
 
     @Test
-    public void deleteAuthenticationToken_noCookie_badRequest() {
-        when(cookieService.validateUserCookie(eq(fakeJwtToken)))
-                .thenReturn(Optional.empty());
-
-        ResponseEntity<?> actual = webController.deleteAuthenticationToken(fakeJwtToken);
-
-        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode());
-    }
-
-    private void setupMockCookie() {
-        when(cookieService.validateUserCookie(fakeJwtToken))
-                .thenReturn(Optional.of(User.createNewUser(user1UUID, cookieBuffer)));
-    }
-
-    private void setupMockCookieResponse(String cookieValue) {
-        ResponseCookie responseCookieMock = mock(ResponseCookie.class);
-        when(responseCookieMock.toString())
-                .thenReturn(cookieValue);
-        when(cookieService.getUserCookie(any()))
-                .thenReturn(responseCookieMock);
-    }
-
-    private void setupFullMockCookie() {
-        setupMockCookie();
-        setupMockCookieResponse("");
+    @WithAnonymousUser
+    public void deleteAuthenticationToken_unauthenticated_unauthorized() throws Exception {
+        mockMvc.perform(
+                        MockMvcRequestBuilders.delete(INVALIDATE_AUTH_ENDPOINT)
+                                .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(status().isUnauthorized());
     }
 }

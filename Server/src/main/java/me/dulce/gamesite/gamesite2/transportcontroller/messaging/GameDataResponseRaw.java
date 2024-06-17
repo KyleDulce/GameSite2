@@ -5,7 +5,7 @@ import me.dulce.gamesite.gamesite2.user.User;
 
 public class GameDataResponseRaw {
     public User.UserMessage[] players;
-    public int gameType;
+    public String gameType;
     public User.UserMessage host;
     public GameDataMessage gameData;
 }

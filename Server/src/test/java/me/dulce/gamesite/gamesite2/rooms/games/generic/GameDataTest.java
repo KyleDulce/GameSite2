@@ -2,14 +2,10 @@ package me.dulce.gamesite.gamesite2.rooms.games.generic;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import me.dulce.gamesite.gamesite2.rooms.games.common.testgame.TestMessageData;
-import me.dulce.gamesite.gamesite2.rooms.games.generic.GameData;
-import me.dulce.gamesite.gamesite2.rooms.games.generic.GameDataMessage;
-import me.dulce.gamesite.gamesite2.rooms.games.generic.GameDataType;
-import org.junit.jupiter.api.Test;
-
 import java.util.Optional;
 import java.util.UUID;
+import me.dulce.gamesite.gamesite2.rooms.games.common.testgame.TestMessageData;
+import org.junit.jupiter.api.Test;
 
 public class GameDataTest {
     private static final String ROOM_UUID = "eb0f39e0-d108-4bc9-83cd-1e12d4b0c784";
@@ -17,27 +13,28 @@ public class GameDataTest {
     @Test
     public void testParseObjectToDataMessage_success() {
         String expectedDataString = "Test";
-        GameData gameDataObj = new GameData() {
-            @Override
-            public UUID roomId() {
-                return UUID.fromString(ROOM_UUID);
-            }
+        GameData gameDataObj =
+                new GameData() {
+                    @Override
+                    public UUID roomId() {
+                        return UUID.fromString(ROOM_UUID);
+                    }
 
-            @Override
-            public GameDataType gameDataType() {
-                return GameDataType.TEST;
-            }
+                    @Override
+                    public GameDataType gameDataType() {
+                        return GameDataType.TEST;
+                    }
 
-            @Override
-            public void setupFromGameDataMessage(GameDataMessage message) throws Exception {
-                //do nothing
-            }
+                    @Override
+                    public void setupFromGameDataMessage(GameDataMessage message) throws Exception {
+                        // do nothing
+                    }
 
-            @Override
-            public Object onGetParse() throws Exception {
-                return expectedDataString;
-            }
-        };
+                    @Override
+                    public Object onGetParse() throws Exception {
+                        return expectedDataString;
+                    }
+                };
 
         GameDataMessage actual = gameDataObj.parseObjectToDataMessage();
 
@@ -48,27 +45,28 @@ public class GameDataTest {
 
     @Test
     public void testParseObjectToDataMessage_exceptionThrow_noValueObject() {
-        GameData gameDataObj = new GameData() {
-            @Override
-            public UUID roomId() {
-                return UUID.fromString(ROOM_UUID);
-            }
+        GameData gameDataObj =
+                new GameData() {
+                    @Override
+                    public UUID roomId() {
+                        return UUID.fromString(ROOM_UUID);
+                    }
 
-            @Override
-            public GameDataType gameDataType() {
-                return GameDataType.TEST;
-            }
+                    @Override
+                    public GameDataType gameDataType() {
+                        return GameDataType.TEST;
+                    }
 
-            @Override
-            public void setupFromGameDataMessage(GameDataMessage message) throws Exception {
-                //do nothing
-            }
+                    @Override
+                    public void setupFromGameDataMessage(GameDataMessage message) throws Exception {
+                        // do nothing
+                    }
 
-            @Override
-            public Object onGetParse() throws Exception {
-                throw new Exception("Fake Exception");
-            }
-        };
+                    @Override
+                    public Object onGetParse() throws Exception {
+                        throw new Exception("Fake Exception");
+                    }
+                };
 
         GameDataMessage actual = gameDataObj.parseObjectToDataMessage();
 
@@ -80,11 +78,12 @@ public class GameDataTest {
     @Test
     public void testGetGameDataFromMessage_success() {
         String expectedStringData = "Test";
-        GameDataMessage testGameData = GameDataMessage.builder()
-                .data(expectedStringData)
-                .roomId(ROOM_UUID)
-                .gameDataIdString(GameDataType.TEST.toString())
-                .build();
+        GameDataMessage testGameData =
+                GameDataMessage.builder()
+                        .data(expectedStringData)
+                        .roomId(ROOM_UUID)
+                        .gameDataIdString(GameDataType.TEST.toString())
+                        .build();
 
         Optional<GameData> actual = GameData.getGameDataFromMessage(testGameData);
 
@@ -134,7 +133,7 @@ public class GameDataTest {
     public void testGetGameDataFromMessage_ExceptionThrownOnParse_EmptyOptional() {
         GameDataMessage testGameData = new GameDataMessage();
         testGameData.gameDataIdString = "Invalid Game Type";
-        //will throw a cast exception as String cannot be cast from object
+        // will throw a cast exception as String cannot be cast from object
         testGameData.data = new Object();
 
         Optional<GameData> actual = GameData.getGameDataFromMessage(testGameData);

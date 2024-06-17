@@ -18,7 +18,7 @@ public class GameDataResponse {
         GameDataResponseRaw result = new GameDataResponseRaw();
 
         User.UserMessage[] resultPlayers = new User.UserMessage[this.players.length];
-        for(int p = 0; p < players.length; p++) {
+        for (int p = 0; p < players.length; p++) {
             resultPlayers[p] = players[p].toMessageableObject();
         }
         result.players = resultPlayers;

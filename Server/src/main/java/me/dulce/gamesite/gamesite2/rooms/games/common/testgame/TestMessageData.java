@@ -1,14 +1,11 @@
 package me.dulce.gamesite.gamesite2.rooms.games.common.testgame;
 
+import java.util.UUID;
 import me.dulce.gamesite.gamesite2.rooms.games.generic.GameData;
 import me.dulce.gamesite.gamesite2.rooms.games.generic.GameDataMessage;
 import me.dulce.gamesite.gamesite2.rooms.games.generic.GameDataType;
 
-import java.util.UUID;
-
-/**
- * Basic Template for Message data objects
- */
+/** Basic Template for Message data objects */
 public class TestMessageData extends GameData {
     public UUID roomId;
     public String message;
