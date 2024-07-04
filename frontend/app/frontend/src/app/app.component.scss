@@ -1,0 +1,29 @@
+@use 'theme-variables' as *;
+
+html,
+body,
+body > div[id="root"] {
+  min-height: 100%;
+  height: 100%;
+}
+
+.gs-enclosing {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+  background-color: $background-color;
+}
+
+.gs-enclosing-outlet {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+
+  ::ng-deep & > :not(router-outlet) {
+    flex: 1 1 auto;
+  }
+}
+
+.gs-flex-component {
+  display: flex;
+}

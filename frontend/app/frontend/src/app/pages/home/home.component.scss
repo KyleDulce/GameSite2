@@ -1,0 +1,11 @@
+@use 'theme-variables' as *;
+
+.home-container {
+    display: flex;
+    height: 100%;
+    h1 {
+        @include text(header-1);
+        margin: auto;
+        color: $background-contrast-color;
+    }
+}

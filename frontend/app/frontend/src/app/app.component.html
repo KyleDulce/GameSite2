@@ -1,1 +1,8 @@
-<router-outlet></router-outlet>
+<div class="gs-enclosing mat-typography app-frame mat-app-background"
+    [ngClass]="themeClass()">
+    <gs-main-header *ngIf="!hideHeader()"></gs-main-header>
+    <div class="gs-enclosing-outlet">
+        <router-outlet></router-outlet>
+    </div>
+</div>
+  

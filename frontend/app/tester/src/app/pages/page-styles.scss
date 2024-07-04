@@ -1,0 +1,38 @@
+
+@use 'theme-variables' as *;
+
+.root-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.part-container {
+    background-color: $background-color;
+    width: fit-content;
+    height: fit-content;
+    border: black solid 1px;
+    resize: both;
+    overflow: hidden;
+}
+
+.padded-container {
+    padding: 16px;
+}
+
+.row-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: normal;
+
+    div {
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    span {
+        color: $background-contrast-color;
+    }
+}

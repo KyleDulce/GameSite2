@@ -1,0 +1,10 @@
+
+<button 
+    [ngClass]="variant()"
+    class="gs-button"
+    [style]="colorVars()"
+    matRipple 
+    [matRippleColor]="'var(--comp-background-high)'"
+    [disabled]="disabled()">
+    <span><ng-content></ng-content></span>
+</button>

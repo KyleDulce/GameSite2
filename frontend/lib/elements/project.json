@@ -1,0 +1,23 @@
+{
+  "name": "elements",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "lib/elements/src",
+  "prefix": "gs",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "lib/elements/jest.config.ts"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "generate-component": {
+      "command": "nx g @nx/angular:component {args.name} --directory lib/elements/src/lib/elements/{args.directory} --selector {args.selector} --module lib/elements/src/lib/elements/elements.module.ts"
+    }
+  }
+}

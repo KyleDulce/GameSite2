@@ -1,0 +1,48 @@
+<div class="root-container">
+    <h1>Button</h1>
+    <div class="part-container padded-container row-container">
+        <span>Outlined</span>
+        <div>
+            <gs-button variant="outlined" color="primary" textColor="text" (click)="emitEvent($event)">Test Text</gs-button>
+            <gs-button variant="outlined" color="secondary" textColor="text" (click)="emitEvent($event)">Test Text</gs-button>
+            <gs-button variant="outlined" color="primary" textColor="text" disabled="true" (click)="emitEvent($event)">Test Text</gs-button>
+        </div>
+        <span>Filled</span>
+        <div>
+            <gs-button variant="filled" color="primary" textColor="primary-contrast" (click)="emitEvent($event)">Test Text</gs-button>
+            <gs-button variant="filled" color="secondary" textColor="secondary-contrast" (click)="emitEvent($event)">Test Text</gs-button>
+            <gs-button variant="filled" color="primary" textColor="primary-contrast" disabled="true" (click)="emitEvent($event)">Test Text</gs-button>
+        </div>
+        <span>Basic</span>
+        <div>
+            <gs-button variant="basic" color="primary" textColor="primary" (click)="emitEvent($event)">Test Text</gs-button>
+            <gs-button variant="basic" color="secondary" textColor="secondary" (click)="emitEvent($event)">Test Text</gs-button>
+            <gs-button variant="basic" color="primary" textColor="primary" disabled="true" (click)="emitEvent($event)">Test Text</gs-button>
+        </div>
+        <span>Unshaped</span>
+        <div>
+            <gs-button variant="unshaped" color="primary" textColor="primary" (click)="emitEvent($event)">Test Text</gs-button>
+            <gs-button variant="unshaped" color="secondary" textColor="secondary" (click)="emitEvent($event)">Test Text</gs-button>
+            <gs-button variant="unshaped" color="primary" textColor="primary" disabled="true" (click)="emitEvent($event)">Test Text</gs-button>
+        </div>
+    </div>
+
+    <h1>Icon Button</h1>
+    <div class="part-container padded-container row-container">
+        <span>Basic</span>
+        <div>
+            <gs-icon-button color="text" variant="basic" (click)="emitEvent($event)">star</gs-icon-button>
+            <gs-icon-button color="primary" variant="basic" (click)="emitEvent($event)">star</gs-icon-button>
+            <gs-icon-button color="secondary" variant="basic" (click)="emitEvent($event)">star</gs-icon-button>
+            <gs-icon-button color="primary" variant="basic" disabled="true" (click)="emitEvent($event)">star</gs-icon-button>
+        </div>
+        <span>Filled</span>
+        <div>
+            <gs-icon-button color="text" variant="filled" contrastColor="text-contrast" (click)="emitEvent($event)">star</gs-icon-button>
+            <gs-icon-button color="primary" variant="filled" contrastColor="primary-contrast" (click)="emitEvent($event)">star</gs-icon-button>
+            <gs-icon-button color="secondary" variant="filled" contrastColor="secondary-contrast" (click)="emitEvent($event)">star</gs-icon-button>
+            <gs-icon-button color="primary" variant="filled" contrastColor="primary-contrast" disabled="true" (click)="emitEvent($event)">star</gs-icon-button>
+        </div>
+    </div>
+    
+</div>

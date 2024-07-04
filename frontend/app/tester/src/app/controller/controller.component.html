@@ -1,0 +1,15 @@
+
+<div>
+    <button (click)="selectedTheme.set('light')">Light</button>
+    <button (click)="selectedTheme.set('dark')">Dark</button>
+</div>
+
+<div>
+    Font size:
+    <select [(ngModel)]="fontSelector">
+        <option value="12">12px</option>
+        <option value="16">16px</option>
+        <option value="28">28px</option>
+        <option value="56">56px</option>
+    </select>
+</div>

@@ -1,0 +1,14 @@
+<div class="root-container" 
+    [ngClass]="themeSwitcher().theme + '-theme'">
+    <div class="controler-container">
+        <tester-controller (themeSettings)="themeSwitcher.set($event)"></tester-controller>
+    </div>
+    <mat-tab-group style="width: 100%;" mat-stretch-tabs="false" mat-align-tabs="start">
+        <div class="tab-container">
+            <mat-tab label="Elements"><tester-elements></tester-elements></mat-tab>
+        </div>
+        <div class="tab-container">
+            <mat-tab label="Components"><tester-components></tester-components></mat-tab>
+        </div>
+    </mat-tab-group>  
+</div>

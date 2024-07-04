@@ -1,0 +1,11 @@
+
+<button class="gs-icon-button-container" 
+    [ngClass]="variant()" 
+    [style]="colorVars()"
+    matRipple 
+    [matRippleColor]="'var(--comp-background-high)'"
+    [disabled]="disabled()">
+    <mat-icon inline="true">
+        <ng-content></ng-content>
+    </mat-icon>
+</button>

@@ -1,0 +1,17 @@
+<div #menuTrigger='cdkMenuTriggerFor' [cdkMenuTriggerFor]="menu"><ng-content></ng-content></div>
+
+<ng-template #menu>
+    <div [ngClass]="themeSignal()" 
+        [style]="colorVars()"
+        class="comp-menu-conatiner" 
+        cdkMenu>
+        <gs-button *ngFor="let item of menuItems()"
+            variant="unshaped"
+            [textColor]="menuTextColor()"
+            [color]="menuHighlightColorOrigin()"
+            cdkMenuItem 
+            (click)="onSelect(item.menuItemId, item.onClick)">
+            {{item.text}}
+        </gs-button>
+    </div>
+</ng-template>

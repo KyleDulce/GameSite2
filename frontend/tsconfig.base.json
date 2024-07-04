@@ -16,6 +16,10 @@
     "baseUrl": ".",
     "paths": {
       "@frontend/api-sdk": ["lib/api-sdk/src/index.ts"],
+      "@frontend/common-services": ["lib/common-services/src/index.ts"],
+      "@frontend/components": ["lib/components/src/index.ts"],
+      "@frontend/elements": ["lib/elements/src/index.ts"],
+      "@frontend/theme": ["lib/theme/src/index.ts"],
       "@frontend/websocket": ["lib/websocket/src/index.ts"]
     }
   },

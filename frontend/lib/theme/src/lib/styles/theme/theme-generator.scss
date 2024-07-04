@@ -1,0 +1,34 @@
+
+@use "sass:map";
+
+@mixin map-theme-to-css-vars($theme-map) {
+    @each $prefix, $map in map.get($theme-map, 'colors') {
+        @include palette-to-css-vars($map, $prefix);
+    }
+    @include typography-to-css-vars(map.get($theme-map, 'typography'));
+}
+
+@mixin palette-to-css-vars($palette-map, $palette-prefix) {
+    @include color-to-css-vars($palette-map, $palette-prefix);
+    @include color-to-css-vars(map.get($palette-map, 'contrast'), #{$palette-prefix} + '-contrast');
+}
+
+@mixin color-to-css-vars($color-map, $color-prefix) {
+    --gs-#{$color-prefix}: #{map.get($color-map, 'base')};
+    --gs-#{$color-prefix}-hover: #{map.get($color-map, 'hover')};
+    --gs-#{$color-prefix}-active: #{map.get($color-map, 'active')};
+}
+
+@mixin typography-to-css-vars($typography) {
+    --gs-base-size: #{map.get($typography, 'base-size')};
+
+    @each $prefix, $map in map.get($typography, 'fonts') {
+        @include font-to-css-vars($map, $prefix);
+    }
+}
+
+@mixin font-to-css-vars($font, $font-prefix) {
+    --gs-#{$font-prefix}-family: #{map.get($font, 'family')};
+    --gs-#{$font-prefix}-weight: #{map.get($font, 'weight')};
+    --gs-#{$font-prefix}-size: #{map.get($font, 'size')};
+}

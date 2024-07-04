@@ -1,0 +1,17 @@
+@use './theme/light-theme.scss' as light;
+@use './theme/dark-theme.scss' as dark;
+@use './theme/theme-generator.scss' as *;
+@use './theme-variables.scss' as *;
+
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
+
+.light-theme {
+    @include map-theme-to-css-vars(light.$light-theme);
+    @include base-values();
+}
+
+.dark-theme {
+    @include map-theme-to-css-vars(dark.$dark-theme);
+    @include base-values();
+}

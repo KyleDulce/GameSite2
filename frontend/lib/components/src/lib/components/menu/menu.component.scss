@@ -1,0 +1,13 @@
+@use 'theme-variables' as *;
+
+$menu-background-color: var(--comp-menu-background);
+
+.comp-menu-conatiner {
+    display: inline-flex;
+    flex-direction: column;
+    background-color: $menu-background-color;
+    box-shadow: .0625rem .0625rem .25rem $shadow-color;
+    border-radius: .25rem;
+    padding: .5rem 0;
+    align-items: stretch;
+}

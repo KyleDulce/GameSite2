@@ -56,10 +56,15 @@
     },
     "@nx/angular:library": {
       "linter": "eslint",
-      "unitTestRunner": "jest"
+      "unitTestRunner": "jest",
+      "style": "scss",
+      "standalone": "false",
+      "projectNameAndRootFormat": "as-provided"
     },
     "@nx/angular:component": {
-      "style": "css"
+      "style": "scss",
+      "export": "true",
+      "standalone": "false"
     }
   }
 }

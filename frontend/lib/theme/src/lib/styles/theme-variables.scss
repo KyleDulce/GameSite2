@@ -1,0 +1,138 @@
+
+@mixin text($text-family) {
+    font-family: var(--gs-#{$text-family}-family);
+    font-weight: var(--gs-#{$text-family}-weight);
+    font-size: var(--gs-#{$text-family}-size);
+}
+
+@mixin base-values() {
+    font-family: $body-family;
+    font-weight: $body-weight;
+    font-size: $base-size;
+}
+
+$base-size: var(--gs-base-size);
+
+$primary-color: var(--gs-primary);
+$primary-hover-color: var(--gs-primary-hover);
+$primary-active-color: var(--gs-primary-active);    
+
+$primary-contrast-color: var(--gs-primary-contrast);
+$primary-contrast-hover-color: var(--gs-primary-contrast-hover);
+$primary-contrast-active-color: var(--gs-primary-contrast-active);
+
+$secondary-color: var(--gs-secondary);
+$secondary-hover-color: var(--gs-secondary-hover);
+$secondary-active-color: var(--gs-secondary-active);
+
+$secondary-contrast-color: var(--gs-secondary-contrast);
+$secondary-contrast-hover-color: var(--gs-secondary-contrast-hover);
+$secondary-contrast-active-color: var(--gs-secondary-contrast-active);
+
+$error-color: var(--gs-error);
+$error-hover-color: var(--gs-error-hover);
+$error-active-color: var(--gs-error-active);
+
+$error-contrast-color: var(--gs-error-contrast);
+$error-contrast-hover-color: var(--gs-error-contrast-hover);
+$error-contrast-active-color: var(--gs-error-contrast-active);
+
+$warn-color: var(--gs-warn);
+$warn-hover-color: var(--gs-warn-hover);
+$warn-active-color: var(--gs-warn-active);
+
+$warn-contrast-color: var(--gs-warn-contrast);
+$warn-contrast-hover-color: var(--gs-warn-contrast-hover);
+$warn-contrast-active-color: var(--gs-warn-contrast-active);
+
+$info-color: var(--gs-info);
+$info-hover-color: var(--gs-info-hover);
+$info-active-color: var(--gs-info-active);
+
+$info-contrast-color: var(--gs-info-contrast);
+$info-contrast-hover-color: var(--gs-info-contrast-hover);
+$info-contrast-active-color: var(--gs-info-contrast-active);
+
+$success-color: var(--gs-success);
+$success-hover-color: var(--gs-success-hover);
+$success-active-color: var(--gs-success-active);
+
+$success-contrast-color: var(--gs-success-contrast);
+$success-contrast-hover-color: var(--gs-success-contrast-hover);
+$success-contrast-active-color: var(--gs-success-contrast-active);
+
+$text-color: var(--gs-text);
+$text-hover-color: var(--gs-text-hover);
+$text-active-color: var(--gs-text-active);
+
+$text-contrast-color: var(--gs-text-contrast);
+$text-contrast-hover-color: var(--gs-text-contrast-hover);
+$text-contrast-active-color: var(--gs-text-contrast-active);
+
+$background-color: var(--gs-background);
+$background-hover-color: var(--gs-background-hover);
+$background-active-color: var(--gs-background-active);
+
+$background-contrast-color: var(--gs-background-contrast);
+$background-contrast-hover-color: var(--gs-background-contrast-hover);
+$background-contrast-active-color: var(--gs-background-contrast-active);
+
+$surface-color: var(--gs-surface);
+$surface-hover-color: var(--gs-surface-hover);
+$surface-active-color: var(--gs-surface-active);
+
+$surface-contrast-color: var(--gs-surface-contrast);
+$surface-contrast-hover-color: var(--gs-surface-contrast-hover);
+$surface-contrast-active-color: var(--gs-surface-contrast-active);
+
+$shadow-color: var(--gs-shadow);
+$shadow-hover-color: var(--gs-shadow-hover);
+$shadow-active-color: var(--gs-shadow-active);
+
+$shadow-contrast-color: var(--gs-shadow-contrast);
+$shadow-contrast-hover-color: var(--gs-shadow-contrast-hover);
+$shadow-contrast-active-color: var(--gs-shadow-contrast-active);
+
+$disabled-color: var(--gs-disabled);
+$disabled-hover-color: var(--gs-disabled-hover);
+$disabled-active-color: var(--gs-disabled-active);
+
+$disabled-contrast-color: var(--gs-disabled-contrast);
+$disabled-contrast-hover-color: var(--gs-disabled-contrast-hover);
+$disabled-contrast-active-color: var(--gs-disabled-contrast-active);
+
+$header-1-family: var(--gs-header-1-family);
+$header-1-weight: var(--gs-header-1-weight);
+$header-1-size: var(--gs-header-1-size);
+
+$header-2-family: var(--gs-header-2-family);
+$header-2-weight: var(--gs-header-2-weight);
+$header-2-size: var(--gs-header-2-size);
+
+$header-3-family: var(--gs-header-3-family);
+$header-3-weight: var(--gs-header-3-weight);
+$header-3-size: var(--gs-header-3-size);
+
+$header-4-family: var(--gs-header-4-family);
+$header-4-weight: var(--gs-header-4-weight);
+$header-4-size: var(--gs-header-4-size);
+
+$subheader-1-family: var(--gs-subheader-1-family);
+$subheader-1-weight: var(--gs-subheader-1-weight);
+$subheader-1-size: var(--gs-subheader-1-size);
+
+$subheader-2-family: var(--gs-subheader-2-family);
+$subheader-2-weight: var(--gs-subheader-2-weight);
+$subheader-2-size: var(--gs-subheader-2-size);
+
+$body-family: var(--gs-body-family);
+$body-weight: var(--gs-body-weight);
+$body-size: var(--gs-body-size);
+
+$body-emphasized-family: var(--gs-body-emphasized-family);
+$body-emphasized-weight: var(--gs-body-emphasized-weight);
+$body-emphasized-size: var(--gs-body-emphasized-size);
+
+$subtext-family: var(--gs-subtext-family);
+$subtext-weight: var(--gs-subtext-weight);
+$subtext-size: var(--gs-subtext-size);

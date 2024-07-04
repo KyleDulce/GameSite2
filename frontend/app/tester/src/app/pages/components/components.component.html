@@ -1,0 +1,44 @@
+<div class="root-container">
+    <h1>Menu</h1>
+    <div class="part-container padded-container row-container">
+        <span>Basic</span>
+        <div>
+            <gs-menu [menuItems]="menuItems" (onMenuSelect)="debugOut('Menu ' + $event)">
+                <gs-button variant="basic">Open Menu</gs-button>
+            </gs-menu>
+        </div>
+    </div>
+    <h1>Input</h1>
+    <div class="part-container padded-container row-container">
+        <span>Text Field</span>
+        <div>
+            <gs-text-field type="text"></gs-text-field>
+            <gs-text-field type="text" placeholder="test"></gs-text-field>
+            <gs-text-field type="text" placeholder="disabled" disabled="true"></gs-text-field>
+        </div>
+        <span>Textarea Field</span>
+        <div>
+            <gs-text-field type="textarea"></gs-text-field>
+            <gs-text-field type="textarea" placeholder="test"></gs-text-field>
+            <gs-text-field type="textarea" placeholder="disabled" disabled="true"></gs-text-field>
+        </div>
+        <span>Password Field</span>
+        <div>
+            <gs-text-field type="password"></gs-text-field>
+            <gs-text-field type="password" placeholder="password"></gs-text-field>
+            <gs-text-field type="password" placeholder="disabled" disabled="true"></gs-text-field>
+        </div>
+        <span>Hint</span>
+        <div>
+            <gs-text-field type="password">
+                <gs-text-hint>This is a hint</gs-text-hint>
+            </gs-text-field>
+        </div>
+        <span>Error Hint</span>
+        <div>
+            <gs-text-field type="password" [required]="true">
+                <gs-text-error-hint>This is an error hint</gs-text-error-hint>
+            </gs-text-field>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,40 @@
+
+<nav class="gs-toolbar">
+    <div class="gs-toolbar-left-container">
+        <ng-container 
+            *ngIf="isMobileMode(); 
+            then desktopModeLeft; 
+            else mobileModeLeft">
+        </ng-container>
+    </div>
+    <div class="gs-toolbar-right-container">
+        <gs-icon-button 
+            variant="basic" 
+            color="primary-contrast"
+            (click)="handleThemeToggle()">
+            {{isLightMode() ? 'dark_mode' : 'light_mode'}}
+        </gs-icon-button>
+        <gs-button 
+            variant="basic" 
+            color="primary-contrast" 
+            textColor="primary-contrast">
+            Sign out
+        </gs-button>
+    </div>
+</nav>
+
+<ng-template #desktopModeLeft>
+    <gs-button *ngFor="let link of menuLinks()"
+        variant="basic"
+        color="primary-contrast"
+        textColor="primary-contrast"
+        (click)="handleRoute(link.menuItemId)">
+        {{link.text}}
+    </gs-button>
+</ng-template>
+
+<ng-template #mobileModeLeft>
+    <gs-menu [menuItems]="menuLinks()" (onMenuSelect)="handleRoute($event)">
+        <gs-icon-button variant="basic" color="primary-contrast">menu</gs-icon-button>
+    </gs-menu>
+</ng-template>

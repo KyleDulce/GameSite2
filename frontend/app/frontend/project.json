@@ -22,8 +22,16 @@
             "input": "app/frontend/public"
           }
         ],
-        "styles": ["app/frontend/src/styles.scss"],
-        "scripts": []
+        "styles": [
+          "app/frontend/src/styles.scss", 
+          "lib/theme/src/lib/styles/theme.scss"
+        ],
+        "scripts": [],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "lib/theme/src/lib/styles"
+          ]
+        }
       },
       "configurations": {
         "production": {
@@ -79,6 +87,9 @@
       "options": {
         "jestConfig": "app/frontend/jest.config.ts"
       }
+    },
+    "generate-component": {
+      "command": "nx g @nx/angular:component {args.name} --directory app/frontend/src/app/{args.directory} --selector {args.selector} --module app/frontend/src/app/app.module.ts"
     }
   }
 }

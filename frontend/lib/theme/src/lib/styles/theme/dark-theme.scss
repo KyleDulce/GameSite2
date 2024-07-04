@@ -1,0 +1,88 @@
+
+@use './base-theme.scss' as *;
+
+$base-color: get-color(#ffffff, #c2c2c2, #7a7a7a);
+$background-color: get-color(#2e2e2e, #505050, #707070);
+
+$base-palette: get-palette(
+    $base-color,
+    $background-color
+);
+
+$background-palette: get-palette(
+    $background-color,
+    $base-color
+);
+
+$shadow-palette: get-palette(
+    get-color(#505050, #707070, #999999),
+    $base-color
+);
+
+$surface-palette: get-palette(
+    get-color(#272727, #494949, #686868),
+    $base-color
+);
+
+$primary-palette: get-palette(
+    get-color(#0d52cb, #1649c1, #003fb4),
+    $base-color
+);
+
+$secondary-palette: get-palette(
+    get-color(#c87400, #cd8105, #d4a115),
+    $background-color
+);
+
+$error-palette: get-palette(
+    get-color(#CE0000, #f42912, #ff371c),
+    $base-color
+);
+
+$warn-palette: get-palette(
+    get-color(#ec6c00, #f27900, #f88800),
+    $base-color
+);
+
+$info-palette: get-palette(
+    get-color(#057d93, #0d91ac, #16a6c6),
+    $base-color
+);
+
+$success-palette: get-palette(
+    get-color(#02e306, #00d200, #00c100),
+    $background-color
+);
+
+$disabled-palette: get-palette(
+    get-color(#9b9b9b, #5e5e5e, #404040),
+    $background-color
+);
+
+$typography: get-typography-config(
+    1rem,
+    get-typography-level('Roboto', 400, 2rem),
+    get-typography-level('Roboto', 400, 1.75rem),
+    get-typography-level('Roboto', 400, 1.5rem),
+    get-typography-level('Roboto', 400, 1.25rem),
+    get-typography-level('Roboto', 500, 1.125rem),
+    get-typography-level('Roboto', 500, 1rem),
+    get-typography-level('Roboto', 400, 1rem),
+    get-typography-level('Roboto', 500, 1rem),
+    get-typography-level('Roboto', 400, 0.875rem),
+);
+
+$dark-theme: get-theme(
+    $primary-palette,
+    $secondary-palette,
+    $error-palette,
+    $warn-palette,
+    $info-palette,
+    $success-palette,
+    $base-palette,
+    $background-palette,
+    $surface-palette,
+    $shadow-palette,
+    $disabled-palette,
+    $typography
+);

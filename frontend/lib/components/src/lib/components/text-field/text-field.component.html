@@ -1,0 +1,18 @@
+<div class="comp-text-container" [ngClass]="{'focus': focus(), 'disabled': controlDisabled()}">
+    <input class="comp-text-field" 
+    [type]="type()" 
+    [placeholder]="placeholder()"
+    [ngModel]="fieldContent" 
+    (focus)="onFocus()"
+    (blur)="onBlur()"
+    (ngModelChange)="onFieldContentChange($event)" 
+    [disabled]="controlDisabled()"/>
+</div>
+<div class="comp-text-hint-container">
+    <ng-container *ngIf="!shouldShowErrored()">
+        <ng-content select="gs-text-hint"></ng-content>
+    </ng-container>
+    <ng-container *ngIf="shouldShowErrored()">
+        <ng-content select="gs-text-error-hint"></ng-content>
+    </ng-container>
+</div>

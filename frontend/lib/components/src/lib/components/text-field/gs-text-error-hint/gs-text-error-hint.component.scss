@@ -1,0 +1,6 @@
+@use 'theme-variables' as *;
+
+span {
+    @include text(subtext);
+    color: $error-color;
+}

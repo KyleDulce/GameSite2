@@ -1,0 +1,63 @@
+@use 'theme-variables' as *;
+
+$base-color: var(--comp-base);
+$base-hover-color: var(--comp-base-hover);
+$base-contrast-color: var(--comp-base-contrast);
+
+$background-low: var(--comp-background-low);
+
+.gs-icon-button-container {
+    display: flex;
+    padding: .5rem;
+    line-height: 1;
+    background: transparent;
+    border: none;
+    
+    justify-content: center;
+
+    mat-icon {
+        line-height: 1;
+        font-size: 1.5rem;
+        z-index: 1;
+    }
+}
+
+.basic {
+    border-radius: 50%;
+
+    mat-icon {
+        color: $base-color;
+    }
+
+    &:hover {
+        background-color: $background-low;
+    }
+
+    &:disabled, &:hover:disabled {
+        mat-icon {
+            color: $disabled-color;
+        }
+        background-color: transparent;
+    }
+}
+
+.filled {
+    border-radius: 25%;
+
+    background-color: $base-color;
+
+    mat-icon {
+        color: $base-contrast-color;
+    }
+
+    &:hover {
+        background-color: $base-hover-color;
+    }
+
+    &:disabled, &:hover:disabled {
+        mat-icon {
+            color: $disabled-color;
+        }
+        background-color: $disabled-hover-color;
+    }
+}

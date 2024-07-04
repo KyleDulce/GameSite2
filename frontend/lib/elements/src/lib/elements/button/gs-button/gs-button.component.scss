@@ -1,0 +1,87 @@
+@use 'theme-variables' as *;
+
+$base: var(--comp-base);
+$base-hover: var(--comp-base-hover);
+
+$text: var(--comp-text);
+$text-hover: var(--comp-text-hover);
+
+$background-low: var(--comp-background-low);
+
+:host {
+    display: inline-block;
+}
+
+.gs-button {
+    @include text('body');
+    display: flex;
+    gap: 0.25rem;
+    width: 100%;
+    height: 100%;
+
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+
+    color: $text;
+
+    span {
+        z-index: 1;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    &:disabled {
+        color: $disabled-color;
+    }
+}
+
+.outlined {
+    box-sizing: border-box;
+    border: 0.125rem solid $base;
+    background-color: transparent;
+
+    &:hover {
+        background-color: $background-low;
+    }
+
+    &:disabled, &:hover:disabled {
+        border-color: $disabled-hover-color;
+        background-color: transparent;
+    }
+}
+
+.filled {
+    background-color: $base;
+
+    &:hover {
+        background-color: $base-hover;
+    }
+
+    &:disabled, &:hover:disabled {
+        background-color: $disabled-hover-color;
+    }
+}
+
+.basic {
+    @include text('body-emphasized');
+
+    background-color: transparent;
+    color: $text;
+
+    &:hover {
+        background-color: $background-low;
+    }
+
+    &:disabled, &:hover:disabled {
+        color: $disabled-color;
+        background-color: transparent;
+    }
+}
+
+.unshaped {
+    @extend .basic;
+    border-radius: 0;
+    padding: 1rem 1rem;
+}
+

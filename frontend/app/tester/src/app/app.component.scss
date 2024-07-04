@@ -1,0 +1,26 @@
+
+@use 'theme-variables' as *;
+
+.root-container {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    width: 100%;
+    max-height: 100vh;
+    height: 100vh;
+}
+
+.controler-container {
+    border-right: 1px solid $background-contrast-color;
+    padding: 16px;
+
+    display: flex;
+    flex-direction: column;
+    overflow: scroll;
+}
+
+.tab-container {
+    background-color: $background-color;
+    width: 100%;
+    overflow: scroll;
+}

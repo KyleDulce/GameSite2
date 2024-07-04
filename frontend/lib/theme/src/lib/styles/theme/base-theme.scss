@@ -1,0 +1,94 @@
+
+@use "sass:map";
+
+@function get-theme(
+    $primary-palette,
+    $secondary-palette,
+    $error-palette,
+    $warn-palette,
+    $info-palette,
+    $success-palette,
+    $text-palette,
+    $background-palette,
+    $surface-palette,
+    $shadow-palette,
+    $disabled-palette,
+    $typography
+) {
+    $result: (
+        colors: (
+            primary: $primary-palette,
+            secondary: $secondary-palette,
+            error: $error-palette,
+            warn: $warn-palette,
+            info: $info-palette,
+            success: $success-palette,
+            "text": $text-palette,
+            "background": $background-palette,
+            "surface": $surface-palette,
+            "shadow": $shadow-palette,
+            "disabled": $disabled-palette,
+        ),
+        typography: $typography
+    );
+    @return $result;
+}
+
+@function get-typography-config(
+    $base-size,
+    $header-1,
+    $header-2,
+    $header-3,
+    $header-4,
+    $subheader-1,
+    $subheader-2,
+    $body,
+    $body-emphasized,
+    $subtext
+) {
+    $result: (
+        base-size: $base-size,
+        fonts: (
+            header-1: $header-1,
+            header-2: $header-2,
+            header-3: $header-3,
+            header-4: $header-4,
+            subheader-1: $subheader-1,
+            subheader-2: $subheader-2,
+            body: $body,
+            body-emphasized: $body-emphasized,
+            subtext: $subtext
+        )
+    );
+    @return $result;
+}
+
+@function get-palette($color, $contrast) {
+    $contrast-part: (
+        contrast: $contrast
+    );
+    $result: map.merge($color, $contrast-part);
+    @return $result;
+}
+
+@function get-typography-level(
+    $family,
+    $weight,
+    $size,
+) {
+    $result: (
+        family: $family,
+        "weight": $weight,
+        size: $size
+    );
+    @return $result;
+}
+
+@function get-color($base-color, $hover-color, $active-color) {
+    $result: (
+        base: $base-color,
+        hover: $hover-color,
+        "active": $active-color
+    );
+    @return $result;
+}

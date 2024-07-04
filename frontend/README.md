@@ -45,3 +45,6 @@ It will show tasks that you can run with Nx.
 2. Delete non-ts files
 3. Fix typescript errors
 
+## New Library
+
+`npx nx g @nx/angular:library {name} --directory lib/{directory} --projectNameAndRootFormat as-provided`
