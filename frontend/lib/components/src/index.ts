@@ -7,5 +7,3 @@ export * from './lib/components/text-field/text-field.component';
 export * from './lib/components/text-field/gs-text-hint/gs-text-hint.component';
 
 export * from './lib/components/text-field/gs-text-error-hint/gs-text-error-hint.component';
-
-export * from './lib/components/text-field/gs-text-affix/gs-text-affix.component';
