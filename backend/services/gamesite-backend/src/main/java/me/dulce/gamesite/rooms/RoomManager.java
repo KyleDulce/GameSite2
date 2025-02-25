@@ -4,11 +4,10 @@ import me.dulce.commongames.Room;
 import me.dulce.commongames.User;
 import me.dulce.commongames.game.GameListing;
 import me.dulce.commongames.game.GameResolver;
-import me.dulce.commongames.game.GameServiceManager;
+import me.dulce.commongames.gamemessage.GameMessengerService;
 import me.dulce.commongames.gamemessage.GameSerializableMessage;
 import me.dulce.commongames.gamemessage.InitialGameMessageHandler;
 import me.dulce.commongames.messaging.RoomListing;
-import me.dulce.gamesite.transportcontroller.services.SocketMessengerService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +26,7 @@ public class RoomManager {
 
     private final HashMap<UUID, Room> activeRooms = new HashMap<>();
 
-    @Autowired private SocketMessengerService messengerService;
+    @Autowired private GameMessengerService messengerService;
 
     @Autowired private GameResolver gameResolver;
 
@@ -111,20 +110,14 @@ public class RoomManager {
     public UUID createRoom(User host, int maxPlayers, String roomName, String gameId) {
         UUID uuid = UUID.randomUUID();
 
-        Optional<GameServiceManager> gameServiceManager =
-                gameResolver.getGameServiceManagerFromId(gameId);
+        Optional<Room> roomOptional = gameResolver.constructRoomFromGameId(gameId, uuid, maxPlayers, host, roomName, messengerService);
 
-        if (gameServiceManager.isEmpty()) {
+        if(roomOptional.isEmpty()) {
             return null;
         }
 
-        Room room =
-                gameServiceManager
-                        .get()
-                        .createRoom(uuid, maxPlayers, host, roomName, messengerService);
-
-        activeRooms.put(uuid, room);
-        room.userJoin(host);
+        activeRooms.put(uuid, roomOptional.get());
+        roomOptional.get().userJoin(host);
         return uuid;
     }
 
@@ -163,13 +156,13 @@ public class RoomManager {
      * @param data the data provided
      * @return true if successful, false otherwise
      */
-    public boolean handleIncomingRoomData(User sender, GameSerializableMessage data) {
+    public void handleIncomingRoomData(User sender, GameSerializableMessage data) {
         Room room = activeRooms.get(UUID.fromString(data.roomId));
         if (room == null) {
-            return false;
+            return;
         }
 
-        return initialGameMessageHandler.handleGameMessageObject(sender, data, room);
+        initialGameMessageHandler.handleGameMessageObject(sender, data, room);
     }
 
     /**

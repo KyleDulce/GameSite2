@@ -3,10 +3,10 @@ package me.dulce.commongames;
 import lombok.AccessLevel;
 import lombok.Getter;
 
+import me.dulce.commongames.gamemessage.GameMessageListener;
+import me.dulce.commongames.gamemessage.GameMessengerService;
 import me.dulce.commongames.gamemessage.common.*;
-import me.dulce.commongames.messaging.ClientMessagingService;
 import me.dulce.commongames.messaging.RoomListing;
-import me.dulce.commongames.messaging.SocketDestinations;
 import me.dulce.commonutils.StringUtils;
 
 import org.jetbrains.annotations.TestOnly;
@@ -14,10 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 /** Room instance for games */
 @Getter
@@ -37,19 +34,19 @@ public abstract class Room {
     protected Instant timeStarted;
 
     @Getter(AccessLevel.NONE)
-    protected final ClientMessagingService messengerService;
+    protected final GameMessengerService gameMessengerService;
 
     public Room(
             UUID roomId,
             int maxUserCount,
             User host,
             String roomName,
-            ClientMessagingService messengerService) {
+            GameMessengerService gameMessengerService) {
         this.roomId = roomId;
         this.roomName = roomName;
         this.host = host;
         this.maxUsers = maxUserCount;
-        this.messengerService = messengerService;
+        this.gameMessengerService = gameMessengerService;
 
         usersJoinedList = new LinkedList<>();
         spectatorsJoinedList = new LinkedList<>();
@@ -74,7 +71,7 @@ public abstract class Room {
     public boolean userJoin(User user) {
         if (usersJoinedList.size() < maxUsers && !isInProgress && !usersJoinedList.contains(user)) {
             usersJoinedList.add(user);
-            sendDataResponseUpdate();
+            sendSettingDataResponseUpdate();
             onUserJoinEvent(user);
             return true;
         }
@@ -107,7 +104,7 @@ public abstract class Room {
             if (user.equals(host)) {
                 this.selectNewRandomHost();
             }
-            sendDataResponseUpdate();
+            sendSettingDataResponseUpdate();
         } else if (spectatorsJoinedList.contains(user)) {
             spectatorsJoinedList.remove(user);
         }
@@ -121,64 +118,65 @@ public abstract class Room {
         }
         Random rng = new Random();
         host = usersJoinedList.get(rng.nextInt(usersJoinedList.size()));
-        messengerService.sendMessageToUser(
-                host,
-                SocketDestinations.GAMEDATA,
-                new BlankGameMessage(getRoomId(), CommonGameDataType.CHANGE_HOST.toString())
-                        .parseToSerializableObject());
+        gameMessengerService.sendToUser(host, this, BlankGameDataType.CHANGE_HOST.toString());
     }
 
     /**
      * Processes a chat message to be sent to other users in the room
      *
      * @param chatMessage the message to send
-     * @return true if successful, false otherwise
      */
-    public boolean processChatMessage(ChatMessageMessage chatMessage, User user) {
+    @GameMessageListener
+    public void processChatMessage(User user, ChatMessageMessage chatMessage) {
         chatMessage.setSenderName(user.getName());
-        messengerService.broadcastMessageToRoom(this, chatMessage.onParseData());
-        return true;
+        gameMessengerService.broadcastToRoom(this, chatMessage);
     }
 
-    public boolean processSettingsDataRequest(User user) {
+    @GameMessageListener
+    public void processBlankGameData(User user, String request) {
+        Optional<BlankGameDataType> dataType = BlankGameDataType.getTypeFromId(request);
+        if (dataType.isEmpty()) {
+            return;
+        }
+
+        switch (dataType.get()) {
+            case BlankGameDataType.SETTINGS_DATA_REQUEST:
+                processSettingsDataRequest(user);
+        }
+    }
+
+    public void processSettingsDataRequest(User user) {
         if (!user.equals(host)) {
             sendInvalidMessageDueToNotHost(user);
-            return false;
         }
-        sendDataResponseUpdate();
-        return true;
+        sendSettingDataResponseUpdate();
     }
 
-    public boolean processPlayerKickRequest(User user, KickPlayerMessage data) {
+    @GameMessageListener
+    public void processPlayerKickRequest(User user, KickPlayerMessage data) {
         if (!user.equals(host)) {
             sendInvalidMessageDueToNotHost(user);
-            return false;
+            return;
         }
-        userLeave(data.player);
-        if (StringUtils.isNotBlank(data.player.getSocketId())) {
-            messengerService.sendMessageToUser(
-                    data.player,
-                    SocketDestinations.GAMEDATA,
-                    new BlankGameMessage(getRoomId(), CommonGameDataType.FORCE_KICK.toString())
-                            .parseToSerializableObject());
+        Optional<User> player = User.getUserFromUUID(data.getPlayerUid());
+        if (player.isEmpty()) {
+            return;
         }
-        return true;
+
+        userLeave(player.get());
+        if (StringUtils.isNotBlank(player.get().getSocketId())) {
+            gameMessengerService.sendToUser(user, this, BlankGameDataType.FORCE_KICK.toString());
+        }
     }
 
-    protected void sendDataResponseUpdate() {
-        messengerService.sendMessageToUser(
-                host,
-                SocketDestinations.GAMEDATA,
-                new RoomMetaDataMessage(getRoomId(), usersJoinedList, getGameId(), host)
-                        .parseToSerializableObject());
+    protected void sendSettingDataResponseUpdate() {
+        gameMessengerService.sendToUser(
+                host, this, new RoomSettingDataMessage(usersJoinedList, getGameId(), host));
     }
 
     protected void sendInvalidMessageDueToNotHost(User user) {
-        messengerService.sendInvalidSocketMessageToUser(
-                user,
-                SocketDestinations.GAMEDATA,
-                HTTP_FORBIDDEN,
-                "Only Host can make this request");
+        gameMessengerService.sendInvalidMessageToUser(
+                user, HTTP_FORBIDDEN, "Only Host can make this request");
     }
 
     /**

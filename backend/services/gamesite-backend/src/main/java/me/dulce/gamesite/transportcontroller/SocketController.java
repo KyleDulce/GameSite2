@@ -70,13 +70,6 @@ public class SocketController {
             return;
         }
 
-        boolean success = roomManager.handleIncomingRoomData(user, payload);
-        if (!success) {
-            socketMessengerService.sendInvalidSocketMessageToUser(
-                    socketSessionId,
-                    SocketDestinations.GAMEDATA,
-                    HttpStatus.OK.value(),
-                    "Handler rejected Update.");
-        }
+        roomManager.handleIncomingRoomData(user, payload);
     }
 }

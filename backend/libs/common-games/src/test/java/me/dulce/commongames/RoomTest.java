@@ -3,7 +3,8 @@ package me.dulce.commongames;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import me.dulce.commongames.messaging.ClientMessagingService;
+import me.dulce.commongames.gamemessage.GameMessengerService;
+import me.dulce.commongames.gamemessage.OutgoingGameData;
 import me.dulce.commongames.messaging.RoomListing;
 
 import org.junit.jupiter.api.AfterEach;
@@ -30,19 +31,17 @@ public class RoomTest {
     private static UUID user3UUID;
     private static UUID hostUserUUID;
 
-    private static String hostName = "SomeHose";
-    private static String user1Name = "SomeUser1";
-    private static String user2Name = "SomeUser2";
-    private static String user3Name = "SomeUser3";
+    private static final String hostName = "SomeHose";
+    private static final String user1Name = "SomeUser1";
+    private static final String user2Name = "SomeUser2";
+    private static final String user3Name = "SomeUser3";
 
-    private static String hostSession = "SomeSessionHost";
-    private static String user1Session = "SomeSession1";
-    private static String user2Session = "SomeSession2";
-    private static String user3Session = "SomeSession3";
+    private static final String hostSession = "SomeSessionHost";
+    private static final String user1Session = "SomeSession1";
+    private static final String user2Session = "SomeSession2";
+    private static final String user3Session = "SomeSession3";
 
-    private static int cookieBuffer = 3;
-
-    private ClientMessagingService clientMessagingService;
+    private GameMessengerService gameMessengerService;
 
     @BeforeAll
     public static void beforeTests() {
@@ -55,7 +54,7 @@ public class RoomTest {
 
     @BeforeEach
     public void beforeEachTest() {
-        clientMessagingService = mock(ClientMessagingService.class);
+        gameMessengerService = mock(GameMessengerService.class);
     }
 
     @AfterEach
@@ -67,7 +66,7 @@ public class RoomTest {
     public void userJoin_userAddedToRoomSuccessfully() {
         // assign
         User host = User.createNewUser(hostUserUUID, hostName, hostSession);
-        Room room = getRoom(roomUUID, 2, host, "test", clientMessagingService);
+        Room room = getRoom(roomUUID, 2, host, "test", gameMessengerService);
         User user = User.createNewUser(user1UUID, user1Name, user1Session);
 
         // actual
@@ -82,7 +81,7 @@ public class RoomTest {
     public void userJoin_userBlockedFromRoomWhenFull_resultsFalse() {
         // assign
         User host = User.createNewUser(hostUserUUID, hostName, hostSession);
-        Room room = getRoom(roomUUID, 2, host, "test", clientMessagingService);
+        Room room = getRoom(roomUUID, 2, host, "test", gameMessengerService);
         User user1 = User.createNewUser(user1UUID, user1Name, user1Session);
         User user2 = User.createNewUser(user2UUID, user2Name, user2Session);
         User user3 = User.createNewUser(user3UUID, user3Name, user3Session);
@@ -95,14 +94,14 @@ public class RoomTest {
         // assert
         assertEquals(2, room.getUsersJoinedList().size());
         assertFalse(actual);
-        verify(clientMessagingService, times(2)).sendMessageToUser(any(User.class), any(), any());
+        verify(gameMessengerService, times(2)).sendToUser(any(User.class), any(Room.class), any(OutgoingGameData.class));
     }
 
     @Test
     public void userJoin_userBlockedFromRoomWhenDuplicateUser_resultsFalse() {
         // assign
         User host = User.createNewUser(hostUserUUID, hostName, hostSession);
-        Room room = getRoom(roomUUID, 2, host, "test", clientMessagingService);
+        Room room = getRoom(roomUUID, 2, host, "test", gameMessengerService);
         User user = User.createNewUser(user1UUID, user1Name, user1Session);
         room.userJoin(user);
 
@@ -112,8 +111,8 @@ public class RoomTest {
         // assert
         assertEquals(1, room.getUsersJoinedList().size());
         assertFalse(actual);
-        verify(clientMessagingService, atMostOnce())
-                .sendMessageToUser(any(User.class), any(), any());
+        verify(gameMessengerService, atMostOnce())
+                .sendToUser(any(User.class), any(Room.class), any(OutgoingGameData.class));
     }
 
     @Test
@@ -130,14 +129,14 @@ public class RoomTest {
         // assert
         assertEquals(0, room.getUsersJoinedList().size());
         assertFalse(actual);
-        verify(clientMessagingService, never()).sendMessageToUser(any(User.class), any(), any());
+        verify(gameMessengerService, never()).sendToUser(any(User.class), any(Room.class), any(OutgoingGameData.class));
     }
 
     @Test
     public void spectatorJoin_userAddedToRoomSuccessfully() {
         // assign
         User host = User.createNewUser(hostUserUUID, hostName, hostSession);
-        Room room = getRoom(roomUUID, 2, host, "test", clientMessagingService);
+        Room room = getRoom(roomUUID, 2, host, "test", gameMessengerService);
         User user = User.createNewUser(user1UUID, user1Name, user1Session);
 
         // actual
@@ -152,7 +151,7 @@ public class RoomTest {
     public void spectatorJoin_userBlockedFromRoomWhenDuplicateUser_resultsFalse() {
         // assign
         User host = User.createNewUser(hostUserUUID, hostName, hostSession);
-        Room room = getRoom(roomUUID, 2, host, "test", clientMessagingService);
+        Room room = getRoom(roomUUID, 2, host, "test", gameMessengerService);
         User user = User.createNewUser(user1UUID, user1Name, user1Session);
         room.spectatorJoin(user);
 
@@ -168,7 +167,7 @@ public class RoomTest {
     public void userLeave_userRemovedFromRoomIfPlaying() {
         // assign
         User host = User.createNewUser(hostUserUUID, hostName, hostSession);
-        Room room = getRoom(roomUUID, 2, host, "test", clientMessagingService);
+        Room room = getRoom(roomUUID, 2, host, "test", gameMessengerService);
         User user = User.createNewUser(user1UUID, user1Name, user1Session);
         room.userJoin(user);
 
@@ -184,7 +183,7 @@ public class RoomTest {
         // assign
         User user = User.createNewUser(user1UUID, user1Name, user1Session);
         User host = User.createNewUser(hostUserUUID, hostName, hostSession);
-        Room room = getRoom(roomUUID, 2, host, "test", clientMessagingService);
+        Room room = getRoom(roomUUID, 2, host, "test", gameMessengerService);
         room.spectatorJoin(user);
 
         // actual
@@ -192,7 +191,7 @@ public class RoomTest {
 
         // assert
         assertEquals(0, room.getSpectatorsJoinedList().size());
-        verify(clientMessagingService, never()).sendMessageToUser(any(User.class), any(), any());
+        verify(gameMessengerService, never()).sendToUser(any(User.class), any(Room.class), any(OutgoingGameData.class));
     }
 
     @Test
@@ -200,7 +199,7 @@ public class RoomTest {
         // assign
         User host = User.createNewUser(hostUserUUID, hostName, hostSession);
         User user = User.createNewUser(user1UUID, user1Name, user1Session);
-        Room room = getRoom(roomUUID, 2, host, "test", clientMessagingService);
+        Room room = getRoom(roomUUID, 2, host, "test", gameMessengerService);
         room.userJoin(host);
         room.userJoin(user);
 
@@ -210,7 +209,8 @@ public class RoomTest {
         // assert
         assertEquals(1, room.getUsersJoinedList().size());
         assertEquals(user, room.host);
-        verify(clientMessagingService, times(4)).sendMessageToUser(any(User.class), any(), any());
+        verify(gameMessengerService, times(3)).sendToUser(any(User.class), any(Room.class), any(OutgoingGameData.class));
+        verify(gameMessengerService, times(1)).sendToUser(any(User.class), any(Room.class), anyString());
     }
 
     @Test
@@ -245,7 +245,7 @@ public class RoomTest {
             int maxUserCount,
             User user,
             String name,
-            ClientMessagingService messengerService) {
+            GameMessengerService messengerService) {
         return new Room(roomID, maxUserCount, user, name, messengerService) {
             @Override
             public String getGameId() {

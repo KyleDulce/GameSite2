@@ -3,6 +3,7 @@ package me.dulce.gamesite.testutils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
@@ -20,6 +21,7 @@ public class TestUtils {
 
     public static String objectToString(Object obj) {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
         try {
             return mapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
@@ -69,6 +71,23 @@ public class TestUtils {
                                 .params(params)
                                 .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(MockMvcResultMatchers.status().is(expectedStatus.value()));
+    }
+
+    public static ResultActions postRequestExpect4xx(
+            MockMvc mockMvc, String endpoint) throws Exception {
+        return postRequestExpect4xx(mockMvc, endpoint, new LinkedMultiValueMap<>());
+    }
+
+    public static ResultActions postRequestExpect4xx(
+            MockMvc mockMvc,
+            String endpoint,
+            MultiValueMap<String, String> params)
+            throws Exception {
+        return mockMvc.perform(
+                        MockMvcRequestBuilders.post(endpoint)
+                                .params(params)
+                                .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 
     public static MultiValueMap<String, String> getMVMapFromString(String... values) {

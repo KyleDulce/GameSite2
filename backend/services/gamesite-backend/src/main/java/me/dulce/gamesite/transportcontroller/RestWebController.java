@@ -237,7 +237,6 @@ public class RestWebController {
             roomManager.processUserLeaveRoomRequest(user, duplicateRoomId);
         }
 
-        // GameType gameTypeObj = GameType.getGameTypeFromId(gameType);
         if (gameId == null) {
             return ResponseEntity.badRequest().body("Invalid game id");
         }

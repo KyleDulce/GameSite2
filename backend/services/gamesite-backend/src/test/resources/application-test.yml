@@ -14,3 +14,7 @@ auth:
   private_key: classpath:/keys/privatekey.key
   public_key: classpath:/keys/publickey.crt
   allowed-users-file: classpath:/json/UsersFile-test.json
+
+spring:
+  main:
+    allow-bean-definition-overriding: true

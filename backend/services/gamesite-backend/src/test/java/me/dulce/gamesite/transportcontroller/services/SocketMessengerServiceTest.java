@@ -4,11 +4,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import me.dulce.commongames.Room;
+import me.dulce.commongames.gamemessage.GameMessengerService;
 import me.dulce.commongames.gamemessage.common.ChatMessageMessage;
 import me.dulce.game.testgame.TestGameRoom;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,6 +25,7 @@ import java.util.UUID;
 class SocketMessengerServiceTest {
 
     @MockBean private SimpMessagingTemplate simpMessagingTemplate;
+    @MockBean private GameMessengerService gameMessengerService;
 
     @Autowired private SocketMessengerService socketMessengerService;
 
@@ -30,10 +33,9 @@ class SocketMessengerServiceTest {
     public void broadcastMessageToRoom_messageSentUsingMessagingTemplate() {
 
         // assign
-        Room room = new TestGameRoom(UUID.randomUUID(), 10, null, "test", socketMessengerService);
+        Room room = new TestGameRoom(UUID.randomUUID(), 10, null, "test", gameMessengerService);
         Object data =
-                new ChatMessageMessage(room.getRoomId(), "This is a test", "Bobby")
-                        .parseToSerializableObject();
+                new ChatMessageMessage("This is a test", "Bobby");
 
         // actual
         socketMessengerService.broadcastMessageToRoom(room, data);

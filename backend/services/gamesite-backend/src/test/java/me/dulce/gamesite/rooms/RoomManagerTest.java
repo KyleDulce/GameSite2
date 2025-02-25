@@ -7,8 +7,10 @@ import me.dulce.commongames.CommonGamesReference;
 import me.dulce.commongames.Room;
 import me.dulce.commongames.User;
 import me.dulce.commongames.game.GameResolver;
+import me.dulce.commongames.gamemessage.GameMessengerService;
 import me.dulce.commongames.gamemessage.InitialGameMessageHandler;
-import me.dulce.game.testgame.TestGameServiceManager;
+import me.dulce.commongames.messaging.ClientMessagingService;
+import me.dulce.game.testgame.TestGameRoom;
 import me.dulce.gamesite.transportcontroller.services.SocketMessengerService;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -34,7 +36,7 @@ public class RoomManagerTest {
     private static String userName = "SomeName";
     private static String userSession = "SomeSession";
 
-    @MockBean SocketMessengerService socketMessengerService;
+    @MockBean private GameMessengerService gameMessengerService;
 
     @Autowired GameResolver gameResolver;
 
@@ -52,7 +54,7 @@ public class RoomManagerTest {
 
         // assign
         User testUser = User.createNewUser(user1UUID, userName, userSession);
-        UUID roomId = roomManager.createRoom(testUser, 5, "test", TestGameServiceManager.GAME_ID);
+        UUID roomId = roomManager.createRoom(testUser, 5, "test", TestGameRoom.GAME_ID);
 
         // actual
         roomManager.processUserLeaveRoomRequest(testUser, roomId);
@@ -66,7 +68,7 @@ public class RoomManagerTest {
 
         // assign
         User testUser = User.createNewUser(user1UUID, userName, userSession);
-        UUID roomId = roomManager.createRoom(testUser, 5, "test", TestGameServiceManager.GAME_ID);
+        UUID roomId = roomManager.createRoom(testUser, 5, "test", TestGameRoom.GAME_ID);
 
         // actual
         roomManager.processUserLeaveRoomRequest(testUser, roomId);
@@ -84,7 +86,7 @@ public class RoomManagerTest {
             users[i] = User.createNewUser(UUID.randomUUID(), userName, userSession);
         }
 
-        UUID roomId = roomManager.createRoom(users[0], 5, "test", TestGameServiceManager.GAME_ID);
+        UUID roomId = roomManager.createRoom(users[0], 5, "test", TestGameRoom.GAME_ID);
         assertNotNull(roomId);
 
         Room room = roomManager.getRoomFromUUID(roomId);
