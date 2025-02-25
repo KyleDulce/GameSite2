@@ -1,55 +1,55 @@
 @use 'theme-variables' as *;
 
 :host {
-    display: flex;
-    flex-direction: column;
-    gap: .0625rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.0625rem;
 
-    & > * {
-        margin: 0;
-    }
+  & > * {
+    margin: 0;
+  }
 }
 
 .comp-text-container {
-    width: 100%;
-    border: .0625rem solid $text-color;
-    border-radius: .25rem;
-    background-color: $surface-color;
+  width: 100%;
+  border: 0.0625rem solid $text-color;
+  border-radius: 0.25rem;
+  background-color: $surface-color;
 
-    &.focus {
-        border-color: $primary-active-color;
-        outline: .0625rem solid $primary-active-color;
-    }
+  &.focus {
+    border-color: $primary-active-color;
+    outline: 0.0625rem solid $primary-active-color;
+  }
 
-    &.disabled {
-        border-color: $text-active-color;
-    }
+  &.disabled {
+    border-color: $text-active-color;
+  }
 }
 
 .comp-text-field {
-    width: 100%;
-    
+  //   width: 100%;
+
+  @include text(body);
+  color: $text-color;
+  padding: 0.5rem;
+  border: none;
+  background: transparent;
+
+  ::placeholder {
     @include text(body);
     color: $text-color;
-    padding: .5rem;
+  }
+
+  &:focus {
+    outline: none;
     border: none;
-    background: transparent;
+  }
 
-    ::placeholder {
-        @include text(body);
-        color: $text-color;
-    }
-
-    &:focus {
-        outline: none;
-        border: none;
-    }
-
-    &:disabled {
-        color: $disabled-color;
-    }
+  &:disabled {
+    color: $disabled-color;
+  }
 }
 
 .comp-text-hint-container {
-    padding: 0 .5rem;
+  padding: 0 0.5rem;
 }

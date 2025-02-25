@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Deprecated
 @AllArgsConstructor
 @Getter
 public enum CommonGameDataType {
